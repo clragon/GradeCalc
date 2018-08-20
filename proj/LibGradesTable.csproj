@@ -1,0 +1,18 @@
+<Project
+    xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <OutputPath>../lib/</OutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="../LibGradesTable.cs;../info/LibGradesTableInfo.cs" />
+    </ItemGroup>
+    <Target Name="Build">
+        <Csc Sources="@(Compile)" 
+             Resources="@(EmbeddedResource)" 
+             References="@(Reference)"
+             TargetType="library"
+             OutputAssembly="../lib/LibGradesTable.dll" />
+    </Target>
+</Project>  
+

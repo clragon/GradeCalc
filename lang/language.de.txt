@@ -1,0 +1,46 @@
+﻿Title=Notenrechner
+Manage=Daten verwalten
+Exit=Schliessen
+Choose=Auswahl
+Back=Zurück
+
+Table=Tabelle
+ManageTable=Tabelle verwalten
+ChooseTable=Tabelle wählen
+CreateTable=Neue Tabelle
+NameOfTable=Name
+RenameTable=Umbenennen
+ReadTable=Öffnen
+WriteTable=Speichern
+DeleteTable=Löschen
+WriteTableSuccess=Tabelle erfolgreich gespeichert
+WriteTableError=Tabelle konnte nicht gespeichert werden
+ReadTableSuccess=Tabelle erfolgreich geöffnet
+ReadTableError=Tabelle konnte nicht geöffnet werden
+DeniedTableAccess=Dateizugriff verweigert
+
+Subject=Fach
+Subjects=Fächer
+ChooseSubject=Fach wählen
+CreateSubject=Neues Fach
+NameOfSubject=Name
+RenameSubject=Umbenennen
+DeleteSubject=Löschen
+
+Grade=Note
+Grades=Noten
+Weight=Gewicht
+ChooseGrade=Note wählen
+CreateGrade=Neue Note
+EditGrade=bearbeiten
+DeleteGrade=Löschen
+
+Overview=Zusammenfassung
+Total=Total
+NoData=Keine Daten vorhanden
+Average=Durchschnitt
+
+Log=Log
+Error=Fehler
+InvalidInput=Ungültige Eingabe
+PressAnything=Beliebige Taste drücken

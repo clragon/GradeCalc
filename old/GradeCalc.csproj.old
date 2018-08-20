@@ -1,0 +1,25 @@
+<Project
+    xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ApplicationIcon>calc.ico</ApplicationIcon>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="GradeCalc.cs;AssemblyInfo.cs" />
+        <Reference Include="LibGradesTable.dll">
+            <HintPath>./LibGradesTable.dll</HintPath>
+        </Reference>
+        <Reference Include="LibGradesCli.dll">
+            <HintPath>./LibGradesCli.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+    <Target Name="Build">
+        <Csc Sources="@(Compile)" 
+             Resources="@(EmbeddedResource)" 
+             References="@(Reference)" 
+             TargetType="Exe"
+             OutputAssembly="GradeCalc.exe" />
+    </Target>
+    <Import Project="./packages/Fody.3.1.3/build/Fody.targets" Condition="Exists('./packages/Fody.3.1.3/build/Fody.targets')" />
+    <Import Project="./packages/Costura.Fody.3.1.0/build/Costura.Fody.targets" Condition="Exists('./packages/Costura.Fody.3.1.0/build/Costura.Fody.targets')" />
+</Project>
