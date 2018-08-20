@@ -1,0 +1,49 @@
+<Project
+    xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ApplicationIcon>../res/calc.ico</ApplicationIcon>
+        <OutputType>Exe</OutputType>
+        <OutputPath>../NoDLL/bin/Release/</OutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="../res/*.resources"/>
+        <Compile Include="../LibGradesTable.cs;../LibGradesCli.cs;../GradeCalc.cs;../info/GradeCalcInfo.cs" />
+        <Reference Include="System.Runtime.Serialization.dll"></Reference>
+        <Reference Include="System.Xml"></Reference>
+    </ItemGroup>
+    <Target Name="CleanResourceDirectory" BeforeTargets="Resources">
+        <ItemGroup>
+            <FilesToDelete Include="../res/*.resources"/>
+        </ItemGroup>
+        <Delete Files="@(FilesToDelete)" />
+    </Target>
+    <Target Name="Resources" DependsOnTargets="CleanResourceDirectory" BeforeTargets="PrepareForBuild">
+        <ItemGroup>
+            <ResourceFiles Include="../lang/*.txt"/>
+        </ItemGroup>
+        <GenerateResource
+            Sources="@(ResourceFiles)"
+            OutputResources="@(ResourceFiles->'../res/%(Filename).resources')">
+            <Output TaskParameter="OutputResources"
+                ItemName="Resources"/>
+        </GenerateResource>
+    </Target>
+    <Target Name="CleanTargetDirectory" BeforeTargets="PrepareForBuild">
+        <!-- Remove bin folder -->
+        <!-- <RemoveDir Directories="$(BaseOutputPath)" /> -->
+        <RemoveDir Directories="../NoDLL/bin" />
+    </Target>
+    <Target Name="Build" DependsOnTargets="Resources">
+        <Csc Sources="@(Compile)" 
+             Resources="@(EmbeddedResource)" 
+             References="@(Reference)" 
+             TargetType="Exe"
+             OutputAssembly="GradeCalc.exe" />
+    </Target>
+    <Target Name="CleanObj"  AfterTargets="AfterBuild">
+        <!-- Remove obj folder -->
+        <RemoveDir Directories="$(BaseIntermediateOutputPath)" />
+    </Target>
+    <!-- Pretty sure you need to declare this target since you are not using the standard CSharp targets file: -->
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -6,7 +6,6 @@ namespace Grades
 	{
 		public static void Main(string[] args)
 		{
-			CosturaUtility.Initialize();
 			Cli.CliMenu();
 
 		}

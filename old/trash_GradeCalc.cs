@@ -330,3 +330,5 @@ else
 
     }
 }
+
+// CosturaUtility.Initialize();
