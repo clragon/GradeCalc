@@ -1,4 +1,4 @@
-<Project
+<Project DefaultTargets="Build"
     xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <OutputType>Library</OutputType>
@@ -13,13 +13,14 @@
             <HintPath>../lib/LibGradesTable.dll</HintPath>
         </Reference>
     </ItemGroup>
-    <Target Name="CleanResourceDirectory" BeforeTargets="Resources">
+    <Target Name="Clean" BeforeTargets="Resources">
         <ItemGroup>
             <FilesToDelete Include="../res/*.resources"/>
         </ItemGroup>
         <Delete Files="@(FilesToDelete)" />
+        <MakeDir Directories="../lib" />
     </Target>
-    <Target Name="Resources" DependsOnTargets="CleanResourceDirectory" BeforeTargets="PrepareForBuild">
+    <Target Name="Resources" DependsOnTargets="Clean" BeforeTargets="PrepareForBuild">
         <ItemGroup>
             <ResourceFiles Include="../lang/*.txt"/>
         </ItemGroup>

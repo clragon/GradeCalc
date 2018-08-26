@@ -1,9 +1,9 @@
-<Project
+<Project DefaultTargets="Clean;Resources;Build"
     xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ApplicationIcon>../res/calc.ico</ApplicationIcon>
         <OutputType>Exe</OutputType>
-        <OutputPath>../NoDLL/bin/Release/</OutputPath>
+        <OutputPath>../bin-no-dll/Release/</OutputPath>
     </PropertyGroup>
     <ItemGroup>
         <EmbeddedResource Include="../res/*.resources"/>
@@ -11,13 +11,15 @@
         <Reference Include="System.Runtime.Serialization.dll"></Reference>
         <Reference Include="System.Xml"></Reference>
     </ItemGroup>
-    <Target Name="CleanResourceDirectory" BeforeTargets="Resources">
+    <Target Name="Clean" BeforeTargets="Resources">
         <ItemGroup>
             <FilesToDelete Include="../res/*.resources"/>
         </ItemGroup>
         <Delete Files="@(FilesToDelete)" />
+        <RemoveDir Directories="../bin-no-dll" />
+        <MakeDir Directories="../lib" />
     </Target>
-    <Target Name="Resources" DependsOnTargets="CleanResourceDirectory" BeforeTargets="PrepareForBuild">
+    <Target Name="Resources" DependsOnTargets="Clean" BeforeTargets="PrepareForBuild">
         <ItemGroup>
             <ResourceFiles Include="../lang/*.txt"/>
         </ItemGroup>
@@ -27,11 +29,6 @@
             <Output TaskParameter="OutputResources"
                 ItemName="Resources"/>
         </GenerateResource>
-    </Target>
-    <Target Name="CleanTargetDirectory" BeforeTargets="PrepareForBuild">
-        <!-- Remove bin folder -->
-        <!-- <RemoveDir Directories="$(BaseOutputPath)" /> -->
-        <RemoveDir Directories="../NoDLL/bin" />
     </Target>
     <Target Name="Build" DependsOnTargets="Resources">
         <Csc Sources="@(Compile)" 
