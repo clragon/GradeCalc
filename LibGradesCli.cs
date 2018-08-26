@@ -672,7 +672,7 @@ namespace Grades
 
         }
 
-        public static void ManageGrade(Table.Subject.Grade g, Table.Subject s)
+        public static void ManageGrade(Table.Subject.Grade g)
         {
             bool IsMenuExitPending = false;
             while (!IsMenuExitPending)
@@ -702,7 +702,7 @@ namespace Grades
                         case "2":
                             IsInputValid = true;
                             IsMenuExitPending = true;
-                            s.RemGrade(s.Grades.IndexOf(g));
+                            g.OwnerSubject.RemGrade(g);
                             break;
 
                         case "q":
@@ -798,7 +798,7 @@ namespace Grades
                                 index = Convert.ToInt32(InputString) - 1;
                                 InputString = "";
                                 IsInputValid = true;
-                                ManageGrade(s.Grades[index], s);
+                                ManageGrade(s.Grades[index]);
                             }
                             break;
 
@@ -824,7 +824,7 @@ namespace Grades
                                             index = Convert.ToInt32(InputString) - 1;
                                             InputString = "";
                                             IsInputValid = true;
-                                            ManageGrade(s.Grades[index], s);
+                                            ManageGrade(s.Grades[index]);
                                         }
                                         else
                                         {

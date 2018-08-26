@@ -12,18 +12,29 @@ namespace Grades
         public string name;
 
         [DataMember(Name = "Subjects")]
-        public List<Subject> Subjects = new List<Subject>();
+        public List<Subject> Subjects { get; internal set; } = new List<Subject>();
 
         public void AddSubject(string name)
         {
             Subject x = new Subject();
             x.name = name;
+            x.OwnerTable = this;
             Subjects.Add(x);
+        }
+
+        public void AddSubject(Subject s)
+        {
+            Subjects.Add(s);
         }
 
         public void RemSubject(int index)
         {
             Subjects.RemoveAt(index);
+        }
+
+        public void RemSubject(Subject s)
+        {
+            Subjects.RemoveAt(Subjects.IndexOf(s));
         }
 
         [DataContract(Name = "Subject")]
@@ -33,6 +44,9 @@ namespace Grades
             [DataMember(Name = "Name")]
             public string name { get; internal set; }
 
+            [DataMember(Name = "OwnerTable")]
+            public Table OwnerTable { get; internal set; }
+
             internal Subject() { }
 
             public void EditSubject(string name)
@@ -40,20 +54,37 @@ namespace Grades
                 this.name = name;
             }
 
+            public void MoveSubject(Table t)
+            {
+                OwnerTable.RemSubject(this);
+                t.AddSubject(this);
+            }
+
             [DataMember(Name = "Grades")]
-            public List<Grade> Grades = new List<Grade>();
+            public List<Grade> Grades { get; internal set; } = new List<Grade>();
 
             public void AddGrade(double value, double weight)
             {
                 Grade y = new Grade();
                 y.value = value;
                 y.weight = weight;
+                y.OwnerSubject = this;
                 Grades.Add(y);
+            }
+
+            public void AddGrade(Grade g)
+            {
+                Grades.Add(g);
             }
 
             public void RemGrade(int index)
             {
                 Grades.RemoveAt(index);
+            }
+
+            public void RemGrade(Grade g)
+            {
+                Grades.RemoveAt(Grades.IndexOf(g));
             }
 
             [DataContract(Name = "Grade")]
@@ -65,6 +96,9 @@ namespace Grades
                 [DataMember(Name = "Weight")]
                 public double weight { get; internal set; }
 
+                [DataMember(Name = "OwnerSubject")]
+                public Subject OwnerSubject { get; internal set; }
+
                 internal Grade() { }
 
                 public void EditGrade(double value, double weight)
@@ -73,15 +107,26 @@ namespace Grades
                     this.weight = weight;
                 }
 
+                public void MoveSubject(Subject s)
+                {
+                    OwnerSubject.RemGrade(this);
+                    s.AddGrade(this);
+
+                }
+
             }
 
         }
 
         public void Write(string File)
         {
-            DataContractSerializer serializer = new DataContractSerializer(this.GetType());
             using(System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(File, new System.Xml.XmlWriterSettings { Indent = true }))
             {
+                DataContractSerializer serializer = new DataContractSerializer(typeof(Table), null,
+                    0x7FFF /*maxItemsInObjectGraph*/ ,
+                    false /*ignoreExtensionDataObject*/ ,
+                    true /*preserveObjectReferences : this is where the magic happens */ ,
+                    null /*dataContractSurrogate*/ );
                 serializer.WriteObject(writer, this);
             }
         }
