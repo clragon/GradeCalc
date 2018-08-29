@@ -5,7 +5,8 @@ The purpose of this program is to store grades and calculate their average.
 
 ### Compilation
 Currently I'm using msbuild with csproj files and a bash script to compile my assembly. 
-Regardless of the OS, the following step is mandatory: 
+Regardless of the OS, the following step is mandatory:
+
 You will need to download [`Fody`](https://www.nuget.org/packages/Fody/) and [`Costura`](https://www.nuget.org/packages/Costura.Fody/) and put them in a new directory called `packages` inside the master directory.
 #### Linux
 To compile on Linux just run [`the bash script`](https://github.com/clragon/GradeCalc/blob/master/compile.sh) but keep in mind you have to have [`mono-complete`](https://www.mono-project.com/download/stable/) installed.
