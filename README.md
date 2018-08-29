@@ -1,11 +1,16 @@
 ## GradeCalc
 
 GradeCalc is my first personal C# project. I'm using it to learn more about C# and about object orientated-programming in general.
-The purpose of this program is to store and calculate my grades for me. 
+The purpose of this program is to store and calculate my grades for me.
 
 ### Compilation
 
-Currently I'm using msbuild `csproj` files and a bash script to compile my assembly. 
-To compile it for yourself, clone the repository and run the bash script on a linux machine that has [`mono-complete`](https://www.mono-project.com/download/stable/) installed.
+Currently I'm using msbuild `csproj` files and a `bash script` to compile my assembly. 
+To compile it for yourself, clone the repository and run the bash script on a linux machine that has [`mono-complete`](https://www.mono-project.com/download/stable/) installed. You will also need to install [`Fody`](https://www.nuget.org/packages/Fody/) and [`Costura`](https://www.nuget.org/packages/Costura.Fody/)
 If you are on a Windows machine, you can build the `csproj` files manully.
+
+### Details
+- GradeCalc is made of 3 parts. The main cs file which isn't much but the shell for this Application
+- The Table-class which is the base for my grade storage
+- The CLI class which basically makes the Table-class available to the user on terminal level.
 
