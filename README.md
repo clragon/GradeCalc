@@ -4,9 +4,11 @@ GradeCalc is my first personal C# project. I'm using it to learn more about C# a
 The purpose of this program is to store grades and calculate their average.
 
 ### Compilation
+Regardless of what OS, the following step is mandatory: 
+You will need to install [`Fody`](https://www.nuget.org/packages/Fody/) and [`Costura`](https://www.nuget.org/packages/Costura.Fody/) and put them in a new directory called `packages` inside the master directory.
 #### Linux
 Currently I'm using mono's [`msbuild`](https://docs.microsoft.com/visualstudio/msbuild/msbuild-concepts?view=vs-2017) with [`csproj`](https://docs.microsoft.com/en-us/aspnet/web-forms/overview/deployment/web-deployment-in-the-enterprise/understanding-the-project-file) files and a [`bash script`](https://github.com/clragon/GradeCalc/blob/master/compile.sh) to compile my assembly. 
-To compile it yourself, clone the repository and run the bash script on a linux machine that has [`mono-complete`](https://www.mono-project.com/download/stable/) installed. You will also need to install [`Fody`](https://www.nuget.org/packages/Fody/) and [`Costura`](https://www.nuget.org/packages/Costura.Fody/)
+To compile it yourself, clone the repository and run the bash script on a linux machine that has [`mono-complete`](https://www.mono-project.com/download/stable/) installed.
 #### Windows
 If you are on a Windows machine, you can build the [`csproj`](https://docs.microsoft.com/en-us/aspnet/web-forms/overview/deployment/web-deployment-in-the-enterprise/understanding-the-project-file)  files manually with [`msbuild`](https://docs.microsoft.com/visualstudio/msbuild/msbuild-concepts?view=vs-2017) which comes pre-installed with [`Visual studio`](https://visualstudio.microsoft.com/).
 
