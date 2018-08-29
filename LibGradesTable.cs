@@ -10,6 +10,14 @@ namespace Grades
 
         [DataMember(Name = "Name")]
         public string name;
+        [DataMember(Name = "MinGrade")]
+        public double MinGrade;
+        [DataMember(Name = "MaxGrade")]
+        public double MaxGrade;
+        [DataMember(Name = "EnableGradeLimits")]
+        public bool EnableGradeLimits = true;
+        [DataMember(Name = "EnableWeightSystem")]
+        public bool EnableWeightSystem = true;
 
         [DataMember(Name = "Subjects")]
         public List<Subject> Subjects { get; internal set; } = new List<Subject>();

@@ -77,9 +77,9 @@ namespace Grades
 
         public static string SourceFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "/grades.xml");
 
-        public static Table t = GetTable();
+        public static Table t = LoadTable();
 
-        public static Table GetTable()
+        public static Table LoadTable()
         {
             if (System.IO.File.Exists(SourceFile))
             {
@@ -92,7 +92,7 @@ namespace Grades
                     Console.WriteLine("[{0}] {1} : {2}", lang.GetString("Error"), System.IO.Path.GetFileName(SourceFile), lang.GetString("DeniedTableAccess"));
                     Console.WriteLine(lang.GetString("PressAnything"));
                     Console.ReadKey();
-                    return GetNewTable();
+                    return GetEmptyTable();
                 }
                 catch (Exception)
                 {
@@ -101,19 +101,22 @@ namespace Grades
                         new Table().Clear(SourceFile);
                     }
                     catch (Exception) { }
-                    return GetNewTable();
+                    return GetEmptyTable();
                 }
             }
             else
             {
-                return GetNewTable();
+                return GetEmptyTable();
             }
         }
 
-        public static Table GetNewTable()
+        public static Table GetEmptyTable()
         {
             Table t = new Table();
             t.name = "terminal_" + DateTime.Now.ToString("yyyy.MM.dd-HH:mm:ss");
+            t.MinGrade = 1;
+            t.MaxGrade = 6;
+            t.EnableWeightSystem = true;
             return t;
         }
 
@@ -129,6 +132,7 @@ namespace Grades
                 Console.WriteLine("[1] {0}", lang.GetString("ReadTable"));
                 Console.WriteLine("[2] {0}", lang.GetString("WriteTable"));
                 Console.WriteLine("[3] {0}", lang.GetString("RenameTable"));
+
                 Console.WriteLine("[4] {0}", lang.GetString("DeleteTable"));
                 Console.WriteLine("[q] {0}", lang.GetString("Back"));
                 Console.Write("\n");
@@ -345,37 +349,9 @@ namespace Grades
 
         public static void CreateTable()
         {
-            string input = "";
-            bool IsInputValid = false;
-            while (!IsInputValid)
-            {
 
-                ClearMenu();
-                Console.WriteLine("--- {0} ---", lang.GetString("CreateTable"));
-                Console.Write("\n");
-                Console.Write("{0}> ", lang.GetString("NameOfTable"));
-                input = Console.ReadLine();
-
-                input.Trim();
-                if (!string.IsNullOrWhiteSpace(input))
-                {
-                    if (!input.Equals(String.Format("({0})", lang.GetString("CreateTable")), StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        IsInputValid = true;
-                    }
-                    else
-                    {
-                        ResetInput();
-                    }
-                }
-                else
-                {
-                    ResetInput();
-                }
-            }
-
-            Table x = new Table();
-            x.name = input;
+            Table x = GetEmptyTable();
+            x.name = GetTable(String.Format("--- {0} ---", lang.GetString("CreateTable")));
 
             int i = 1;
             while (true)
@@ -391,13 +367,19 @@ namespace Grades
 
         public static void RenameTable()
         {
+            t.name = GetTable(String.Format("--- {0} : {1} ---", lang.GetString("RenameTable"), t.name));
+            t.Save();
+        }
+
+        public static string GetTable(string title)
+        {
             string input = "";
             bool IsInputValid = false;
             while (!IsInputValid)
             {
 
                 ClearMenu();
-                Console.WriteLine("--- {0} : {1} ---", lang.GetString("RenameTable"), t.name);
+                Console.WriteLine(title);
                 Console.Write("\n");
                 Console.Write("{0}> ", lang.GetString("NameOfTable"));
                 input = Console.ReadLine();
@@ -420,8 +402,7 @@ namespace Grades
                 }
             }
 
-            t.name = input;
-            t.Save();
+            return input;
         }
 
         public static void ManageSubject(Table.Subject s)
@@ -609,13 +590,25 @@ namespace Grades
 
         public static void CreateSubject()
         {
+            t.AddSubject(GetSubject(String.Format("--- {0} ---", lang.GetString("CreateSubject"))));
+            t.Save();
+        }
+
+        public static void RenameSubject(Table.Subject s)
+        {
+            s.EditSubject(GetSubject(String.Format("--- {0} : {1} ---", lang.GetString("RenameSubject"), s.name)));
+            t.Save();
+        }
+
+        public static string GetSubject(string title)
+        {
             string input = "";
             bool IsInputValid = false;
             while (!IsInputValid)
             {
 
                 ClearMenu();
-                Console.WriteLine("--- {0} ---", lang.GetString("CreateSubject"));
+                Console.WriteLine(title);
                 Console.Write("\n");
                 Console.Write("{0}> ", lang.GetString("NameOfSubject"));
                 input = Console.ReadLine();
@@ -638,38 +631,7 @@ namespace Grades
                 }
             }
 
-            t.AddSubject(input);
-            t.Save();
-
-        }
-
-        public static void RenameSubject(Table.Subject s)
-        {
-            string input = "";
-            bool IsInputValid = false;
-            while (!IsInputValid)
-            {
-
-                ClearMenu();
-                Console.WriteLine("--- {0} : {1} ---", lang.GetString("RenameSubject"), s.name);
-                Console.Write("\n");
-                Console.Write("{0}> ", lang.GetString("NameOfSubject"));
-                input = Console.ReadLine();
-
-                input.Trim();
-                if (!string.IsNullOrWhiteSpace(input))
-                {
-                    IsInputValid = true;
-                }
-                else
-                {
-                    ResetInput();
-                }
-            }
-
-            s.EditSubject(input);
-            t.Save();
-
+            return input;
         }
 
         public static void ManageGrade(Table.Subject.Grade g)
@@ -770,7 +732,6 @@ namespace Grades
                     Console.Write("{0}> {1}", lang.GetString("Choose"), InputString);
                     string input = Console.ReadKey().KeyChar.ToString();
                     new System.Threading.ManualResetEvent(false).WaitOne(20);
-                    Console.Write("\n");
                     switch (input)
                     {
                         case "q":
@@ -849,50 +810,21 @@ namespace Grades
 
         public static void CreateGrade(Table.Subject s)
         {
-            string input = "";
-            double value = -1;
-            double weight = -1;
-            bool IsFirstInputValid = false;
-            while (!IsFirstInputValid)
-            {
-                ClearMenu();
-                Console.WriteLine("--- {0} ---", lang.GetString("CreateGrade"));
-
-                Console.Write("\n");
-                Console.Write("{0}> ", lang.GetString("Grade"));
-                input = Console.ReadLine();
-
-                if (double.TryParse(input, out value) && (value >= 1) && (value <= 6))
-                {
-                    IsFirstInputValid = true;
-                }
-                else
-                {
-                    ResetInput();
-                }
-            }
-            bool IsSecondInputValid = false;
-            while (!IsSecondInputValid)
-            {
-                Console.Write("{0}> ", lang.GetString("Weight"));
-                input = Console.ReadLine();
-
-                if (double.TryParse(input, out weight) && (weight >= 0.25) && (weight <= 1))
-                {
-                    IsSecondInputValid = true;
-                }
-                else
-                {
-                    ResetInput();
-                }
-            }
-
-            s.AddGrade(value, weight);
+            Tuple<double, double> g = GetGrade(s, String.Format("--- {0} ---", lang.GetString("CreateGrade")));
+            s.AddGrade(g.Item1, g.Item2);
             t.Save();
 
         }
 
         public static void ModifyGrade(Table.Subject.Grade g)
+        {
+            Tuple<double, double> n = GetGrade(g.OwnerSubject, String.Format("--- {0} : {1} | {2} ---", lang.GetString("EditGrade"), g.value, g.weight));
+            g.EditGrade(n.Item1, n.Item2);
+            t.Save();
+
+        }
+
+        public static Tuple<double, double> GetGrade(Table.Subject s, string title)
         {
             string input = "";
             double value = -1;
@@ -901,12 +833,13 @@ namespace Grades
             while (!IsFirstInputValid)
             {
                 ClearMenu();
-                Console.WriteLine("--- {0} : {1} | {2} ---", lang.GetString("EditGrade"), g.value, g.weight);
+                Console.WriteLine(title);
+
                 Console.Write("\n");
                 Console.Write("{0}> ", lang.GetString("Grade"));
                 input = Console.ReadLine();
 
-                if (double.TryParse(input, out value) && (value >= 1) && (value <= 6))
+                if (double.TryParse(input, out value) && (value >= s.OwnerTable.MinGrade) && (value <= s.OwnerTable.MaxGrade))
                 {
                     IsFirstInputValid = true;
                 }
@@ -915,25 +848,30 @@ namespace Grades
                     ResetInput();
                 }
             }
-            bool IsSecondInputValid = false;
-            while (!IsSecondInputValid)
+            if (s.OwnerTable.EnableWeightSystem)
             {
-                Console.Write("{0}> ", lang.GetString("Weight"));
-                input = Console.ReadLine();
+                bool IsSecondInputValid = false;
+                while (!IsSecondInputValid)
+                {
+                    Console.Write("{0}> ", lang.GetString("Weight"));
+                    input = Console.ReadLine();
 
-                if (double.TryParse(input, out weight) && (weight >= 0.25) && (weight <= 1))
-                {
-                    IsSecondInputValid = true;
-                }
-                else
-                {
-                    ResetInput();
+                    if (double.TryParse(input, out weight) && (weight > 0) && (weight <= 1) || (weight == 1.5) || (weight == 2))
+                    {
+                        IsSecondInputValid = true;
+                    }
+                    else
+                    {
+                        ResetInput();
+                    }
                 }
             }
+            else
+            {
+                weight = 1;
+            }
 
-            g.EditGrade(value, weight);
-            t.Save();
-
+            return Tuple.Create(value, weight);
         }
 
         public static void OverviewMenu()
@@ -949,10 +887,10 @@ namespace Grades
                 // sort list by highest average
                 foreach (Table.Subject s in t.Subjects)
                 {
-                    Console.WriteLine("{0} {1}{2} {3}", s.name.PadRight(MaxLength, ' '), ":".PadRight(Convert.ToInt32((s.CalcAverage() * 2) + 1), '='), ":".PadLeft(Convert.ToInt32(13 - s.CalcAverage() * 2), ' '), s.CalcAverage());
+                    Console.WriteLine("{0} :{1}: {2}", s.name.PadRight(MaxLength, ' '), new String('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(12, ' '), s.CalcAverage());
                 }
                 Console.Write("\n");
-                Console.WriteLine("{0} {1}{2} {3}", lang.GetString("Total").PadRight(MaxLength, ' '), ":".PadRight(Convert.ToInt32((t.CalcAverage() * 2) + 1), '='), ":".PadLeft(Convert.ToInt32(13 - t.CalcAverage() * 2), ' '), t.CalcAverage());
+                Console.WriteLine("{0} :{1}: {2}", lang.GetString("Total").PadRight(MaxLength, ' '), new String('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(12, ' '), t.CalcAverage());
 
                 // display compensation points
             }
@@ -1018,8 +956,16 @@ namespace Grades
                 double values = 0, weights = 0;
                 foreach (Table.Subject.Grade g in s.Grades)
                 {
-                    weights += g.weight; // Math.Round(g.weight * 4, MidpointRounding.ToEven) / 4;
-                    values += g.value * Math.Round(g.weight * 4, MidpointRounding.ToEven) / 4;
+                    if (s.OwnerTable.EnableWeightSystem)
+                    {
+                        weights += g.weight;
+                    }
+                    else
+                    {
+                        weights++;
+                    }
+                    // Math.Round(g.weight * 4, MidpointRounding.ToEven) / 4
+                    values += g.value * g.weight;
                 }
                 return Math.Round((values / weights) * 2, MidpointRounding.ToEven) / 2;
             }

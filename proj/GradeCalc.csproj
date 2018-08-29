@@ -28,13 +28,13 @@
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Target Name="AfterCompile" AfterTargets="Build" />
     <!-- Update paths to meet your needs -->
-    <Import Project="../packages/Fody.3.1.3/build/Fody.targets" Condition="Exists('../packages/Fody.3.1.3/build/Fody.targets')" />
+    <Import Project="../packages/Fody.3.1.4/build/Fody.targets" Condition="Exists('../packages/Fody.3.1.4/build/Fody.targets')" />
     <!--Leaving this here just for your reference so you can see what Visual Studio does-->
     <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
         <PropertyGroup>
             <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
         </PropertyGroup>
-        <Error Condition="!Exists('../packages/Fody.3.1.3/build/Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '../packages/Fody.3.1.3/build/Fody.targets'))" />
+        <Error Condition="!Exists('../packages/Fody.3.1.4/build/Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '../packages/Fody.3.1.4/build/Fody.targets'))" />
         <Error Condition="!Exists('../packages/Costura.Fody.3.1.0/build/Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '../packages/Costura.Fody.3.1.0/build/Costura.Fody.targets'))" />
     </Target>
     <Target Name="CleanTargetDirectory" BeforeTargets="PrepareForBuild">
