@@ -4,7 +4,7 @@ GradeCalc is my first personal C# project. I'm using it to learn more about C# a
 The purpose of this program is to store grades and calculate their average.
 
 ### Compilation
-Currently I'm using mono's [`msbuild`](https://docs.microsoft.com/visualstudio/msbuild/msbuild-concepts?view=vs-2017) with [`csproj`](https://docs.microsoft.com/en-us/aspnet/web-forms/overview/deployment/web-deployment-in-the-enterprise/understanding-the-project-file) files and a bash script to compile my assembly. 
+Currently I'm using msbuild with csproj files and a bash script to compile my assembly. 
 Regardless of the OS, the following step is mandatory: 
 You will need to download [`Fody`](https://www.nuget.org/packages/Fody/) and [`Costura`](https://www.nuget.org/packages/Costura.Fody/) and put them in a new directory called `packages` inside the master directory.
 #### Linux
