@@ -4,9 +4,9 @@ GradeCalc is my first personal C# project. I'm using it to learn more about C# a
 The purpose of this program is to store grades and calculate their average.
 
 ### Compilation
-Currently I'm using mono's [`msbuild`](https://docs.microsoft.com/visualstudio/msbuild/msbuild-concepts?view=vs-2017) with [`csproj`](https://docs.microsoft.com/en-us/aspnet/web-forms/overview/deployment/web-deployment-in-the-enterprise/understanding-the-project-file) files and a `bash script` to compile my assembly. 
-Regardless of what OS, the following step is mandatory: 
-You will need to install [`Fody`](https://www.nuget.org/packages/Fody/) and [`Costura`](https://www.nuget.org/packages/Costura.Fody/) and put them in a new directory called `packages` inside the master directory.
+Currently I'm using mono's [`msbuild`](https://docs.microsoft.com/visualstudio/msbuild/msbuild-concepts?view=vs-2017) with [`csproj`](https://docs.microsoft.com/en-us/aspnet/web-forms/overview/deployment/web-deployment-in-the-enterprise/understanding-the-project-file) files and a bash script to compile my assembly. 
+Regardless of the OS, the following step is mandatory: 
+You will need to download [`Fody`](https://www.nuget.org/packages/Fody/) and [`Costura`](https://www.nuget.org/packages/Costura.Fody/) and put them in a new directory called `packages` inside the master directory.
 #### Linux
 To compile on Linux just run [`the bash script`](https://github.com/clragon/GradeCalc/blob/master/compile.sh) but keep in mind you have to have [`mono-complete`](https://www.mono-project.com/download/stable/) installed.
 #### Windows
