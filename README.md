@@ -1,7 +1,7 @@
 ## GradeCalc
 
 GradeCalc is my first personal C# project. I'm using it to learn more about C# and about object orientated-programming in general.
-The purpose of this program is to store my grades and calculate their average for me.
+The purpose of this program is to store grades and calculate their average.
 
 ### Compilation
 #### Linux
