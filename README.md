@@ -11,11 +11,11 @@ You will need to download [`Fody`](https://www.nuget.org/packages/Fody/) and [`C
 #### Linux
 To compile on Linux just run [`the bash script`](https://github.com/clragon/GradeCalc/blob/master/compile.sh) but keep in mind you have to have [`mono-complete`](https://www.mono-project.com/download/stable/) installed.
 #### Windows
-If you are on a Windows machine, you can build the [`csproj`](https://docs.microsoft.com/en-us/aspnet/web-forms/overview/deployment/web-deployment-in-the-enterprise/understanding-the-project-file)  files manually with [`msbuild`](https://docs.microsoft.com/visualstudio/msbuild/msbuild-concepts?view=vs-2017) which comes pre-installed with [`Visual studio`](https://visualstudio.microsoft.com/).
+If you are on a Windows machine, you can build the csproj  files manually with msbuild which comes pre-installed with [`Visual studio`](https://visualstudio.microsoft.com/).
 
 ### Details
 GradeCalc is made of 3 parts
-- The main cs file which isn't much but the shell for this Application
-- The Table-class which is the base for my grade storage
-- The CLI class which basically makes the Table-class available to the user on terminal level.
+- The main cs file which isn't much but the shell for this application
+- The table-class which is the base for my grade storage
+- The CLI class which basically makes the table-class available to the user on terminal level.
 
