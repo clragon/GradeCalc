@@ -18,7 +18,7 @@ namespace Grades
             ClearOnSwitch = true;
 
             // setting the console and menu title
-            NewConsoleTitle = lang.GetString("Title");
+            NewConsoleTitle = Lang.GetString("Title");
             Console.Title = NewConsoleTitle;
 
             // main menu implementation
@@ -27,16 +27,16 @@ namespace Grades
             {
                 ClearMenu();
                 Console.WriteLine("--- {0} ---", NewConsoleTitle);
-                Console.WriteLine("[1] {0}", lang.GetString("Subjects"));
-                Console.WriteLine("[2] {0}", lang.GetString("Overview"));
-                Console.WriteLine("[3] {0}", lang.GetString("Table"));
-                Console.WriteLine("[q] {0}", lang.GetString("Exit"));
+                Console.WriteLine("[1] {0}", Lang.GetString("Subjects"));
+                Console.WriteLine("[2] {0}", Lang.GetString("Overview"));
+                Console.WriteLine("[3] {0}", Lang.GetString("Table"));
+                Console.WriteLine("[q] {0}", Lang.GetString("Exit"));
                 Console.Write("\n");
 
                 bool IsInputValid = false;
                 while (!IsInputValid)
                 {
-                    Console.Write("{0}> ", lang.GetString("Choose"));
+                    Console.Write("{0}> ", Lang.GetString("Choose"));
                     string input = Console.ReadKey().KeyChar.ToString();
                     new System.Threading.ManualResetEvent(false).WaitOne(20);
                     Console.Write("\n");
@@ -73,7 +73,8 @@ namespace Grades
             ExitCli();
         }
 
-        public static ResourceManager lang = new ResourceManager("language", typeof(Cli).Assembly);
+        // public static ResourceManager Lang = new ResourceManager("language", typeof(Cli).Assembly);
+        public static ResourceManager Lang = language.ResourceManager;
 
         public static string SourceFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "/grades.xml");
 
@@ -89,8 +90,8 @@ namespace Grades
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Console.WriteLine("[{0}] {1} : {2}", lang.GetString("Error"), System.IO.Path.GetFileName(SourceFile), lang.GetString("DeniedTableAccess"));
-                    Console.WriteLine(lang.GetString("PressAnything"));
+                    Console.WriteLine("[{0}] {1} : {2}", Lang.GetString("Error"), System.IO.Path.GetFileName(SourceFile), Lang.GetString("DeniedTableAccess"));
+                    Console.WriteLine(Lang.GetString("PressAnything"));
                     Console.ReadKey();
                     return GetEmptyTable();
                 }
@@ -130,19 +131,19 @@ namespace Grades
             {
 
                 ClearMenu();
-                Console.WriteLine("--- {0} : {1} ---", lang.GetString("ManageTable"), t.name);
-                Console.WriteLine("[1] {0}", lang.GetString("ReadTable"));
-                Console.WriteLine("[2] {0}", lang.GetString("WriteTable"));
-                Console.WriteLine("[3] {0}", lang.GetString("RenameTable"));
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ManageTable"), t.name);
+                Console.WriteLine("[1] {0}", Lang.GetString("ReadTable"));
+                Console.WriteLine("[2] {0}", Lang.GetString("WriteTable"));
+                Console.WriteLine("[3] {0}", Lang.GetString("RenameTable"));
 
-                Console.WriteLine("[4] {0}", lang.GetString("DeleteTable"));
-                Console.WriteLine("[q] {0}", lang.GetString("Back"));
+                Console.WriteLine("[4] {0}", Lang.GetString("DeleteTable"));
+                Console.WriteLine("[q] {0}", Lang.GetString("Back"));
                 Console.Write("\n");
 
                 bool IsInputValid = false;
                 while (!IsInputValid)
                 {
-                    Console.Write("{0}> ", lang.GetString("Choose"));
+                    Console.Write("{0}> ", Lang.GetString("Choose"));
                     string input = Console.ReadKey().KeyChar.ToString();
                     new System.Threading.ManualResetEvent(false).WaitOne(20);
                     Console.Write("\n");
@@ -201,12 +202,12 @@ namespace Grades
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Console.WriteLine("[{0}] {1}", lang.GetString("Error"), lang.GetString("DeniedTableAccess"));
+                    Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("DeniedTableAccess"));
                     new System.Threading.ManualResetEvent(false).WaitOne(500);
                 }
                 catch (Exception) { }
-                Console.WriteLine("--- {0} : {1} ---", lang.GetString("ChooseTable"), tables.Count);
-                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(tables.Count).Length, ' '), lang.GetString("CreateTable"));
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseTable"), tables.Count);
+                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(tables.Count).Length, ' '), Lang.GetString("CreateTable"));
                 if (tables.Any())
                 {
                     tables.Sort((a, b) => a.CompareTo(b));
@@ -246,13 +247,13 @@ namespace Grades
 
                     }
                 }
-                Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(tables.Count).Length, ' '), lang.GetString("Back"));
+                Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(tables.Count).Length, ' '), Lang.GetString("Back"));
                 Console.Write("\n");
 
                 bool IsInputValid = false;
                 while (!IsInputValid)
                 {
-                    Console.Write("{0}> {1}", lang.GetString("Choose"), InputString);
+                    Console.Write("{0}> {1}", Lang.GetString("Choose"), InputString);
                     string input = Console.ReadKey().KeyChar.ToString();
                     new System.Threading.ManualResetEvent(false).WaitOne(20);
                     switch (input)
@@ -290,7 +291,7 @@ namespace Grades
                                 }
                                 catch (Exception)
                                 {
-                                    ResetInput(string.Format("[{0}] {1}", lang.GetString("Error"), lang.GetString("ReadTableError")));
+                                    ResetInput(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("ReadTableError")));
                                 }
                             }
                             break;
@@ -325,7 +326,7 @@ namespace Grades
                                             }
                                             catch (Exception)
                                             {
-                                                ResetInput(string.Format("[{0}] {1}", lang.GetString("Error"), lang.GetString("ReadTableError")));
+                                                ResetInput(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("ReadTableError")));
                                             }
                                         }
                                         else
@@ -353,7 +354,7 @@ namespace Grades
         {
 
             Table x = GetEmptyTable();
-            x.name = GetTable(String.Format("--- {0} ---", lang.GetString("CreateTable")));
+            x.name = GetTable(String.Format("--- {0} ---", Lang.GetString("CreateTable")));
 
             int i = 1;
             while (true)
@@ -369,7 +370,7 @@ namespace Grades
 
         public static void RenameTable()
         {
-            t.name = GetTable(String.Format("--- {0} : {1} ---", lang.GetString("RenameTable"), t.name));
+            t.name = GetTable(String.Format("--- {0} : {1} ---", Lang.GetString("RenameTable"), t.name));
             t.Save();
         }
 
@@ -383,13 +384,13 @@ namespace Grades
                 ClearMenu();
                 Console.WriteLine(title);
                 Console.Write("\n");
-                Console.Write("{0}> ", lang.GetString("NameOfTable"));
+                Console.Write("{0}> ", Lang.GetString("NameOfTable"));
                 input = Console.ReadLine();
 
                 input.Trim();
                 if (!string.IsNullOrWhiteSpace(input))
                 {
-                    if (!input.Equals(String.Format("({0})", lang.GetString("CreateTable")), StringComparison.InvariantCultureIgnoreCase))
+                    if (!input.Equals(String.Format("({0})", Lang.GetString("CreateTable")), StringComparison.InvariantCultureIgnoreCase))
                     {
                         IsInputValid = true;
                     }
@@ -415,22 +416,22 @@ namespace Grades
                 ClearMenu();
                 if (s.Grades.Any())
                 {
-                    Console.WriteLine("--- {0} : {1} : {2} ---", lang.GetString("Subject"), s.Name, s.CalcAverage());
+                    Console.WriteLine("--- {0} : {1} : {2} ---", Lang.GetString("Subject"), s.Name, s.CalcAverage());
                 }
                 else
                 {
-                    Console.WriteLine("--- {0} : {1} ---", lang.GetString("Subject"), s.Name);
+                    Console.WriteLine("--- {0} : {1} ---", Lang.GetString("Subject"), s.Name);
                 }
-                Console.WriteLine("[1] {0}", lang.GetString("Grades"));
-                Console.WriteLine("[2] {0}", lang.GetString("RenameSubject"));
-                Console.WriteLine("[3] {0}", lang.GetString("DeleteSubject"));
-                Console.WriteLine("[q] {0}", lang.GetString("Back"));
+                Console.WriteLine("[1] {0}", Lang.GetString("Grades"));
+                Console.WriteLine("[2] {0}", Lang.GetString("RenameSubject"));
+                Console.WriteLine("[3] {0}", Lang.GetString("DeleteSubject"));
+                Console.WriteLine("[q] {0}", Lang.GetString("Back"));
                 Console.Write("\n");
 
                 bool IsInputValid = false;
                 while (!IsInputValid)
                 {
-                    Console.Write("{0}> ", lang.GetString("Choose"));
+                    Console.Write("{0}> ", Lang.GetString("Choose"));
                     string input = Console.ReadKey().KeyChar.ToString();
                     new System.Threading.ManualResetEvent(false).WaitOne(20);
                     Console.Write("\n");
@@ -475,8 +476,8 @@ namespace Grades
             {
                 ClearMenu();
                 int printedEntries = 0;
-                Console.WriteLine("--- {0} : {1} ---", lang.GetString("ChooseSubject"), t.Subjects.Count);
-                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(t.Subjects.Count).Length, ' '), lang.GetString("CreateSubject"));
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseSubject"), t.Subjects.Count);
+                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(t.Subjects.Count).Length, ' '), Lang.GetString("CreateSubject"));
                 for (int i = 0; i < t.Subjects.Count; i++)
                 {
                     if (InputString == "")
@@ -504,13 +505,13 @@ namespace Grades
                     else { if (printedEntries == Console.WindowHeight - 5) { break; } }
 
                 }
-                Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(t.Subjects.Count).Length, ' '), lang.GetString("Back"));
+                Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(t.Subjects.Count).Length, ' '), Lang.GetString("Back"));
                 Console.Write("\n");
 
                 bool IsInputValid = false;
                 while (!IsInputValid)
                 {
-                    Console.Write("{0}> {1}", lang.GetString("Choose"), InputString);
+                    Console.Write("{0}> {1}", Lang.GetString("Choose"), InputString);
                     string input = Console.ReadKey().KeyChar.ToString();
                     new System.Threading.ManualResetEvent(false).WaitOne(20);
                     switch (input)
@@ -592,13 +593,13 @@ namespace Grades
 
         public static void CreateSubject()
         {
-            t.AddSubject(GetSubject(String.Format("--- {0} ---", lang.GetString("CreateSubject"))));
+            t.AddSubject(GetSubject(String.Format("--- {0} ---", Lang.GetString("CreateSubject"))));
             t.Save();
         }
 
         public static void RenameSubject(Table.Subject s)
         {
-            s.EditSubject(GetSubject(String.Format("--- {0} : {1} ---", lang.GetString("RenameSubject"), s.Name)));
+            s.EditSubject(GetSubject(String.Format("--- {0} : {1} ---", Lang.GetString("RenameSubject"), s.Name)));
             t.Save();
         }
 
@@ -612,13 +613,13 @@ namespace Grades
                 ClearMenu();
                 Console.WriteLine(title);
                 Console.Write("\n");
-                Console.Write("{0}> ", lang.GetString("NameOfSubject"));
+                Console.Write("{0}> ", Lang.GetString("NameOfSubject"));
                 input = Console.ReadLine();
 
                 input.Trim();
                 if (!string.IsNullOrWhiteSpace(input))
                 {
-                    if (!input.Equals(String.Format("({0})", lang.GetString("CreateSubject")), StringComparison.InvariantCultureIgnoreCase))
+                    if (!input.Equals(String.Format("({0})", Lang.GetString("CreateSubject")), StringComparison.InvariantCultureIgnoreCase))
                     {
                         IsInputValid = true;
                     }
@@ -642,16 +643,16 @@ namespace Grades
             while (!IsMenuExitPending)
             {
                 ClearMenu();
-                Console.WriteLine("--- {0} : {1} | {2} ---", lang.GetString("Grade"), g.Value, g.Weight);
-                Console.WriteLine("[1] {0}", lang.GetString("EditGrade"));
-                Console.WriteLine("[2] {0}", lang.GetString("DeleteGrade"));
-                Console.WriteLine("[q] {0}", lang.GetString("Back"));
+                Console.WriteLine("--- {0} : {1} | {2} ---", Lang.GetString("Grade"), g.Value, g.Weight);
+                Console.WriteLine("[1] {0}", Lang.GetString("EditGrade"));
+                Console.WriteLine("[2] {0}", Lang.GetString("DeleteGrade"));
+                Console.WriteLine("[q] {0}", Lang.GetString("Back"));
                 Console.Write("\n");
 
                 bool IsInputValid = false;
                 while (!IsInputValid)
                 {
-                    Console.Write("{0}> ", lang.GetString("Choose"));
+                    Console.Write("{0}> ", Lang.GetString("Choose"));
                     string input = Console.ReadKey().KeyChar.ToString();
                     Console.Write("\n");
                     if (input == "\n") { Console.SetCursorPosition(0, Console.CursorTop - 1); }
@@ -691,8 +692,8 @@ namespace Grades
             {
                 ClearMenu();
                 int printedEntries = 0;
-                Console.WriteLine("--- {0} : {1} ---", lang.GetString("ChooseGrade"), s.Grades.Count);
-                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(s.Grades.Count).Length, ' '), lang.GetString("CreateGrade"));
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseGrade"), s.Grades.Count);
+                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(s.Grades.Count).Length, ' '), Lang.GetString("CreateGrade"));
                 if (s.Grades.Any())
                 {
                     int i = 0;
@@ -725,13 +726,13 @@ namespace Grades
                         else { if (printedEntries == Console.WindowHeight - 5) { break; } }
                     }
                 }
-                Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(s.Grades.Count).Length, ' '), lang.GetString("Back"));
+                Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(s.Grades.Count).Length, ' '), Lang.GetString("Back"));
                 Console.Write("\n");
 
                 bool IsInputValid = false;
                 while (!IsInputValid)
                 {
-                    Console.Write("{0}> {1}", lang.GetString("Choose"), InputString);
+                    Console.Write("{0}> {1}", Lang.GetString("Choose"), InputString);
                     string input = Console.ReadKey().KeyChar.ToString();
                     new System.Threading.ManualResetEvent(false).WaitOne(20);
                     switch (input)
@@ -812,7 +813,7 @@ namespace Grades
 
         public static void CreateGrade(Table.Subject s)
         {
-            Tuple<double, double> g = GetGrade(s, String.Format("--- {0} ---", lang.GetString("CreateGrade")));
+            Tuple<double, double> g = GetGrade(s, String.Format("--- {0} ---", Lang.GetString("CreateGrade")));
             s.AddGrade(g.Item1, g.Item2);
             t.Save();
 
@@ -820,7 +821,7 @@ namespace Grades
 
         public static void ModifyGrade(Table.Subject.Grade g)
         {
-            Tuple<double, double> n = GetGrade(g.OwnerSubject, String.Format("--- {0} : {1} | {2} ---", lang.GetString("EditGrade"), g.Value, g.Weight));
+            Tuple<double, double> n = GetGrade(g.OwnerSubject, String.Format("--- {0} : {1} | {2} ---", Lang.GetString("EditGrade"), g.Value, g.Weight));
             g.EditGrade(n.Item1, n.Item2);
             t.Save();
 
@@ -838,7 +839,7 @@ namespace Grades
                 Console.WriteLine(title);
 
                 Console.Write("\n");
-                Console.Write("{0}> ", lang.GetString("Grade"));
+                Console.Write("{0}> ", Lang.GetString("Grade"));
                 input = Console.ReadLine();
 
                 if (double.TryParse(input, out value))
@@ -869,7 +870,7 @@ namespace Grades
                 bool IsSecondInputValid = false;
                 while (!IsSecondInputValid)
                 {
-                    Console.Write("{0}> ", lang.GetString("Weight"));
+                    Console.Write("{0}> ", Lang.GetString("Weight"));
                     input = Console.ReadLine();
 
                     if (double.TryParse(input, out weight) && (weight > 0) && (weight <= 1) || (weight == 1.5) || (weight == 2))
@@ -896,9 +897,9 @@ namespace Grades
             if (t.Subjects.Any())
             {
                 int MaxLength = t.Subjects.Select(x => x.Name.Length).Max();
-                if (MaxLength < lang.GetString("Overview").Length) { MaxLength = lang.GetString("Overview").Length; }
-                if (MaxLength < lang.GetString("Total").Length) { MaxLength = lang.GetString("Total").Length; }
-                Console.WriteLine("{0} : 1 2 3 4 5 6: {1}", lang.GetString("Overview").PadRight(MaxLength, ' '), lang.GetString("Average"));
+                if (MaxLength < Lang.GetString("Overview").Length) { MaxLength = Lang.GetString("Overview").Length; }
+                if (MaxLength < Lang.GetString("Total").Length) { MaxLength = Lang.GetString("Total").Length; }
+                Console.WriteLine("{0} : 1 2 3 4 5 6: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
                 Console.Write("\n");
                 // sort list by highest average
                 foreach (Table.Subject s in t.Subjects)
@@ -906,16 +907,16 @@ namespace Grades
                     Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new String('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(12, ' '), s.CalcAverage());
                 }
                 Console.Write("\n");
-                Console.WriteLine("{0} :{1}: {2}", lang.GetString("Total").PadRight(MaxLength, ' '), new String('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(12, ' '), t.CalcAverage());
+                Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new String('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(12, ' '), t.CalcAverage());
 
                 // display compensation points
             }
             else
             {
-                Console.WriteLine("{0} : {1}", lang.GetString("Overview"), lang.GetString("NoData"));
+                Console.WriteLine("{0} : {1}", Lang.GetString("Overview"), Lang.GetString("NoData"));
             }
             Console.Write("\n");
-            Console.Write(lang.GetString("PressAnything"));
+            Console.Write(Lang.GetString("PressAnything"));
             Console.ReadKey();
         }
 
@@ -926,7 +927,7 @@ namespace Grades
                 t.Write(SourceFile);
                 if (verbose)
                 {
-                    Console.WriteLine("[{0}] {1}", lang.GetString("Log"), lang.GetString("WriteTableSuccess"));
+                    Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("WriteTableSuccess"));
                     new System.Threading.ManualResetEvent(false).WaitOne(500);
                 }
                 return true;
@@ -935,7 +936,7 @@ namespace Grades
             {
                 if (verbose)
                 {
-                    Console.WriteLine("[{0}] {1}", lang.GetString("Error"), lang.GetString("DeniedTableAccess"));
+                    Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("DeniedTableAccess"));
                     new System.Threading.ManualResetEvent(false).WaitOne(500);
                 }
                 return false;
@@ -944,7 +945,7 @@ namespace Grades
             {
                 if (verbose)
                 {
-                    Console.WriteLine("[{0}] {1}", lang.GetString("Error"), lang.GetString("WriteTableError"));
+                    Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("WriteTableError"));
                     new System.Threading.ManualResetEvent(false).WaitOne(500);
                 }
                 return false;
@@ -1033,7 +1034,7 @@ namespace Grades
         {
             if (error == "$(default)")
             {
-                error = string.Format("[{0}] {1}", lang.GetString("Error"), lang.GetString("InvalidInput"));
+                error = string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("InvalidInput"));
             }
             Console.Write(error);
             new System.Threading.ManualResetEvent(false).WaitOne(150);
