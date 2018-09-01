@@ -10,6 +10,6 @@ GradeCalc is made of 3 parts
 - The CLI class which makes the Table class available to the user on terminal level.
 
 ### Notice
-The Table class is written for the grade system used in Switzerland. 
-Therefore this project will probably not be useful to you.
-Feel free to clone it or use my code otherwhise under the license provided.
+The Table class is written for the grade system used in Switzerland.
+
+Therefore this project will probably not be useful to you, but feel free to clone it or use my code otherwhise under the license provided.
