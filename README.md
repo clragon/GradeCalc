@@ -5,7 +5,7 @@ The purpose of this program is to store my grades and calculate their average.
 
 ### Details
 GradeCalc is made of essential 3 parts
-- The [GradeCalc](https://github.com/clragon/GradeCalc/blob/master/GradeCalc/GradeCalc.cs) cs file which is but the shell for this application.
+- The [GradeCalc](https://github.com/clragon/GradeCalc/blob/master/GradeCalc/GradeCalc.cs) class which is but the shell for this application.
 - The [Table](https://github.com/clragon/GradeCalc/blob/master/GradesTable/GradesTable.cs) class which is the base for my grade storage.
 - The [CLI](https://github.com/clragon/GradeCalc/blob/master/GradesCli/GradesCli.cs) class which makes the Table class available to the user on terminal level.
 
