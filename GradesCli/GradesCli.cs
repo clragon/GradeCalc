@@ -627,13 +627,13 @@ namespace Grades
 
         public static void CreateSubject()
         {
-            t.AddSubject(GetSubject(String.Format("--- {0} ---", Lang.GetString("CreateSubject"))));
+            t.AddSubject(GetSubject(string.Format("--- {0} ---", Lang.GetString("CreateSubject"))));
             t.Save();
         }
 
         public static void RenameSubject(Table.Subject s)
         {
-            s.EditSubject(GetSubject(String.Format("--- {0} : {1} ---", Lang.GetString("RenameSubject"), s.Name)));
+            s.EditSubject(GetSubject(string.Format("--- {0} : {1} ---", Lang.GetString("RenameSubject"), s.Name)));
             t.Save();
         }
 
@@ -653,7 +653,7 @@ namespace Grades
                 input.Trim();
                 if (!string.IsNullOrWhiteSpace(input))
                 {
-                    if (!input.Equals(String.Format("({0})", Lang.GetString("CreateSubject")), StringComparison.InvariantCultureIgnoreCase))
+                    if (!input.Equals(string.Format("({0})", Lang.GetString("CreateSubject")), StringComparison.InvariantCultureIgnoreCase))
                     {
                         IsInputValid = true;
                     }
@@ -847,7 +847,7 @@ namespace Grades
 
         public static void CreateGrade(Table.Subject s)
         {
-            Tuple<double, double> g = GetGrade(s, String.Format("--- {0} ---", Lang.GetString("CreateGrade")));
+            Tuple<double, double> g = GetGrade(s, string.Format("--- {0} ---", Lang.GetString("CreateGrade")));
             s.AddGrade(g.Item1, g.Item2);
             t.Save();
 
@@ -855,7 +855,7 @@ namespace Grades
 
         public static void ModifyGrade(Table.Subject.Grade g)
         {
-            Tuple<double, double> n = GetGrade(g.OwnerSubject, String.Format("--- {0} : {1} | {2} ---", Lang.GetString("EditGrade"), g.Value, g.Weight));
+            Tuple<double, double> n = GetGrade(g.OwnerSubject, string.Format("--- {0} : {1} | {2} ---", Lang.GetString("EditGrade"), g.Value, g.Weight));
             g.EditGrade(n.Item1, n.Item2);
             t.Save();
 
@@ -1092,7 +1092,7 @@ namespace Grades
             ClearMenu();
         }
 
-        private static void IsCliExitPendingHandler(Object sender, ConsoleCancelEventArgs args)
+        private static void IsCliExitPendingHandler(object sender, ConsoleCancelEventArgs args)
         {
             ExitCli();
         }

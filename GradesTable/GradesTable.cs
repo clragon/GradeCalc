@@ -61,7 +61,7 @@ namespace Grades
 
             public void EditSubject(string name)
             {
-                this.Name = name;
+                Name = name;
             }
 
             public void MoveSubject(Table t)
@@ -135,10 +135,10 @@ namespace Grades
             using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(File, new System.Xml.XmlWriterSettings { Indent = true }))
             {
                 DataContractSerializer serializer = new DataContractSerializer(typeof(Table), null,
-                    0x7FFF /*maxItemsInObjectGraph*/ ,
-                    false /*ignoreExtensionDataObject*/ ,
-                    true /*preserveObjectReferences : this is where the magic happens */ ,
-                    null /*dataContractSurrogate*/ );
+                    0x7FFF /*maxItemsInObjectGraph*/,
+                    false /*ignoreExtensionDataObject*/,
+                    true /*preserveObjectReferences : important option! */,
+                    null /*dataContractSurrogate*/);
                 serializer.WriteObject(writer, this);
             }
         }
@@ -154,8 +154,8 @@ namespace Grades
 
         public void Clear(string File)
         {
-            this.Subjects.Clear();
-            this.Subjects.TrimExcess();
+            Subjects.Clear();
+            Subjects.TrimExcess();
             System.IO.File.Delete(File);
         }
 
