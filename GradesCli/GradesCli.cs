@@ -166,10 +166,31 @@ namespace Grades
                             break;
 
                         case "4":
-                            IsMenuExitPending = true;
-                            IsInputValid = true;
-                            t.Clear(SourceFile);
-                            ChooseTable();
+                            bool IsDeleteInputValid = false;
+                            while (!IsDeleteInputValid)
+                            {
+                                Console.Write("{0}? [{1}]> ", Lang.GetString("DeleteTable"), Lang.GetString("YesOrNo"));
+                                string deleteInput = Console.ReadKey().KeyChar.ToString();
+                                new System.Threading.ManualResetEvent(false).WaitOne(20);
+                                Console.Write("\n");
+                                if (string.Equals(deleteInput, Lang.GetString("Yes"), StringComparison.OrdinalIgnoreCase))
+                                {
+                                    IsDeleteInputValid = true;
+                                    IsInputValid = true;
+                                    t.Clear(SourceFile);
+                                    ChooseTable(false);
+                                }
+                                else if (string.Equals(deleteInput, Lang.GetString("No"), StringComparison.OrdinalIgnoreCase))
+                                {
+                                    IsDeleteInputValid = true;
+                                    IsInputValid = true;
+                                }
+                                else
+                                {
+                                    ResetInput();
+                                }
+
+                            }
                             break;
 
                         case "q":
@@ -186,7 +207,7 @@ namespace Grades
 
         }
 
-        public static void ChooseTable()
+        public static void ChooseTable(bool UserCanAbort = true)
         {
             int index = -1;
             string InputString = "";
@@ -247,7 +268,10 @@ namespace Grades
 
                     }
                 }
-                Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(tables.Count).Length, ' '), Lang.GetString("Back"));
+                if (UserCanAbort)
+                {
+                    Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(tables.Count).Length, ' '), Lang.GetString("Back"));
+                }
                 Console.Write("\n");
 
                 bool IsInputValid = false;
@@ -259,8 +283,11 @@ namespace Grades
                     switch (input)
                     {
                         case "q":
+                            if (UserCanAbort)
+                            {
+                                IsMenuExitPending = true;
+                            }
                             IsInputValid = true;
-                            IsMenuExitPending = true;
                             break;
 
                         case "\b":
@@ -304,7 +331,7 @@ namespace Grades
                                 if ((InputString == "") && (choice == 0))
                                 {
                                     IsInputValid = true;
-                                    CreateSubject();
+                                    CreateTable();
                                 }
                                 else
                                 {
@@ -354,18 +381,25 @@ namespace Grades
         {
 
             Table x = GetEmptyTable();
-            x.name = GetTable(String.Format("--- {0} ---", Lang.GetString("CreateTable")));
-
-            int i = 1;
-            while (true)
+            x.name = GetTable(string.Format("--- {0} ---", Lang.GetString("CreateTable")));
+            if (System.IO.File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "grades.xml")))
             {
-                i++;
-                if (!(System.IO.File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + String.Format("/" + i + "." + "grades.xml")))))
+                int i = 1;
+                while (true)
                 {
-                    x.Write(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + String.Format("/" + i + "." + "grades.xml")));
-                    break;
+                    i++;
+                    if (!(System.IO.File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + string.Format("/" + i + "." + "grades.xml")))))
+                    {
+                        x.Write(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + string.Format("/" + i + "." + "grades.xml")));
+                        break;
+                    }
                 }
             }
+            else
+            {
+                x.Write(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "grades.xml"));
+            }
+            
         }
 
         public static void RenameTable()

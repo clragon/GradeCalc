@@ -92,6 +92,10 @@
       <Project>{31de8b93-353a-49bc-b5bc-27f3ade3c312}</Project>
       <Name>GradesCli</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GradesTable\GradesTable.csproj">
+      <Project>{9540baaf-0feb-4905-baeb-b039ac301366}</Project>
+      <Name>GradesTable</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

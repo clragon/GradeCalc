@@ -240,4 +240,13 @@
   <data name="PressAnything" xml:space="preserve">
     <value>Press any key</value>
   </data>
+  <data name="YesOrNo" xml:space="preserve">
+    <value>Y/N</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>N</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Y</value>
+  </data>
 </root>
