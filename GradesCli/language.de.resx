@@ -249,4 +249,7 @@
   <data name="Yes" xml:space="preserve">
     <value>J</value>
   </data>
+  <data name="Compensation" xml:space="preserve">
+    <value>Kompensation</value>
+  </data>
 </root>

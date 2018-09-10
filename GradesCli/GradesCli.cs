@@ -933,24 +933,29 @@ namespace Grades
                 int MaxLength = t.Subjects.Select(x => x.Name.Length).Max();
                 if (MaxLength < Lang.GetString("Overview").Length) { MaxLength = Lang.GetString("Overview").Length; }
                 if (MaxLength < Lang.GetString("Total").Length) { MaxLength = Lang.GetString("Total").Length; }
+                if (MaxLength < Lang.GetString("Compensation").Length) { MaxLength = Lang.GetString("Compensation").Length; }
                 Console.WriteLine("{0} : 1 2 3 4 5 6: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
                 Console.Write("\n");
-                // sort list by highest average
+                t.Subjects.Sort((s1, s2) =>
+                {
+                    return Convert.ToInt32(s2.CalcAverage() - s1.CalcAverage());
+                });
                 foreach (Table.Subject s in t.Subjects)
                 {
-                    Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new String('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(12, ' '), s.CalcAverage());
+                    Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(12, ' '), s.CalcAverage());
                 }
                 Console.Write("\n");
-                Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new String('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(12, ' '), t.CalcAverage());
-
-                // display compensation points
+                Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(12, ' '), t.CalcAverage());
+                Console.Write("\n");
+                Console.Write("{0} {1}: {2}", Lang.GetString("Compensation").PadRight(MaxLength, ' '), new string(' ', 13), t.CalcCompensation());
+                Console.Write("\n");
             }
             else
             {
                 Console.WriteLine("{0} : {1}", Lang.GetString("Overview"), Lang.GetString("NoData"));
             }
             Console.Write("\n");
-            Console.Write(Lang.GetString("PressAnything"));
+            Console.Write("{0} {1}", Lang.GetString("PressAnything"), " ");
             Console.ReadKey();
         }
 
@@ -1027,7 +1032,7 @@ namespace Grades
         public static double CalcCompensation(this Table.Subject s)
         {
             double points = 0;
-            points = (4 - s.CalcAverage());
+            points = (s.CalcAverage() - 4);
             if (points < 0) { points = (points * 2); }
             return points;
         }

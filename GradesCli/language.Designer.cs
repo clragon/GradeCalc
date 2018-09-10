@@ -115,6 +115,15 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Compensation ähnelt.
+        /// </summary>
+        internal static string Compensation {
+            get {
+                return ResourceManager.GetString("Compensation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die New grade ähnelt.
         /// </summary>
         internal static string CreateGrade {
