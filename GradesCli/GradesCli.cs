@@ -7,7 +7,11 @@ namespace Grades
 {
     public static class Cli
     {
-
+        /// <summary>
+        /// Displays the main menu.
+        /// From this menu, all other menus are accessible.
+        /// This should be called to spawn a console interface for the user.
+        /// </summary>
         public static void CliMenu()
         {
 
@@ -74,12 +78,25 @@ namespace Grades
         }
 
         // public static ResourceManager Lang = new ResourceManager("language", typeof(Cli).Assembly);
+        /// <summary>
+        /// The ResourceManager for all language-dependent strings in the interface.
+        /// </summary>
         public static ResourceManager Lang = language.ResourceManager;
 
+        /// <summary>
+        /// The currently open sourcefile.
+        /// </summary>
         public static string SourceFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "/grades.xml");
 
+        /// <summary>
+        /// The currently open Table
+        /// </summary>
         public static Table t = LoadTable();
 
+        /// <summary>
+        /// Loads a table. 
+        /// Will create a new one if there is none found at the location of the current sourcefile.
+        /// </summary>
         public static Table LoadTable()
         {
             if (System.IO.File.Exists(SourceFile))
@@ -111,6 +128,9 @@ namespace Grades
             }
         }
 
+        /// <summary>
+        /// Will create a new table with a default naming-scheme to make fast and intuitive usage of the calculator possible.
+        /// </summary>
         public static Table GetEmptyTable()
         {
             Table t = new Table
@@ -123,6 +143,9 @@ namespace Grades
             return t;
         }
 
+        /// <summary>
+        /// Displays a menu to manage tables and their respective files.
+        /// </summary>
         public static void ManageTable()
         {
             t.Save();
@@ -207,6 +230,10 @@ namespace Grades
 
         }
 
+        /// <summary>
+        /// Displays a menu for choosing and loading a table.
+        /// </summary>
+        /// <param name="UserCanAbort">Wether the user can exit the menu without choosing a table or not.</param>
         public static void ChooseTable(bool UserCanAbort = true)
         {
             int index = -1;
@@ -377,6 +404,9 @@ namespace Grades
             }
         }
 
+        /// <summary>
+        /// Displays a menu for creating a new table.
+        /// </summary>
         public static void CreateTable()
         {
 
@@ -402,12 +432,19 @@ namespace Grades
             
         }
 
+        /// <summary>
+        /// Displays a menu for renaming an existing table.
+        /// </summary>
         public static void RenameTable()
         {
-            t.name = GetTable(String.Format("--- {0} : {1} ---", Lang.GetString("RenameTable"), t.name));
+            t.name = GetTable(string.Format("--- {0} : {1} ---", Lang.GetString("RenameTable"), t.name));
             t.Save();
         }
 
+        /// <summary>
+        /// Basic underlying menu scheme for creating or renaming a table.
+        /// </summary>
+        /// <param name="title">Title of the menu. Usually rename or create.</param>  
         public static string GetTable(string title)
         {
             string input = "";
@@ -442,6 +479,10 @@ namespace Grades
             return input;
         }
 
+        /// <summary>
+        /// Displays a menu for managing subjects.
+        /// </summary>
+        /// <param name="s">The subject that is to be managed.</param>
         public static void ManageSubject(Table.Subject s)
         {
             bool IsMenuExitPending = false;
@@ -501,6 +542,9 @@ namespace Grades
             }
         }
 
+        /// <summary>
+        /// Displays a menu for choosing a subject.
+        /// </summary>
         public static void ChooseSubject()
         {
             int index = -1;
@@ -625,12 +669,19 @@ namespace Grades
             }
         }
 
+        /// <summary>
+        /// Displays a menu for creating a new subject.
+        /// </summary>
         public static void CreateSubject()
         {
             t.AddSubject(GetSubject(string.Format("--- {0} ---", Lang.GetString("CreateSubject"))));
             t.Save();
         }
 
+        /// <summary>
+        /// Displays a menu for renaming an existing subject.
+        /// </summary>
+        /// <param name="s">The subject that is to be renamed.</param>
         public static void RenameSubject(Table.Subject s)
         {
             s.EditSubject(GetSubject(string.Format("--- {0} : {1} ---", Lang.GetString("RenameSubject"), s.Name)));
@@ -671,6 +722,10 @@ namespace Grades
             return input;
         }
 
+        /// <summary>
+        /// Displays a menu for managing a grade.
+        /// </summary>
+        /// <param name="g">The grade that is to be managed.</param>
         public static void ManageGrade(Table.Subject.Grade g)
         {
             bool IsMenuExitPending = false;
@@ -717,6 +772,10 @@ namespace Grades
             }
         }
 
+        /// <summary>
+        /// Displays a menu for choosing a grade.
+        /// </summary>
+        /// <param name="s">The subject which grades can be chosen from.</param>
         public static void ChooseGrade(Table.Subject s)
         {
             int index = -1;
@@ -845,6 +904,10 @@ namespace Grades
             }
         }
 
+        /// <summary>
+        /// Displays a menu for creating a new grade.
+        /// </summary>
+        /// <param name="s">The subject in which a grade is to be created in.</param>
         public static void CreateGrade(Table.Subject s)
         {
             Tuple<double, double> g = GetGrade(s, string.Format("--- {0} ---", Lang.GetString("CreateGrade")));
@@ -853,6 +916,10 @@ namespace Grades
 
         }
 
+        /// <summary>
+        /// Displays a menu for renaming an existing grade.
+        /// </summary>
+        /// <param name="g">The grade which is to be renamed.</param>
         public static void ModifyGrade(Table.Subject.Grade g)
         {
             Tuple<double, double> n = GetGrade(g.OwnerSubject, string.Format("--- {0} : {1} | {2} ---", Lang.GetString("EditGrade"), g.Value, g.Weight));
@@ -861,6 +928,11 @@ namespace Grades
 
         }
 
+        /// <summary>
+        /// Basic underlying menu scheme for creating or renaming a grade.
+        /// </summary>
+        /// <param name="title">Title of the menu. Usually rename or create.</param>
+        /// <param name="s">The subject in which grades are to be edited in.</param>
         public static Tuple<double, double> GetGrade(Table.Subject s, string title)
         {
             string input = "";
@@ -925,6 +997,9 @@ namespace Grades
             return Tuple.Create(value, weight);
         }
 
+        /// <summary>
+        /// Display an overview of all subject averages, the total average and compensation points.
+        /// </summary>
         public static void OverviewMenu()
         {
             ClearMenu();
@@ -959,6 +1034,12 @@ namespace Grades
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// Override saving method for tables. 
+        /// It's purpose is to catch errors that can occur in the process.
+        /// This method should always be used instead of the Table.Write method.
+        /// </summary>
+        /// <param name="verbose">Wether error messages should be displayed or not. disabled by default.</param>
         public static bool Save(this Table t, bool verbose = false)
         {
             try
@@ -991,6 +1072,10 @@ namespace Grades
             }
         }
 
+        /// <summary>
+        /// Override method to calculate the average grade of a table.
+        /// Uses the override method to calculate the average of a subject to function.
+        /// </summary>
         public static double CalcAverage(this Table t)
         {
             if (t.Subjects.Any())
@@ -1005,6 +1090,9 @@ namespace Grades
             else { return 0; }
         }
 
+        /// <summary>
+        /// Override method to calculate the average grade of a subject.
+        /// </summary>
         public static double CalcAverage(this Table.Subject s)
         {
             if (s.Grades.Any())
@@ -1029,6 +1117,9 @@ namespace Grades
             else { return 0; }
         }
 
+        /// <summary>
+        /// Override method to calculate the compensation needed for a subject.
+        /// </summary>
         public static double CalcCompensation(this Table.Subject s)
         {
             double points = 0;
@@ -1037,6 +1128,10 @@ namespace Grades
             return points;
         }
 
+        /// <summary>
+        /// Override method to calculate the compensation needed for a table.
+        /// Uses the override method to calculate the compensation needed for a subject to function.
+        /// </summary>
         public static double CalcCompensation(this Table t)
         {
             if (t.Subjects.Any())
@@ -1051,8 +1146,15 @@ namespace Grades
             else { return 0; }
         }
 
+        /// <summary>
+        /// Wether the console should be cleared when displaying a new menu or not.
+        /// </summary>
         public static bool ClearOnSwitch;
 
+        /// <summary>
+        /// Clears the console if this is desired.
+        /// This method should be always used instead of Console.Clear.
+        /// </summary>
         public static void ClearMenu()
         {
             if (ClearOnSwitch)
@@ -1061,6 +1163,9 @@ namespace Grades
             }
         }
 
+        /// <summary>
+        /// Clears the current console line and resets the cursor.
+        /// </summary>
         public static void ClearCurrentConsoleLine()
         {
             int currentLineCursor = Console.CursorTop;
@@ -1069,6 +1174,11 @@ namespace Grades
             Console.SetCursorPosition(0, currentLineCursor);
         }
 
+        /// <summary>
+        /// Clears the last two console lines and sets the cursor one y-position back.
+        /// Will also display a error message for a short time. 
+        /// </summary>
+        /// <param name="error">The error message to be displayed.</param>
         public static void ResetInput(string error = "$(default)")
         {
             if (error == "$(default)")
@@ -1082,9 +1192,20 @@ namespace Grades
             ClearCurrentConsoleLine();
         }
 
+        /// <summary>
+        /// The new console title for the entire runtime of the app.
+        /// </summary>
         public static string NewConsoleTitle;
+
+        /// <summary>
+        /// The old console title.
+        /// It will be restored when exiting the app.
+        /// </summary>
         public static string OldConsoleTitle = Console.Title;
 
+        /// <summary>
+        /// Exits the app, restores the old console title and clears the console.
+        /// </summary>
         public static void ExitCli()
         {
             Console.Title = OldConsoleTitle;
@@ -1097,6 +1218,10 @@ namespace Grades
             ExitCli();
         }
 
+        /// <summary>
+        /// Override method to truncate a string.
+        /// </summary>
+        /// <param name="maxLength">The maximum length that is desired for this string.</param>
         public static string Truncate(this string value, int maxLength)
         {
             if (string.IsNullOrEmpty(value)) return value;
