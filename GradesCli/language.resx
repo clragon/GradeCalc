@@ -252,4 +252,7 @@
   <data name="Compensation" xml:space="preserve">
     <value>Compensation</value>
   </data>
+  <data name="OverviewDataError" xml:space="preserve">
+    <value>Unfortunately, this table cannot be displayed in the overview.</value>
+  </data>
 </root>

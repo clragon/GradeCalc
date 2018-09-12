@@ -19,12 +19,11 @@ namespace Grades
             Console.CancelKeyPress += new ConsoleCancelEventHandler(IsCliExitPendingHandler);
 
             // Setting the bool for clearing console on menu switch
-            ClearOnSwitch = true;
+            ClearOnSwitch = true;                
 
             // Setting the console and menu title
             NewConsoleTitle = Lang.GetString("Title");
             Console.Title = NewConsoleTitle;
-
 
             // Displaying the menu
 
@@ -105,7 +104,8 @@ namespace Grades
         /// <summary>
         /// The currently open sourcefile.
         /// </summary>
-        public static string SourceFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "/grades.xml");
+        public static string SourceFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + Properties.Settings.Default.SourceFile);
+        //System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "/grades.xml")
 
         /// <summary>
         /// The currently open Table.
@@ -164,9 +164,10 @@ namespace Grades
             {
                 // Default values for new tables.
                 name = "terminal_" + DateTime.Now.ToString("yyyy.MM.dd-HH:mm:ss"),
-                MinGrade = 1,
-                MaxGrade = 6,
-                EnableWeightSystem = true
+                MinGrade = Properties.Settings.Default.MinGrade,
+                MaxGrade = Properties.Settings.Default.MaxGrade,
+                EnableGradeLimits = Properties.Settings.Default.EnableGradeLimits,
+                EnableWeightSystem = Properties.Settings.Default.EnableWeightSystem
             };
             return t;
         }
@@ -1097,39 +1098,50 @@ namespace Grades
         public static void OverviewMenu()
         {
             ClearMenu();
-            if (t.Subjects.Any())
+            if (t.MinGrade == 1 && t.MaxGrade == 6)
             {
-                // Calculate the maximum length of any word in front of the bar diagramm.
-                int MaxLength = t.Subjects.Select(x => x.Name.Length).Max();
-                if (MaxLength < Lang.GetString("Overview").Length) { MaxLength = Lang.GetString("Overview").Length; }
-                if (MaxLength < Lang.GetString("Total").Length) { MaxLength = Lang.GetString("Total").Length; }
-                if (MaxLength < Lang.GetString("Compensation").Length) { MaxLength = Lang.GetString("Compensation").Length; }
-                // Display the bar diagramm meter.
-                Console.WriteLine("{0} : 1 2 3 4 5 6: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
-                Console.Write("\n");
-                // Sort the subjects descending by their average grade.
-                t.Subjects.Sort((s1, s2) =>
+                if (t.Subjects.Any())
                 {
-                    return Convert.ToInt32(s2.CalcAverage() - s1.CalcAverage());
-                });
-                // Print a diagramm for each subject.
-                foreach (Table.Subject s in t.Subjects)
-                {
-                    Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(12, ' '), s.CalcAverage());
+                    // Calculate the maximum length of any word in front of the bar diagramm.
+                    int MaxLength = t.Subjects.Select(x => x.Name.Length).Max();
+                    if (MaxLength < Lang.GetString("Overview").Length) { MaxLength = Lang.GetString("Overview").Length; }
+                    if (MaxLength < Lang.GetString("Total").Length) { MaxLength = Lang.GetString("Total").Length; }
+                    if (Properties.Settings.Default.DisplayCompensation) { if (MaxLength < Lang.GetString("Compensation").Length) { MaxLength = Lang.GetString("Compensation").Length; } }
+                    // Display the bar diagramm meter.
+                    Console.WriteLine("{0} : 1 2 3 4 5 6: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
+                    Console.Write("\n");
+                    // Sort the subjects descending by their average grade.
+                    t.Subjects.Sort((s1, s2) =>
+                    {
+                        return Convert.ToInt32(s2.CalcAverage() - s1.CalcAverage());
+                    });
+                    // Print a diagramm for each subject.
+                    foreach (Table.Subject s in t.Subjects)
+                    {
+                        Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(12, ' '), s.CalcAverage());
+                    }
+                    // Print total average grade.
+                    Console.Write("\n");
+                    Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(12, ' '), t.CalcAverage());
+                    Console.Write("\n");
+                    // Print compensation points, if enabled.
+                    if (Properties.Settings.Default.DisplayCompensation)
+                    {
+                        Console.Write("{0} {1}: {2}", Lang.GetString("Compensation").PadRight(MaxLength, ' '), new string(' ', 13), t.CalcCompensation());
+                        Console.Write("\n");
+                    }
                 }
-                // Print total average grade.
-                Console.Write("\n");
-                Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(12, ' '), t.CalcAverage());
-                Console.Write("\n");
-                // Print compensation points.
-                Console.Write("{0} {1}: {2}", Lang.GetString("Compensation").PadRight(MaxLength, ' '), new string(' ', 13), t.CalcCompensation());
-                Console.Write("\n");
+                // If no data is available, display a message for the user.
+                else
+                {
+                    Console.WriteLine("{0} : {1}", Lang.GetString("Overview"), Lang.GetString("NoData"));
+                }
             }
-            // If no data is available, display a message for the user.
             else
             {
-                Console.WriteLine("{0} : {1}", Lang.GetString("Overview"), Lang.GetString("NoData"));
+                Console.WriteLine("{0}", Lang.GetString("OverviewDataError"));
             }
+            
             Console.Write("\n");
             // Prompt the user to press any key as soon as he is done looking at the diagramm.
             Console.Write("{0} {1}", Lang.GetString("PressAnything"), " ");
@@ -1264,7 +1276,7 @@ namespace Grades
         /// <summary>
         /// Wether the console should be cleared when displaying a new menu or not.
         /// </summary>
-        public static bool ClearOnSwitch;
+        public static bool ClearOnSwitch = Properties.Settings.Default.ClearOnSwitch;
 
         /// <summary>
         /// Clears the console if this is desired.

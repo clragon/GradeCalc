@@ -313,6 +313,15 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Unfortunately, this table cannot be displayed in the overview. ähnelt.
+        /// </summary>
+        internal static string OverviewDataError {
+            get {
+                return ResourceManager.GetString("OverviewDataError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Press any key ähnelt.
         /// </summary>
         internal static string PressAnything {

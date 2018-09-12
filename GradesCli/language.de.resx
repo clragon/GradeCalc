@@ -252,4 +252,7 @@
   <data name="Compensation" xml:space="preserve">
     <value>Kompensation</value>
   </data>
+  <data name="OverviewDataError" xml:space="preserve">
+    <value>Diese Tabelle kann leider nicht zusammengefasst werden.</value>
+  </data>
 </root>
