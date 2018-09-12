@@ -108,7 +108,7 @@ namespace Grades
         public static string SourceFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "/grades.xml");
 
         /// <summary>
-        /// The currently open Table
+        /// The currently open Table.
         /// </summary>
         public static Table t = LoadTable();
 
@@ -521,7 +521,7 @@ namespace Grades
         /// <summary>
         /// Basic underlying menu scheme for creating or renaming a table.
         /// </summary>
-        /// <param name="title">Title of the menu. Usually rename or create.</param>  
+        /// <param name="title">Title of the menu. Usually create or rename.</param>  
         public static string GetTable(string title)
         {
             string input = "";
@@ -1003,7 +1003,7 @@ namespace Grades
         }
 
         /// <summary>
-        /// Displays a menu for renaming an existing grade.
+        /// Displays a menu for editing an existing grade.
         /// </summary>
         /// <param name="g">The grade which is to be renamed.</param>
         public static void ModifyGrade(Table.Subject.Grade g)
@@ -1017,9 +1017,9 @@ namespace Grades
         }
 
         /// <summary>
-        /// Basic underlying menu scheme for creating or renaming a grade.
+        /// Basic underlying menu scheme for creating or editing a grade.
         /// </summary>
-        /// <param name="title">Title of the menu. Usually rename or create.</param>
+        /// <param name="title">Title of the menu. Usually create or edit.</param>
         /// <param name="s">The subject in which grades are to be edited in.</param>
         public static Tuple<double, double> GetGrade(Table.Subject s, string title)
         {
