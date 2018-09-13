@@ -105,7 +105,6 @@ namespace Grades
         /// The currently open sourcefile.
         /// </summary>
         public static string SourceFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + Properties.Settings.Default.SourceFile);
-        //System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "/grades.xml")
 
         /// <summary>
         /// The currently open Table.
