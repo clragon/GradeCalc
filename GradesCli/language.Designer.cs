@@ -97,6 +97,15 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Choose language ähnelt.
+        /// </summary>
+        internal static string ChooseLang {
+            get {
+                return ResourceManager.GetString("ChooseLang", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Choose subject ähnelt.
         /// </summary>
         internal static string ChooseSubject {
@@ -241,6 +250,15 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Default ähnelt.
+        /// </summary>
+        internal static string LangDefault {
+            get {
+                return ResourceManager.GetString("LangDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Log ähnelt.
         /// </summary>
         internal static string Log {
@@ -372,6 +390,15 @@ namespace Grades {
         internal static string RenameTable {
             get {
                 return ResourceManager.GetString("RenameTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Settings ähnelt.
+        /// </summary>
+        internal static string Settings {
+            get {
+                return ResourceManager.GetString("Settings", resourceCulture);
             }
         }
         

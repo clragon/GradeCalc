@@ -106,5 +106,29 @@ namespace Grades.Properties {
                 this["DisplayCompensation"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("(Default)")]
+        public global::System.Globalization.CultureInfo Language {
+            get {
+                return ((global::System.Globalization.CultureInfo)(this["Language"]));
+            }
+            set {
+                this["Language"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OverrideLanguage {
+            get {
+                return ((bool)(this["OverrideLanguage"]));
+            }
+            set {
+                this["OverrideLanguage"] = value;
+            }
+        }
     }
 }

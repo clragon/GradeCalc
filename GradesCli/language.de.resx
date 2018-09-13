@@ -255,4 +255,13 @@
   <data name="OverviewDataError" xml:space="preserve">
     <value>Diese Tabelle kann leider nicht zusammengefasst werden.</value>
   </data>
+  <data name="ChooseLang" xml:space="preserve">
+    <value>Sprache wählen</value>
+  </data>
+  <data name="LangDefault" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
 </root>

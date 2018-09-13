@@ -14,12 +14,17 @@ namespace Grades
         /// </summary>
         public static void CliMenu()
         {
+            Properties.Settings.Default.Reload();
+            if (Properties.Settings.Default.OverrideLanguage)
+            {
+                System.Threading.Thread.CurrentThread.CurrentUICulture = Properties.Settings.Default.Language;
+            }
 
             // Catching CTRL+C event
             Console.CancelKeyPress += new ConsoleCancelEventHandler(IsCliExitPendingHandler);
 
             // Setting the bool for clearing console on menu switch
-            ClearOnSwitch = true;                
+            ClearOnSwitch = true;
 
             // Setting the console and menu title
             NewConsoleTitle = Lang.GetString("Title");
@@ -39,6 +44,7 @@ namespace Grades
                 Console.WriteLine("[1] {0}", Lang.GetString("Subjects"));
                 Console.WriteLine("[2] {0}", Lang.GetString("Overview"));
                 Console.WriteLine("[3] {0}", Lang.GetString("Table"));
+                Console.WriteLine("[4] {0}", Lang.GetString("Settings"));
                 Console.WriteLine("[q] {0}", Lang.GetString("Exit"));
                 Console.Write("\n");
 
@@ -74,6 +80,12 @@ namespace Grades
                             IsInputValid = true;
                             // Calling the menu to manage tables and their files.
                             ManageTable();
+                            break;
+
+                        case "4":
+                            IsInputValid = true;
+                            // Calling the settings menu.
+                            Settings();
                             break;
 
                         case "q":
@@ -154,7 +166,7 @@ namespace Grades
         }
 
         /// <summary>
-        /// Will create a new table with a default naming-scheme to make fast and intuitive usage of the calculator possible.
+        /// Will create a new table with default values to make fast and intuitive usage of the calculator possible.
         /// </summary>
         public static Table GetEmptyTable()
         {
@@ -504,7 +516,7 @@ namespace Grades
             {
                 x.Write(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "grades.xml"));
             }
-            
+
         }
 
         /// <summary>
@@ -1140,7 +1152,7 @@ namespace Grades
             {
                 Console.WriteLine("{0}", Lang.GetString("OverviewDataError"));
             }
-            
+
             Console.Write("\n");
             // Prompt the user to press any key as soon as he is done looking at the diagramm.
             Console.Write("{0} {1}", Lang.GetString("PressAnything"), " ");
@@ -1358,6 +1370,215 @@ namespace Grades
         {
             if (string.IsNullOrEmpty(value)) return value;
             return value.Length <= maxLength ? value : value.Substring(0, maxLength);
+        }
+
+        public static void Settings()
+        {
+            bool IsAppExitPending = false;
+            while (!IsAppExitPending)
+            {
+                ClearMenu();
+                Console.WriteLine("--- {0} ---", NewConsoleTitle);
+                Console.WriteLine("[1] {0}", Lang.GetString("ChooseLang"));
+                Console.WriteLine("[q] {0}", Lang.GetString("Exit"));
+                Console.Write("\n");
+
+                bool IsInputValid = false;
+                while (!IsInputValid)
+                {
+                    Console.Write("{0}> ", Lang.GetString("Choose"));
+                    string input = Console.ReadKey().KeyChar.ToString();
+                    new System.Threading.ManualResetEvent(false).WaitOne(20);
+                    Console.Write("\n");
+                    if (input == "\n") { Console.SetCursorPosition(0, Console.CursorTop - 1); }
+                    switch (input)
+                    {
+                        case "1":
+                            IsInputValid = true;
+                            ChooseLang();
+                            break;
+
+                        case "q":
+                            IsInputValid = true;
+                            IsAppExitPending = true;
+                            break;
+
+                        default:
+                            ResetInput();
+                            break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Displays a menu for choosing a language.
+        /// </summary>
+        public static void ChooseLang()
+        {
+            int index = -1;
+            string InputString = "";
+            bool IsMenuExitPending = false;
+            List<System.Globalization.CultureInfo> Langs = GetAvailableCultures(Lang);
+            while (!IsMenuExitPending)
+            {
+                ClearMenu();
+                int printedEntries = 0;
+                if (string.IsNullOrEmpty(Properties.Settings.Default.Language.Name))
+                {
+                    Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseLang"), Langs.Count);
+                }
+                else
+                {
+                    Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseLang"), Properties.Settings.Default.Language.Name);
+                }
+                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Langs.Count).Length, ' '), Lang.GetString("LangDefault"));
+                if (Langs.Any())
+                {
+                    int i = 0;
+                    foreach (System.Globalization.CultureInfo cult in Langs)
+                    {
+                        i++;
+                        if (InputString == "")
+                        {
+                            Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Langs.Count).Length, ' '), cult.Name);
+                            printedEntries++;
+                        }
+                        else
+                        {
+                            if (Convert.ToString(i).StartsWith(InputString) || Convert.ToString(i) == InputString)
+                            {
+                                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Langs.Count).Length, ' '), cult.Name);
+                                printedEntries++;
+                            }
+                        }
+
+                        if (Langs.Count > Console.WindowHeight - 5)
+                        {
+                            if (printedEntries == Console.WindowHeight - 6)
+                            {
+                                Console.WriteLine("[{0}]", ".".PadLeft(Convert.ToString(Langs.Count).Length, '.'));
+                                break;
+                            }
+                        }
+                        else { if (printedEntries == Console.WindowHeight - 5) { break; } }
+                    }
+                }
+                Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(Langs.Count).Length, ' '), Lang.GetString("Back"));
+                Console.Write("\n");
+
+                bool IsInputValid = false;
+                while (!IsInputValid)
+                {
+                    Console.Write("{0}> {1}", Lang.GetString("Choose"), InputString);
+                    string input = Console.ReadKey().KeyChar.ToString();
+                    new System.Threading.ManualResetEvent(false).WaitOne(20);
+                    switch (input)
+                    {
+                        case "q":
+                            IsInputValid = true;
+                            IsMenuExitPending = true;
+                            break;
+
+                        case "\b":
+                            if (!(InputString == ""))
+                            {
+                                Console.Write("\b");
+                                InputString = InputString.Remove(InputString.Length - 1);
+                            }
+                            IsInputValid = true;
+                            break;
+
+                        case "\n":
+                        case "\r":
+                            if (InputString == "")
+                            {
+                                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                            }
+                            else
+                            {
+                                index = Convert.ToInt32(InputString) - 1;
+                                InputString = "";
+                                IsInputValid = true;
+                                Properties.Settings.Default.Language = Langs[index];
+                                Properties.Settings.Default.OverrideLanguage = true;
+                                Properties.Settings.Default.Save();
+                                IsMenuExitPending = true;
+                            }
+                            break;
+
+                        default:
+                            Console.Write("\n");
+                            int choice;
+                            if ((int.TryParse(input, out choice)))
+                            {
+                                if ((InputString == "") && (choice == 0))
+                                {
+                                    IsInputValid = true;
+                                    Properties.Settings.Default.Language = System.Globalization.CultureInfo.InvariantCulture;
+                                    Properties.Settings.Default.OverrideLanguage = false;
+                                    Properties.Settings.Default.Save();
+                                    IsMenuExitPending = true;
+                                }
+                                else
+                                {
+                                    if (Convert.ToInt32(InputString + Convert.ToString(choice)) <= Langs.Count)
+                                    {
+                                        int MatchingItems = 0;
+                                        InputString = InputString + Convert.ToString(choice);
+                                        for (int i = 0; i < Langs.Count; i++) { if (Convert.ToString(i + 1).StartsWith(InputString) || Convert.ToString(i + 1) == InputString) { MatchingItems++; } }
+                                        if ((InputString.Length == Convert.ToString(Langs.Count).Length) || (MatchingItems == 1))
+                                        {
+                                            index = Convert.ToInt32(InputString) - 1;
+                                            InputString = "";
+                                            IsInputValid = true;
+                                            Properties.Settings.Default.Language = Langs[index];
+                                            Properties.Settings.Default.OverrideLanguage = true;
+                                            Properties.Settings.Default.Save();
+                                            IsMenuExitPending = true;
+                                        }
+                                        else
+                                        {
+                                            IsInputValid = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // InputString = InputString.Remove(InputString.Length - 1);
+                                        ResetInput();
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                ResetInput();
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+
+        public static List<System.Globalization.CultureInfo> GetAvailableCultures(ResourceManager resourceManager)
+        {
+            List<System.Globalization.CultureInfo> result = new List<System.Globalization.CultureInfo>();
+
+            System.Globalization.CultureInfo[] cultures = System.Globalization.CultureInfo.GetCultures(System.Globalization.CultureTypes.AllCultures);
+            foreach (System.Globalization.CultureInfo culture in cultures)
+            {
+                try
+                {
+                    if (culture.Equals(System.Globalization.CultureInfo.InvariantCulture)) continue; // "==" won't work.
+
+                    if (resourceManager.GetResourceSet(culture, true, false) != null)
+                    {
+                        result.Add(culture);
+                    }
+                }
+                catch (System.Globalization.CultureNotFoundException) { }
+            }
+            return result;
         }
     }
 }
