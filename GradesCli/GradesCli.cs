@@ -116,7 +116,7 @@ namespace Grades
         /// <summary>
         /// The currently open sourcefile.
         /// </summary>
-        public static string SourceFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + Properties.Settings.Default.SourceFile);
+        public static string SourceFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "/" + Properties.Settings.Default.SourceFile);
 
         /// <summary>
         /// The currently open Table.
@@ -199,9 +199,9 @@ namespace Grades
                 Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ManageTable"), t.name);
                 Console.WriteLine("[1] {0}", Lang.GetString("ReadTable"));
                 Console.WriteLine("[2] {0}", Lang.GetString("WriteTable"));
-                Console.WriteLine("[3] {0}", Lang.GetString("RenameTable"));
-
-                Console.WriteLine("[4] {0}", Lang.GetString("DeleteTable"));
+                Console.WriteLine("[3] {0}", Lang.GetString("DefaultTable"));
+                Console.WriteLine("[4] {0}", Lang.GetString("RenameTable"));
+                Console.WriteLine("[5] {0}", Lang.GetString("DeleteTable"));
                 Console.WriteLine("[q] {0}", Lang.GetString("Back"));
                 Console.Write("\n");
 
@@ -223,14 +223,22 @@ namespace Grades
                         case "2":
                             IsInputValid = true;
                             t.Save(true);
+                            new System.Threading.ManualResetEvent(false).WaitOne(20);
                             break;
 
                         case "3":
                             IsInputValid = true;
-                            RenameTable();
+                            Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(SourceFile);
+                            Properties.Settings.Default.Save();
+                            new System.Threading.ManualResetEvent(false).WaitOne(20);
                             break;
 
                         case "4":
+                            IsInputValid = true;
+                            RenameTable();
+                            break;
+
+                        case "5":
                             bool IsDeleteInputValid = false;
                             while (!IsDeleteInputValid)
                             {
@@ -1379,6 +1387,7 @@ namespace Grades
             {
                 ClearMenu();
                 Console.WriteLine("--- {0} ---", NewConsoleTitle);
+                Console.WriteLine("[ ] {0}", System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath);
                 Console.WriteLine("[1] {0}", Lang.GetString("ChooseLang"));
                 Console.WriteLine("[q] {0}", Lang.GetString("Exit"));
                 Console.Write("\n");

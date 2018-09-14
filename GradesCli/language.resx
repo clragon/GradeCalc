@@ -264,4 +264,7 @@
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="DefaultTable" xml:space="preserve">
+    <value>Set as default</value>
+  </data>
 </root>

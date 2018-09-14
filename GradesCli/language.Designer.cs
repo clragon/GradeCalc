@@ -160,6 +160,15 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Set as default ähnelt.
+        /// </summary>
+        internal static string DefaultTable {
+            get {
+                return ResourceManager.GetString("DefaultTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Delete ähnelt.
         /// </summary>
         internal static string DeleteGrade {
