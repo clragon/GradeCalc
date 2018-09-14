@@ -267,4 +267,7 @@
   <data name="DefaultTable" xml:space="preserve">
     <value>Als Standard setzen</value>
   </data>
+  <data name="ResetSettings" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
 </root>

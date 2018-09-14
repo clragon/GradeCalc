@@ -403,6 +403,15 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Reset ähnelt.
+        /// </summary>
+        internal static string ResetSettings {
+            get {
+                return ResourceManager.GetString("ResetSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Settings ähnelt.
         /// </summary>
         internal static string Settings {

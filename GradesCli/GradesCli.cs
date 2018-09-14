@@ -32,75 +32,52 @@ namespace Grades
 
             // Displaying the menu
 
-            // Loop to prevent unwanted app-exit.
-            bool IsAppExitPending = false;
-            while (!IsAppExitPending)
+            List<string> options = new List<string> { Lang.GetString("Subjects"), Lang.GetString("Overview"), Lang.GetString("Table"), Lang.GetString("Settings"), Lang.GetString("Exit") };
+
+            void DisplayTitle(List<string> Options)
             {
-                // Clearing all previous console lines.
-                ClearMenu();
-                // Displaying the title of the menu.
-                // Options are assigned with an number to choose from.
                 Console.WriteLine("--- {0} ---", NewConsoleTitle);
-                Console.WriteLine("[1] {0}", Lang.GetString("Subjects"));
-                Console.WriteLine("[2] {0}", Lang.GetString("Overview"));
-                Console.WriteLine("[3] {0}", Lang.GetString("Table"));
-                Console.WriteLine("[4] {0}", Lang.GetString("Settings"));
-                Console.WriteLine("[q] {0}", Lang.GetString("Exit"));
-                Console.Write("\n");
-
-                // Loop to enforce valid input.
-                bool IsInputValid = false;
-                while (!IsInputValid)
-                {
-                    // Acquire a character.
-                    Console.Write("{0}> ", Lang.GetString("Choose"));
-                    string input = Console.ReadKey().KeyChar.ToString();
-                    // Nifty short wait time for better feel of the app.
-                    new System.Threading.ManualResetEvent(false).WaitOne(20);
-                    // New line since ReadKey doesnt print one.
-                    Console.Write("\n");
-                    // Line to prevent setting the cursor too far back with ResetInput if the user entered a newline character.
-                    if (input == "\n") { Console.SetCursorPosition(0, Console.CursorTop - 1); }
-                    switch (input)
-                    {
-                        case "1":
-                            // Breaking the valid input inforcing loop.
-                            IsInputValid = true;
-                            // Calling the menu for choosing a subject.
-                            ChooseSubject();
-                            break;
-
-                        case "2":
-                            IsInputValid = true;
-                            // Calling the overview menu.
-                            OverviewMenu();
-                            break;
-
-                        case "3":
-                            IsInputValid = true;
-                            // Calling the menu to manage tables and their files.
-                            ManageTable();
-                            break;
-
-                        case "4":
-                            IsInputValid = true;
-                            // Calling the settings menu.
-                            Settings();
-                            break;
-
-                        case "q":
-                            IsInputValid = true;
-                            // Exit the app.
-                            IsAppExitPending = true;
-                            break;
-
-                        default:
-                            // Reset the cursor and clear input, then try again.
-                            ResetInput();
-                            break;
-                    }
-                }
             }
+
+            void DisplayOption(List<string> Options, string o, int index, int i)
+            {
+                Console.WriteLine("[{0}] {1}", i, o);
+            }
+
+            bool CreateOption() { ResetInput(); return false; }
+
+            bool ManageOption(List<string> Options, int index)
+            {
+                switch ((index + 1).ToString())
+                {
+                    case "1":
+                        // Calling the menu for choosing a subject.
+                        ChooseSubject();
+                        break;
+
+                    case "2":
+                        // Calling the overview menu.
+                        OverviewMenu();
+                        break;
+
+                    case "3":
+                        // Calling the menu to manage tables and their files.
+                        ManageTable();
+                        break;
+
+                    case "4":
+                        // Calling the settings menu.
+                        Settings();
+                        break;
+
+                    default:
+                        ResetInput();
+                        break;
+                }
+                return false;
+            }
+
+            DisplayMenu(options, DisplayTitle, DisplayOption, CreateOption, ManageOption);
 
             ExitCli();
         }
@@ -188,102 +165,87 @@ namespace Grades
         /// </summary>
         public static void ManageTable()
         {
-            // Save all unsaved table data.
             t.Save();
-            // Same menu scheme as seen in the main menu.
-            bool IsMenuExitPending = false;
-            while (!IsMenuExitPending)
+
+            List<string> options = new List<string> { Lang.GetString("ReadTable"), Lang.GetString("WriteTable"), Lang.GetString("DefaultTable"), Lang.GetString("RenameTable"), Lang.GetString("DeleteTable") };
+
+            void DisplayTitle(List<string> Options)
             {
-
-                ClearMenu();
                 Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ManageTable"), t.name);
-                Console.WriteLine("[1] {0}", Lang.GetString("ReadTable"));
-                Console.WriteLine("[2] {0}", Lang.GetString("WriteTable"));
-                Console.WriteLine("[3] {0}", Lang.GetString("DefaultTable"));
-                Console.WriteLine("[4] {0}", Lang.GetString("RenameTable"));
-                Console.WriteLine("[5] {0}", Lang.GetString("DeleteTable"));
-                Console.WriteLine("[q] {0}", Lang.GetString("Back"));
-                Console.Write("\n");
-
-                bool IsInputValid = false;
-                while (!IsInputValid)
-                {
-                    Console.Write("{0}> ", Lang.GetString("Choose"));
-                    string input = Console.ReadKey().KeyChar.ToString();
-                    new System.Threading.ManualResetEvent(false).WaitOne(20);
-                    Console.Write("\n");
-                    if (input == "\n") { Console.SetCursorPosition(0, Console.CursorTop - 1); }
-                    switch (input)
-                    {
-                        case "1":
-                            IsInputValid = true;
-                            ChooseTable();
-                            break;
-
-                        case "2":
-                            IsInputValid = true;
-                            t.Save(true);
-                            new System.Threading.ManualResetEvent(false).WaitOne(20);
-                            break;
-
-                        case "3":
-                            IsInputValid = true;
-                            Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(SourceFile);
-                            Properties.Settings.Default.Save();
-                            new System.Threading.ManualResetEvent(false).WaitOne(20);
-                            break;
-
-                        case "4":
-                            IsInputValid = true;
-                            RenameTable();
-                            break;
-
-                        case "5":
-                            bool IsDeleteInputValid = false;
-                            while (!IsDeleteInputValid)
-                            {
-                                // Ask the user for confirmation of deleting the current table.
-                                // This is language-dependent.
-                                Console.Write("{0}? [{1}]> ", Lang.GetString("DeleteTable"), Lang.GetString("YesOrNo"));
-                                string deleteInput = Console.ReadKey().KeyChar.ToString();
-                                new System.Threading.ManualResetEvent(false).WaitOne(20);
-                                Console.Write("\n");
-                                // Comparing the user input incase-sensitive to the current language's character for "Yes" (For example "Y").
-                                if (string.Equals(deleteInput, Lang.GetString("Yes"), StringComparison.OrdinalIgnoreCase))
-                                {
-                                    IsDeleteInputValid = true;
-                                    IsInputValid = true;
-                                    t.Clear(SourceFile);
-                                    ChooseTable(false);
-                                }
-                                // Comparing the user input incase-sensitive to the current language's character for "No" (For example "N").
-                                else if (string.Equals(deleteInput, Lang.GetString("No"), StringComparison.OrdinalIgnoreCase))
-                                {
-                                    IsDeleteInputValid = true;
-                                    IsInputValid = true;
-                                }
-                                // Input seems to be invalid, resetting the field.
-                                else
-                                {
-                                    ResetInput();
-                                }
-
-                            }
-                            break;
-
-                        case "q":
-                            // Exit the menu.
-                            IsMenuExitPending = true;
-                            IsInputValid = true;
-                            break;
-
-                        default:
-                            // Reset the input.
-                            ResetInput();
-                            break;
-                    }
-                }
             }
+
+            void DisplayOption(List<string> Options, string o, int index, int i)
+            {
+                Console.WriteLine("[{0}] {1}", i, o);
+            }
+
+            bool CreateOption() { ResetInput(); return false; }
+
+            bool ManageOption(List<string> Options, int index)
+            {
+                switch ((index + 1).ToString())
+                {
+                    case "1":
+                        ChooseTable();
+                        break;
+
+                    case "2":
+                        t.Save(true);
+                        new System.Threading.ManualResetEvent(false).WaitOne(20);
+                        break;
+
+                    case "3":
+                        Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(SourceFile);
+                        Properties.Settings.Default.Save();
+                        new System.Threading.ManualResetEvent(false).WaitOne(20);
+                        break;
+
+                    case "4":
+                        RenameTable();
+                        t.Save();
+                        return true;
+
+                    case "5":
+                        bool IsDeleteInputValid = false;
+                        while (!IsDeleteInputValid)
+                        {
+                            // Ask the user for confirmation of deleting the current table.
+                            // This is language-dependent.
+                            Console.Write("{0}? [{1}]> ", Lang.GetString("DeleteTable"), Lang.GetString("YesOrNo"));
+                            string deleteInput = Console.ReadKey().KeyChar.ToString();
+                            new System.Threading.ManualResetEvent(false).WaitOne(20);
+                            Console.Write("\n");
+                            // Comparing the user input incase-sensitive to the current language's character for "Yes" (For example "Y").
+                            if (string.Equals(deleteInput, Lang.GetString("Yes"), StringComparison.OrdinalIgnoreCase))
+                            {
+                                IsDeleteInputValid = true;
+                                t.Clear(SourceFile);
+                                t = LoadTable();
+                                ChooseTable(false);
+                            }
+                            // Comparing the user input incase-sensitive to the current language's character for "No" (For example "N").
+                            else if (string.Equals(deleteInput, Lang.GetString("No"), StringComparison.OrdinalIgnoreCase))
+                            {
+                                IsDeleteInputValid = true;
+                            }
+                            // Input seems to be invalid, resetting the field.
+                            else
+                            {
+                                ResetInput();
+                            }
+
+                        }
+                        break;
+
+                    default:
+                        // Reset the input.
+                        ResetInput();
+                        break;
+                }
+                return false;
+            }
+
+            DisplayMenu(options, DisplayTitle, DisplayOption, CreateOption, ManageOption);
 
         }
 
@@ -293,207 +255,61 @@ namespace Grades
         /// <param name="UserCanAbort">Wether the user can exit the menu without choosing a table or not.</param>
         public static void ChooseTable(bool UserCanAbort = true)
         {
-            int index = -1;
-            string InputString = "";
-            bool IsMenuExitPending = false;
-            while (!IsMenuExitPending)
+            List<string> tableFiles = new List<string>();
+            try
             {
-                ClearMenu();
-                // Counter for printed entries.
-                int printedEntries = 0;
-                // List for found tables.
-                List<string> tables = new List<string>();
+                // Fetching all files in the app directory that have the "grades.xml" ending.
+                tableFiles = System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*grades.xml").ToList();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("DeniedTableAccess"));
+                new System.Threading.ManualResetEvent(false).WaitOne(500);
+            }
+            catch (Exception) { }
+
+            tableFiles.Sort((a, b) => b.CompareTo(a));
+
+
+            void DisplayTitle(List<string> Tables)
+            {
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseTable"), Tables.Count);
+                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Tables.Count).Length, ' '), Lang.GetString("CreateTable"));
+            }
+
+            void DisplayOption(List<string> TableFiles, string t, int index, int i)
+            {
+                int MaxLength = TableFiles.Select(x => System.IO.Path.GetFileName(x).Length).Max();
                 try
                 {
-                    // Fetching all files in the app directory that have the "grades.xml" ending.
-                    tables = System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*grades.xml").ToList();
+                    Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(TableFiles.Count).Length, ' '), System.IO.Path.GetFileName(TableFiles[index]).PadRight(MaxLength, ' ') + " | " + Table.Read(TableFiles[index]).name);
                 }
-                catch (UnauthorizedAccessException)
+                catch (Exception)
                 {
-                    Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("DeniedTableAccess"));
-                    new System.Threading.ManualResetEvent(false).WaitOne(500);
+                    TableFiles.RemoveAt(i);
+                    i--;
                 }
-                catch (Exception) { }
-                // Printing the menu. Each table has a number assigned to it.
-                // The number is it's index (in the List of tables) + 1.
-                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseTable"), tables.Count);
-                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(tables.Count).Length, ' '), Lang.GetString("CreateTable"));
-                if (tables.Any())
-                {
-                    // Sorting the tables alphabetically.
-                    tables.Sort((a, b) => a.CompareTo(b));
-                    // Getting the maximum name length of the tables for padding.
-                    int MaxLength = tables.Select(x => System.IO.Path.GetFileName(x).Length).Max();
-                    for (int i = 0; i < tables.Count; i++)
-                    {
-                        try
-                        {
-                            // If the current input string is empty, print from 0 onwards.
-                            if (InputString == "")
-                            {
-                                Console.WriteLine("[{0}] {1}", Convert.ToString(i + 1).PadLeft(Convert.ToString(tables.Count).Length, ' '), System.IO.Path.GetFileName(tables[i]).PadRight(MaxLength, ' ') + " | " + Table.Read(tables[i]).name);
-                            }
-                            // If the current input string contains anything, try to display only entries that start with the numbers in the input string.
-                            else
-                            {
-                                if (Convert.ToString(i + 1).StartsWith(InputString) || Convert.ToString(i + 1) == InputString)
-                                {
-                                    Console.WriteLine("[{0}] {1}", Convert.ToString(i + 1).PadLeft(Convert.ToString(tables.Count).Length, ' '), System.IO.Path.GetFileName(tables[i]).PadRight(MaxLength, ' ') + " | " + Table.Read(tables[i]).name);
-                                    printedEntries++;
-                                }
-                            }
-                        }
-                        // If any exception occurs, remove the table from the list and subtract it from the integer compared against printed entries.
-                        catch (Exception)
-                        {
-                            tables.RemoveAt(i);
-                            i--;
-                        }
 
-                        // Match the amount of printed tables against the window height. The height is subtracted by 5 to account for newlines and input.
-                        if (tables.Count > Console.WindowHeight - 5)
-                        {
-                            if (printedEntries == Console.WindowHeight - 6)
-                            {
-                                Console.WriteLine("[{0}]", ".".PadLeft(Convert.ToString(tables.Count).Length, '.'));
-                                break;
-                            }
-                        }
-                        // If there are enough entries printed, break the loop.
-                        else { if (printedEntries == Console.WindowHeight - 5) { break; } }
-
-                    }
-                }
-                // If the user can abort the menu, print the option for it.
-                if (UserCanAbort)
-                {
-                    Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(tables.Count).Length, ' '), Lang.GetString("Back"));
-                }
-                Console.Write("\n");
-
-                bool IsInputValid = false;
-                while (!IsInputValid)
-                {
-                    Console.Write("{0}> {1}", Lang.GetString("Choose"), InputString);
-                    string input = Console.ReadKey().KeyChar.ToString();
-                    new System.Threading.ManualResetEvent(false).WaitOne(20);
-                    switch (input)
-                    {
-                        case "q":
-                            // If the user can abort the menu, abort the menu.
-                            if (UserCanAbort)
-                            {
-                                IsInputValid = true;
-                                IsMenuExitPending = true;
-                            }
-                            // Else print the default message for invalid input.
-                            else
-                            {
-                                ResetInput();
-                            }
-                            break;
-
-                        case "\b":
-                            // if the user enters a backslash, remove one number from the input string.
-                            if (!(InputString == ""))
-                            {
-                                Console.Write("\b");
-                                InputString = InputString.Remove(InputString.Length - 1);
-                            }
-                            IsInputValid = true;
-                            break;
-
-                        case "\n":
-                        case "\r":
-                            // If the user has entered a newline, check if the input string matches any number.
-                            // If any number is matched, it is then set as the index and the menu closes.
-                            // if the input string is empty, reset the cursor to prevent issues with ResetInput.
-                            if (InputString == "")
-                            {
-                                Console.SetCursorPosition(0, Console.CursorTop - 1);
-                            }
-                            else
-                            {
-                                // Tries to convert input string into an index.
-                                index = Convert.ToInt32(InputString) - 1;
-                                InputString = "";
-                                IsInputValid = true;
-                                try
-                                {
-                                    // Loads the new table.
-                                    t = Table.Read(tables[index]);
-                                    // Sets the new sourcefile.
-                                    SourceFile = tables[index];
-                                    IsMenuExitPending = true;
-                                }
-                                // If the table cannot be loaded, throw an error.
-                                catch (Exception)
-                                {
-                                    ResetInput(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("ReadTableError")));
-                                }
-                            }
-                            break;
-
-                        default:
-                            // A number was chosen as option.
-                            Console.Write("\n");
-                            int choice;
-                            if ((int.TryParse(input, out choice)))
-                            {
-                                // if the input is 0, call the menu to create a new table.
-                                if ((InputString == "") && (choice == 0))
-                                {
-                                    IsInputValid = true;
-                                    CreateTable();
-                                }
-                                else
-                                {
-                                    // Check if this input is even in the maximum index of the table list. 
-                                    if (Convert.ToInt32(InputString + Convert.ToString(choice)) <= tables.Count)
-                                    {
-                                        // Int for items that match the input string.
-                                        int MatchingItems = 0;
-                                        // Set new input string.
-                                        InputString = InputString + Convert.ToString(choice);
-                                        // Calculate how many items match their numbers with the input string.
-                                        for (int i = 0; i < tables.Count; i++) { if (Convert.ToString(i + 1).StartsWith(InputString) || Convert.ToString(i + 1) == InputString) { MatchingItems++; } }
-                                        // Check if any item has a direct match with the input string and if so, choose it and exit.
-                                        if ((InputString.Length == Convert.ToString(tables.Count).Length) || (MatchingItems == 1))
-                                        {
-                                            // Get the tables actual index by subtracting 1 again.
-                                            index = Convert.ToInt32(InputString) - 1;
-                                            InputString = "";
-                                            IsInputValid = true;
-                                            try
-                                            {
-                                                t = Table.Read(tables[index]);
-                                                SourceFile = tables[index];
-                                                IsMenuExitPending = true;
-                                            }
-                                            catch (Exception)
-                                            {
-                                                ResetInput(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("ReadTableError")));
-                                            }
-                                        }
-                                        else
-                                        {
-                                            IsInputValid = true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        ResetInput();
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                ResetInput();
-                            }
-                            break;
-                    }
-                }
             }
+
+            bool CreateOption() { CreateTable(); return false; }
+
+            bool ManageOption(List<string> Tables, int index)
+            {
+                try
+                {
+                    t = Table.Read(Tables[index]);
+                    SourceFile = Tables[index];
+                }
+                catch (Exception)
+                {
+                    ResetInput(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("ReadTableError")));
+                }
+                return false;
+            }
+
+            DisplayMenu(tableFiles, DisplayTitle, DisplayOption, CreateOption, ManageOption, true, false, UserCanAbort);
+
         }
 
         /// <summary>
@@ -584,11 +400,10 @@ namespace Grades
         /// <param name="s">The subject that is to be managed.</param>
         public static void ManageSubject(Table.Subject s)
         {
-            bool IsMenuExitPending = false;
-            while (!IsMenuExitPending)
+            List<string> options = new List<string> { Lang.GetString("Grades"), Lang.GetString("RenameSubject"), Lang.GetString("DeleteSubject") };
+
+            void DisplayTitle(List<string> Options)
             {
-                ClearMenu();
-                // Display the number of possible options if there are any.
                 if (s.Grades.Any())
                 {
                     Console.WriteLine("--- {0} : {1} : {2} ---", Lang.GetString("Subject"), s.Name, s.CalcAverage());
@@ -597,49 +412,40 @@ namespace Grades
                 {
                     Console.WriteLine("--- {0} : {1} ---", Lang.GetString("Subject"), s.Name);
                 }
-                Console.WriteLine("[1] {0}", Lang.GetString("Grades"));
-                Console.WriteLine("[2] {0}", Lang.GetString("RenameSubject"));
-                Console.WriteLine("[3] {0}", Lang.GetString("DeleteSubject"));
-                Console.WriteLine("[q] {0}", Lang.GetString("Back"));
-                Console.Write("\n");
-
-                bool IsInputValid = false;
-                while (!IsInputValid)
-                {
-                    Console.Write("{0}> ", Lang.GetString("Choose"));
-                    string input = Console.ReadKey().KeyChar.ToString();
-                    new System.Threading.ManualResetEvent(false).WaitOne(20);
-                    Console.Write("\n");
-                    if (input == "\n") { Console.SetCursorPosition(0, Console.CursorTop - 1); }
-                    switch (input)
-                    {
-                        case "1":
-                            IsInputValid = true;
-                            ChooseGrade(s);
-                            break;
-
-                        case "2":
-                            IsInputValid = true;
-                            RenameSubject(s);
-                            break;
-
-                        case "3":
-                            IsInputValid = true;
-                            IsMenuExitPending = true;
-                            t.RemSubject(t.Subjects.IndexOf(s));
-                            break;
-
-                        case "q":
-                            IsInputValid = true;
-                            IsMenuExitPending = true;
-                            break;
-
-                        default:
-                            ResetInput();
-                            break;
-                    }
-                }
             }
+
+            void DisplayOption(List<string> Options, string o, int index, int i)
+            {
+                Console.WriteLine("[{0}] {1}", i, o);
+            }
+
+            bool CreateOption() { ResetInput(); return false; }
+
+            bool ManageOption(List<string> Options, int index)
+            {
+                switch ((index + 1).ToString())
+                {
+                    case "1":
+                        ChooseGrade(s);
+                        break;
+
+                    case "2":
+                        RenameSubject(s);
+                        break;
+
+                    case "3":
+                        t.RemSubject(t.Subjects.IndexOf(s));
+                        return true;
+
+                    default:
+                        ResetInput();
+                        break;
+                }
+                return false;
+            }
+            
+            DisplayMenu(options, DisplayTitle, DisplayOption, CreateOption, ManageOption);
+
         }
 
         /// <summary>
@@ -647,126 +453,28 @@ namespace Grades
         /// </summary>
         public static void ChooseSubject()
         {
-            int index = -1;
-            string InputString = "";
-            bool IsMenuExitPending = false;
-            while (!IsMenuExitPending)
+
+            void DisplayTitle(List<Table.Subject> Subjects)
             {
-                ClearMenu();
-                int printedEntries = 0;
-                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseSubject"), t.Subjects.Count);
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseSubject"), Subjects.Count);
                 Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(t.Subjects.Count).Length, ' '), Lang.GetString("CreateSubject"));
-                for (int i = 0; i < t.Subjects.Count; i++)
-                {
-                    if (InputString == "")
-                    {
-                        Console.WriteLine("[{0}] {1}", Convert.ToString(i + 1).PadLeft(Convert.ToString(t.Subjects.Count).Length, ' '), t.Subjects[i].Name);
-                        printedEntries++;
-                    }
-                    else
-                    {
-                        if (Convert.ToString(i + 1).StartsWith(InputString) || Convert.ToString(i + 1) == InputString)
-                        {
-                            Console.WriteLine("[{0}] {1}", Convert.ToString(i + 1).PadLeft(Convert.ToString(t.Subjects.Count).Length, ' '), t.Subjects[i].Name);
-                            printedEntries++;
-                        }
-                    }
-
-                    if (t.Subjects.Count > Console.WindowHeight - 5)
-                    {
-                        if (printedEntries == Console.WindowHeight - 6)
-                        {
-                            Console.WriteLine("[{0}]", ".".PadLeft(Convert.ToString(t.Subjects.Count).Length, '.'));
-                            break;
-                        }
-                    }
-                    else { if (printedEntries == Console.WindowHeight - 5) { break; } }
-
-                }
-                Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(t.Subjects.Count).Length, ' '), Lang.GetString("Back"));
-                Console.Write("\n");
-
-                bool IsInputValid = false;
-                while (!IsInputValid)
-                {
-                    Console.Write("{0}> {1}", Lang.GetString("Choose"), InputString);
-                    string input = Console.ReadKey().KeyChar.ToString();
-                    new System.Threading.ManualResetEvent(false).WaitOne(20);
-                    switch (input)
-                    {
-                        case "q":
-                            IsInputValid = true;
-                            IsMenuExitPending = true;
-                            break;
-
-                        case "\b":
-                            if (!(InputString == ""))
-                            {
-                                Console.Write("\b");
-                                InputString = InputString.Remove(InputString.Length - 1);
-                            }
-                            IsInputValid = true;
-                            break;
-
-                        case "\n":
-                        case "\r":
-                            if (InputString == "")
-                            {
-                                Console.SetCursorPosition(0, Console.CursorTop - 1);
-                            }
-                            else
-                            {
-                                index = Convert.ToInt32(InputString) - 1;
-                                InputString = "";
-                                IsInputValid = true;
-                                ManageSubject(t.Subjects[index]);
-                            }
-                            break;
-
-                        default:
-                            Console.Write("\n");
-                            int choice;
-                            if ((int.TryParse(input, out choice)))
-                            {
-                                if ((InputString == "") && (choice == 0))
-                                {
-                                    IsInputValid = true;
-                                    CreateSubject();
-                                }
-                                else
-                                {
-                                    if (Convert.ToInt32(InputString + Convert.ToString(choice)) <= t.Subjects.Count)
-                                    {
-                                        int MatchingItems = 0;
-                                        InputString = InputString + Convert.ToString(choice);
-                                        for (int i = 0; i < t.Subjects.Count; i++) { if (Convert.ToString(i + 1).StartsWith(InputString) || Convert.ToString(i + 1) == InputString) { MatchingItems++; } }
-                                        if ((InputString.Length == Convert.ToString(t.Subjects.Count).Length) || (MatchingItems == 1))
-                                        {
-                                            index = Convert.ToInt32(InputString) - 1;
-                                            InputString = "";
-                                            IsInputValid = true;
-                                            ManageSubject(t.Subjects[index]);
-                                        }
-                                        else
-                                        {
-                                            IsInputValid = true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // InputString = InputString.Remove(InputString.Length - 1);
-                                        ResetInput();
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                ResetInput();
-                            }
-                            break;
-                    }
-                }
             }
+
+            void DisplayOption(List<Table.Subject> Subjects, Table.Subject s, int index, int i)
+            {
+                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Subjects.Count).Length, ' '), s.Name);
+            }
+
+            bool CreateOption() { CreateSubject(); return false; }
+
+            bool ManageOption(List<Table.Subject> Subjects, int index)
+            {
+                ManageSubject(t.Subjects[index]);
+                return false;
+            }
+
+            DisplayMenu(t.Subjects, DisplayTitle, DisplayOption, CreateOption, ManageOption);
+
         }
 
         /// <summary>
@@ -828,50 +536,43 @@ namespace Grades
         /// <param name="g">The grade that is to be managed.</param>
         public static void ManageGrade(Table.Subject.Grade g)
         {
-            bool IsMenuExitPending = false;
-            while (!IsMenuExitPending)
+            List<string> options = new List<string> { Lang.GetString("EditGrade"), Lang.GetString("DeleteGrade") };
+
+            void DisplayTitle(List<string> Options)
             {
-                ClearMenu();
-                Console.WriteLine("--- {0} : {1} | {2} ---", Lang.GetString("Grade"), g.Value, g.Weight);
-                Console.WriteLine("[1] {0}", Lang.GetString("EditGrade"));
-                Console.WriteLine("[2] {0}", Lang.GetString("DeleteGrade"));
-                Console.WriteLine("[q] {0}", Lang.GetString("Back"));
-                Console.Write("\n");
-
-                bool IsInputValid = false;
-                while (!IsInputValid)
-                {
-                    Console.Write("{0}> ", Lang.GetString("Choose"));
-                    string input = Console.ReadKey().KeyChar.ToString();
-                    Console.Write("\n");
-                    if (input == "\n") { Console.SetCursorPosition(0, Console.CursorTop - 1); }
-                    switch (input)
-                    {
-
-                        case "1":
-                            IsInputValid = true;
-                            ModifyGrade(g);
-                            break;
-
-                        case "2":
-                            IsInputValid = true;
-                            IsMenuExitPending = true;
-                            // Remove the grade by using the OwnerSubject attribute.
-                            // Effectively bypassing the need to pass the subject in which the grade is in.
-                            g.OwnerSubject.RemGrade(g);
-                            break;
-
-                        case "q":
-                            IsInputValid = true;
-                            IsMenuExitPending = true;
-                            break;
-
-                        default:
-                            ResetInput();
-                            break;
-                    }
-                }
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ManageTable"), t.name);
             }
+
+            void DisplayOption(List<string> Options, string o, int index, int i)
+            {
+                Console.WriteLine("[{0}] {1}", i, o);
+            }
+
+            bool CreateOption() { ResetInput(); return false; }
+
+            bool ManageOption(List<string> Options, int index)
+            {
+                switch ((index + 1).ToString())
+                {
+                    case "1":
+                        ModifyGrade(g);
+                        break;
+
+                    case "2":
+                        // Remove the grade by using the OwnerSubject attribute.
+                        // Effectively bypassing the need to pass the subject in which the grade is in.
+                        g.OwnerSubject.RemGrade(g);
+                        return true;
+
+                    default:
+                        ResetInput();
+                        break;
+                }
+                return false;
+            }
+
+            DisplayMenu(options, DisplayTitle, DisplayOption, CreateOption, ManageOption);
+
         }
 
         /// <summary>
@@ -880,132 +581,32 @@ namespace Grades
         /// <param name="s">The subject which grades can be chosen from.</param>
         public static void ChooseGrade(Table.Subject s)
         {
-            int index = -1;
-            string InputString = "";
-            bool IsMenuExitPending = false;
-            while (!IsMenuExitPending)
+            void DisplayTitle(List<Table.Subject.Grade> Grades)
             {
-                ClearMenu();
-                int printedEntries = 0;
-                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseGrade"), s.Grades.Count);
-                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(s.Grades.Count).Length, ' '), Lang.GetString("CreateGrade"));
-                if (s.Grades.Any())
-                {
-                    int i = 0;
-                    // Calculate the maximum length of the values of all grades in the subject for padding.
-                    int MaxLength = s.Grades.Select(x => x.Value.ToString().Length).Max();
-                    foreach (Table.Subject.Grade g in s.Grades)
-                    {
-                        i++;
-                        if (InputString == "")
-                        {
-                            Console.WriteLine("[{0}] {1} | {2}", Convert.ToString(i).PadLeft(Convert.ToString(s.Grades.Count).Length, ' '), Convert.ToString(g.Value).PadRight(MaxLength, ' '), g.Weight);
-                            printedEntries++;
-                        }
-                        else
-                        {
-                            if (Convert.ToString(i).StartsWith(InputString) || Convert.ToString(i) == InputString)
-                            {
-                                Console.WriteLine("[{0}] {1} | {2}", Convert.ToString(i).PadLeft(Convert.ToString(s.Grades.Count).Length, ' '), Convert.ToString(g.Value).PadRight(MaxLength, ' '), g.Weight);
-                                printedEntries++;
-                            }
-                        }
-
-                        if (s.Grades.Count > Console.WindowHeight - 5)
-                        {
-                            if (printedEntries == Console.WindowHeight - 6)
-                            {
-                                Console.WriteLine("[{0}]", ".".PadLeft(Convert.ToString(s.Grades.Count).Length, '.'));
-                                break;
-                            }
-                        }
-                        else { if (printedEntries == Console.WindowHeight - 5) { break; } }
-                    }
-                }
-                Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(s.Grades.Count).Length, ' '), Lang.GetString("Back"));
-                Console.Write("\n");
-
-                bool IsInputValid = false;
-                while (!IsInputValid)
-                {
-                    Console.Write("{0}> {1}", Lang.GetString("Choose"), InputString);
-                    string input = Console.ReadKey().KeyChar.ToString();
-                    new System.Threading.ManualResetEvent(false).WaitOne(20);
-                    switch (input)
-                    {
-                        case "q":
-                            IsInputValid = true;
-                            IsMenuExitPending = true;
-                            break;
-
-                        case "\b":
-                            if (!(InputString == ""))
-                            {
-                                Console.Write("\b");
-                                InputString = InputString.Remove(InputString.Length - 1);
-                            }
-                            IsInputValid = true;
-                            break;
-
-                        case "\n":
-                        case "\r":
-                            if (InputString == "")
-                            {
-                                Console.SetCursorPosition(0, Console.CursorTop - 1);
-                            }
-                            else
-                            {
-                                index = Convert.ToInt32(InputString) - 1;
-                                InputString = "";
-                                IsInputValid = true;
-                                // Calls a menu to manage the grade with the index we just acquired.
-                                ManageGrade(s.Grades[index]);
-                            }
-                            break;
-
-                        default:
-                            Console.Write("\n");
-                            int choice;
-                            if ((int.TryParse(input, out choice)))
-                            {
-                                if ((InputString == "") && (choice == 0))
-                                {
-                                    IsInputValid = true;
-                                    CreateGrade(s);
-                                }
-                                else
-                                {
-                                    if (Convert.ToInt32(InputString + Convert.ToString(choice)) <= s.Grades.Count)
-                                    {
-                                        int MatchingItems = 0;
-                                        InputString = InputString + Convert.ToString(choice);
-                                        for (int i = 0; i < s.Grades.Count; i++) { if (Convert.ToString(i + 1).StartsWith(InputString) || Convert.ToString(i + 1) == InputString) { MatchingItems++; } }
-                                        if ((InputString.Length == Convert.ToString(s.Grades.Count).Length) || (MatchingItems == 1))
-                                        {
-                                            index = Convert.ToInt32(InputString) - 1;
-                                            InputString = "";
-                                            IsInputValid = true;
-                                            ManageGrade(s.Grades[index]);
-                                        }
-                                        else
-                                        {
-                                            IsInputValid = true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        ResetInput();
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                ResetInput();
-                            }
-                            break;
-                    }
-                }
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseGrade"), Grades.Count);
+                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Grades.Count).Length, ' '), Lang.GetString("CreateGrade"));
             }
+
+            void DisplayOption(List<Table.Subject.Grade> Grades, Table.Subject.Grade g, int index, int i)
+            {
+                int MaxLength = Grades.Select(x => x.Value.ToString().Length).Max();
+                Console.WriteLine("[{0}] {1} | {2}", Convert.ToString(i).PadLeft(Convert.ToString(Grades.Count).Length, ' '), Convert.ToString(g.Value).PadRight(MaxLength, ' '), g.Weight);
+            }
+
+            bool CreateOption()
+            {
+                CreateGrade(s);
+                return false;
+            }
+
+            bool ManageOption(List<Table.Subject.Grade> Grades, int index)
+            {
+                ManageGrade(Grades[index]);
+                return false;
+            }
+
+            DisplayMenu(s.Grades, DisplayTitle, DisplayOption, CreateOption, ManageOption);
+            
         }
 
         /// <summary>
@@ -1380,44 +981,51 @@ namespace Grades
             return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
 
+        /// <summary>
+        /// Displays a menu for adjusting settings.
+        /// </summary>
         public static void Settings()
         {
-            bool IsAppExitPending = false;
-            while (!IsAppExitPending)
+            List<string> options = new List<string> { Lang.GetString("ChooseLang"), Lang.GetString("ResetSettings") };
+
+            void DisplayTitle(List<string> Options)
             {
-                ClearMenu();
-                Console.WriteLine("--- {0} ---", NewConsoleTitle);
-                Console.WriteLine("[ ] {0}", System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath);
-                Console.WriteLine("[1] {0}", Lang.GetString("ChooseLang"));
-                Console.WriteLine("[q] {0}", Lang.GetString("Exit"));
-                Console.Write("\n");
-
-                bool IsInputValid = false;
-                while (!IsInputValid)
-                {
-                    Console.Write("{0}> ", Lang.GetString("Choose"));
-                    string input = Console.ReadKey().KeyChar.ToString();
-                    new System.Threading.ManualResetEvent(false).WaitOne(20);
-                    Console.Write("\n");
-                    if (input == "\n") { Console.SetCursorPosition(0, Console.CursorTop - 1); }
-                    switch (input)
-                    {
-                        case "1":
-                            IsInputValid = true;
-                            ChooseLang();
-                            break;
-
-                        case "q":
-                            IsInputValid = true;
-                            IsAppExitPending = true;
-                            break;
-
-                        default:
-                            ResetInput();
-                            break;
-                    }
-                }
+                Console.WriteLine("--- {0} : {1} ---", NewConsoleTitle, Lang.GetString("Settings"));
             }
+
+            void DisplayOption(List<string> Options, string o, int index, int i)
+            {
+                Console.WriteLine("[{0}] {1}", i, o);
+            }
+
+            bool CreateOption() { ResetInput(); return false; }
+
+            bool ManageOption(List<string> Options, int index)
+            {
+                switch ((index + 1).ToString())
+                {
+                    case "1":
+                        ChooseLang();
+                        break;
+
+                    case "2":
+                        try { System.IO.File.Delete(System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath); }
+                        catch { }
+                        Properties.Settings.Default.Reset();
+                        // Implement log here
+                        break;
+
+                    default:
+                        // Reset the input.
+                        ResetInput();
+                        break;
+                }
+
+                return false;
+            }
+
+            DisplayMenu(options, DisplayTitle, DisplayOption, CreateOption, ManageOption);
+            
         }
 
         /// <summary>
@@ -1425,14 +1033,11 @@ namespace Grades
         /// </summary>
         public static void ChooseLang()
         {
-            int index = -1;
-            string InputString = "";
-            bool IsMenuExitPending = false;
-            List<System.Globalization.CultureInfo> Langs = GetAvailableCultures(Lang);
-            while (!IsMenuExitPending)
+
+            List<System.Globalization.CultureInfo> langs = GetAvailableCultures(Lang);
+
+            void DisplayTitle(List<System.Globalization.CultureInfo> Langs)
             {
-                ClearMenu();
-                int printedEntries = 0;
                 if (string.IsNullOrEmpty(Properties.Settings.Default.Language.Name))
                 {
                     Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseLang"), Langs.Count);
@@ -1442,38 +1047,109 @@ namespace Grades
                     Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseLang"), Properties.Settings.Default.Language.Name);
                 }
                 Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Langs.Count).Length, ' '), Lang.GetString("LangDefault"));
-                if (Langs.Any())
+            }
+
+            void DisplayOption(List<System.Globalization.CultureInfo> Langs, System.Globalization.CultureInfo lang, int index, int i)
+            {
+                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Langs.Count).Length, ' '), lang.Name);
+            }
+
+            bool CreateOption()
+            {
+                Properties.Settings.Default.Language = System.Globalization.CultureInfo.InvariantCulture;
+                Properties.Settings.Default.OverrideLanguage = false;
+                Properties.Settings.Default.Save();
+                // Implement log here
+                return true;
+            }
+
+            bool ManageOption(List<System.Globalization.CultureInfo> Langs, int index)
+            {
+                Properties.Settings.Default.Language = Langs[index];
+                Properties.Settings.Default.OverrideLanguage = true;
+                Properties.Settings.Default.Save();
+                // Implement log here
+                return true;
+            }
+
+            DisplayMenu(langs, DisplayTitle, DisplayOption, CreateOption, ManageOption, true, true);
+
+        }
+
+        /// <summary>
+        /// Return the available languages for this app.
+        /// </summary>
+        public static List<System.Globalization.CultureInfo> GetAvailableCultures(ResourceManager resourceManager)
+        {
+            List<System.Globalization.CultureInfo> result = new List<System.Globalization.CultureInfo>();
+
+            System.Globalization.CultureInfo[] cultures = System.Globalization.CultureInfo.GetCultures(System.Globalization.CultureTypes.AllCultures);
+            foreach (System.Globalization.CultureInfo culture in cultures)
+            {
+                try
+                {
+                    if (culture.Equals(System.Globalization.CultureInfo.InvariantCulture)) continue; // "==" won't work.
+
+                    if (resourceManager.GetResourceSet(culture, true, false) != null)
+                    {
+                        result.Add(culture);
+                    }
+                }
+                catch (System.Globalization.CultureNotFoundException) { }
+            }
+            return result;
+        }
+
+
+        /// <summary>
+        /// The template for displaying a menu.
+        /// </summary>
+        public static void DisplayMenu<T>(List<T> Objects, Action<List<T>> DisplayTitle, Action<List<T>, T, int, int> DisplayOption, Func<bool> CreateOption, Func<List<T>, int, bool> ManageOption, bool ExitAfterManage = false, bool ExitAfterCreate = false, bool UserCanAbort = true)
+        {
+            int index = -1;
+            string InputString = "";
+            bool IsMenuExitPending = false;
+            while (!IsMenuExitPending)
+            {
+                ClearMenu();
+                int printedEntries = 0;
+                DisplayTitle(Objects);
+                if (Objects.Any())
                 {
                     int i = 0;
-                    foreach (System.Globalization.CultureInfo cult in Langs)
+                    foreach (T x in Objects)
                     {
                         i++;
                         if (InputString == "")
                         {
-                            Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Langs.Count).Length, ' '), cult.Name);
+                            DisplayOption(Objects, x, i - 1, i);
                             printedEntries++;
                         }
                         else
                         {
                             if (Convert.ToString(i).StartsWith(InputString) || Convert.ToString(i) == InputString)
                             {
-                                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Langs.Count).Length, ' '), cult.Name);
+                                DisplayOption(Objects, x, i - 1, i);
                                 printedEntries++;
                             }
                         }
 
-                        if (Langs.Count > Console.WindowHeight - 5)
+                        if (Objects.Count > Console.WindowHeight - 5)
                         {
                             if (printedEntries == Console.WindowHeight - 6)
                             {
-                                Console.WriteLine("[{0}]", ".".PadLeft(Convert.ToString(Langs.Count).Length, '.'));
+                                Console.WriteLine("[{0}]", ".".PadLeft(Convert.ToString(Objects.Count).Length, '.'));
                                 break;
                             }
                         }
                         else { if (printedEntries == Console.WindowHeight - 5) { break; } }
                     }
                 }
-                Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(Langs.Count).Length, ' '), Lang.GetString("Back"));
+
+                if (UserCanAbort)
+                {
+                    Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(Objects.Count).Length, ' '), Lang.GetString("Back"));
+                }
                 Console.Write("\n");
 
                 bool IsInputValid = false;
@@ -1485,8 +1161,15 @@ namespace Grades
                     switch (input)
                     {
                         case "q":
-                            IsInputValid = true;
-                            IsMenuExitPending = true;
+                            if (UserCanAbort)
+                            {
+                                IsInputValid = true;
+                                IsMenuExitPending = true;
+                            }
+                            else
+                            {
+                                ResetInput();
+                            }
                             break;
 
                         case "\b":
@@ -1509,10 +1192,10 @@ namespace Grades
                                 index = Convert.ToInt32(InputString) - 1;
                                 InputString = "";
                                 IsInputValid = true;
-                                Properties.Settings.Default.Language = Langs[index];
-                                Properties.Settings.Default.OverrideLanguage = true;
-                                Properties.Settings.Default.Save();
-                                IsMenuExitPending = true;
+                                if (ManageOption(Objects, index) || ExitAfterManage)
+                                {
+                                    IsMenuExitPending = true;
+                                }
                             }
                             break;
 
@@ -1524,27 +1207,27 @@ namespace Grades
                                 if ((InputString == "") && (choice == 0))
                                 {
                                     IsInputValid = true;
-                                    Properties.Settings.Default.Language = System.Globalization.CultureInfo.InvariantCulture;
-                                    Properties.Settings.Default.OverrideLanguage = false;
-                                    Properties.Settings.Default.Save();
-                                    IsMenuExitPending = true;
+                                    if (CreateOption() || ExitAfterCreate)
+                                    {
+                                        IsMenuExitPending = true;
+                                    }
                                 }
                                 else
                                 {
-                                    if (Convert.ToInt32(InputString + Convert.ToString(choice)) <= Langs.Count)
+                                    if (Convert.ToInt32(InputString + Convert.ToString(choice)) <= Objects.Count)
                                     {
                                         int MatchingItems = 0;
                                         InputString = InputString + Convert.ToString(choice);
-                                        for (int i = 0; i < Langs.Count; i++) { if (Convert.ToString(i + 1).StartsWith(InputString) || Convert.ToString(i + 1) == InputString) { MatchingItems++; } }
-                                        if ((InputString.Length == Convert.ToString(Langs.Count).Length) || (MatchingItems == 1))
+                                        for (int i = 0; i < Objects.Count; i++) { if (Convert.ToString(i + 1).StartsWith(InputString) || Convert.ToString(i + 1) == InputString) { MatchingItems++; } }
+                                        if ((InputString.Length == Convert.ToString(Objects.Count).Length) || (MatchingItems == 1))
                                         {
                                             index = Convert.ToInt32(InputString) - 1;
                                             InputString = "";
                                             IsInputValid = true;
-                                            Properties.Settings.Default.Language = Langs[index];
-                                            Properties.Settings.Default.OverrideLanguage = true;
-                                            Properties.Settings.Default.Save();
-                                            IsMenuExitPending = true;
+                                            if (ManageOption(Objects, index) || ExitAfterManage)
+                                            {
+                                                IsMenuExitPending = true;
+                                            }
                                         }
                                         else
                                         {
@@ -1566,28 +1249,6 @@ namespace Grades
                     }
                 }
             }
-        }
-
-
-        public static List<System.Globalization.CultureInfo> GetAvailableCultures(ResourceManager resourceManager)
-        {
-            List<System.Globalization.CultureInfo> result = new List<System.Globalization.CultureInfo>();
-
-            System.Globalization.CultureInfo[] cultures = System.Globalization.CultureInfo.GetCultures(System.Globalization.CultureTypes.AllCultures);
-            foreach (System.Globalization.CultureInfo culture in cultures)
-            {
-                try
-                {
-                    if (culture.Equals(System.Globalization.CultureInfo.InvariantCulture)) continue; // "==" won't work.
-
-                    if (resourceManager.GetResourceSet(culture, true, false) != null)
-                    {
-                        result.Add(culture);
-                    }
-                }
-                catch (System.Globalization.CultureNotFoundException) { }
-            }
-            return result;
         }
     }
 }
