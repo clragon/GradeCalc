@@ -40,6 +40,8 @@ namespace Grades
         /// </summary>
         [DataMember(Name = "EnableWeightSystem")]
         public bool EnableWeightSystem = true;
+
+
         /// <summary>
         /// The list of subjects assigned to this table.
         /// </summary>

@@ -443,7 +443,7 @@ namespace Grades
                 }
                 return false;
             }
-            
+
             DisplayMenu(options, DisplayTitle, DisplayOption, CreateOption, ManageOption);
 
         }
@@ -606,7 +606,7 @@ namespace Grades
             }
 
             DisplayMenu(s.Grades, DisplayTitle, DisplayOption, CreateOption, ManageOption);
-            
+
         }
 
         /// <summary>
@@ -662,15 +662,30 @@ namespace Grades
                     // Check if the table has grade limits enabled.
                     if (s.OwnerTable.EnableGradeLimits)
                     {
-                        // Check if the grade is within the table limits.
-                        if ((value >= s.OwnerTable.MinGrade) && (value <= s.OwnerTable.MaxGrade))
+                        if (s.OwnerTable.MaxGrade > s.OwnerTable.MinGrade)
                         {
-                            IsFirstInputValid = true;
+                            // Check if the grade is within the table limits.
+                            if ((value >= s.OwnerTable.MinGrade) && (value <= s.OwnerTable.MaxGrade))
+                            {
+                                IsFirstInputValid = true;
+                            }
+                            else
+                            {
+                                ResetInput();
+                            }
                         }
                         else
                         {
-                            ResetInput();
+                            if ((value <= s.OwnerTable.MinGrade) && (value >= s.OwnerTable.MaxGrade))
+                            {
+                                IsFirstInputValid = true;
+                            }
+                            else
+                            {
+                                ResetInput();
+                            }
                         }
+
                     }
                     // Else add the grade.
                     else
@@ -718,48 +733,66 @@ namespace Grades
         public static void OverviewMenu()
         {
             ClearMenu();
-            if (t.MinGrade == 1 && t.MaxGrade == 6)
+            if (t.Subjects.Any())
             {
-                if (t.Subjects.Any())
+                // Calculate the maximum length of any word in front of the bar diagramm.
+                int MaxLength = t.Subjects.Select(x => x.Name.Length).Max();
+                if (MaxLength < Lang.GetString("Overview").Length) { MaxLength = Lang.GetString("Overview").Length; }
+                if (MaxLength < Lang.GetString("Total").Length) { MaxLength = Lang.GetString("Total").Length; }
+                if (Properties.Settings.Default.DisplayCompensation) { if (MaxLength < Lang.GetString("Compensation").Length) { MaxLength = Lang.GetString("Compensation").Length; } }
+                // Display the bar diagramm meter.
+
+                int BarLength;
+                if (t.MinGrade == 1 && t.MaxGrade == 6)
                 {
-                    // Calculate the maximum length of any word in front of the bar diagramm.
-                    int MaxLength = t.Subjects.Select(x => x.Name.Length).Max();
-                    if (MaxLength < Lang.GetString("Overview").Length) { MaxLength = Lang.GetString("Overview").Length; }
-                    if (MaxLength < Lang.GetString("Total").Length) { MaxLength = Lang.GetString("Total").Length; }
-                    if (Properties.Settings.Default.DisplayCompensation) { if (MaxLength < Lang.GetString("Compensation").Length) { MaxLength = Lang.GetString("Compensation").Length; } }
-                    // Display the bar diagramm meter.
                     Console.WriteLine("{0} : 1 2 3 4 5 6: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
-                    Console.Write("\n");
-                    // Sort the subjects descending by their average grade.
-                    t.Subjects.Sort((s1, s2) =>
-                    {
-                        return Convert.ToInt32(s2.CalcAverage() - s1.CalcAverage());
-                    });
-                    // Print a diagramm for each subject.
-                    foreach (Table.Subject s in t.Subjects)
-                    {
-                        Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(12, ' '), s.CalcAverage());
-                    }
-                    // Print total average grade.
-                    Console.Write("\n");
-                    Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(12, ' '), t.CalcAverage());
-                    Console.Write("\n");
-                    // Print compensation points, if enabled.
-                    if (Properties.Settings.Default.DisplayCompensation)
-                    {
-                        Console.Write("{0} {1}: {2}", Lang.GetString("Compensation").PadRight(MaxLength, ' '), new string(' ', 13), t.CalcCompensation());
-                        Console.Write("\n");
-                    }
+                    BarLength = 12;
                 }
-                // If no data is available, display a message for the user.
                 else
                 {
-                    Console.WriteLine("{0} : {1}", Lang.GetString("Overview"), Lang.GetString("NoData"));
+                    Console.WriteLine("{0} :1        50      100: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
+                    BarLength = 20;
+                }
+                
+                // Sort the subjects descending by their average grade.
+                t.Subjects.Sort((s1, s2) =>
+                {
+                    return Convert.ToInt32(s2.CalcAverage() - s1.CalcAverage());
+                });
+                // Print a diagramm for each subject.
+                foreach (Table.Subject s in t.Subjects)
+                {
+                    if (t.MinGrade == 1 && t.MaxGrade == 6)
+                    {
+                        Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(BarLength, ' '), s.CalcAverage());
+                    }
+                    else
+                    {
+                        Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(BarLength / (t.MaxGrade - t.MinGrade) * s.CalcAverage())).PadRight(BarLength, ' '), s.CalcAverage());
+                    }
+                }
+                // Print total average grade.
+                Console.Write("\n");
+                if (t.MinGrade == 1 && t.MaxGrade == 6)
+                {
+                    Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(BarLength, ' '), t.CalcAverage());
+                }
+                else
+                {
+                    Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(BarLength / (t.MaxGrade - t.MinGrade) * t.CalcAverage())).PadRight(BarLength, ' '), t.CalcAverage());
+                }
+                Console.Write("\n");
+                // Print compensation points, if enabled.
+                if (Properties.Settings.Default.DisplayCompensation)
+                {
+                    Console.Write("{0} {1}: {2}", Lang.GetString("Compensation").PadRight(MaxLength, ' '), new string(' ', BarLength + 1), t.CalcCompensation());
+                    Console.Write("\n");
                 }
             }
+            // If no data is available, display a message for the user.
             else
             {
-                Console.WriteLine("{0}", Lang.GetString("OverviewDataError"));
+                Console.WriteLine("{0} : {1}", Lang.GetString("Overview"), Lang.GetString("NoData"));
             }
 
             Console.Write("\n");
@@ -1025,7 +1058,7 @@ namespace Grades
             }
 
             DisplayMenu(options, DisplayTitle, DisplayOption, CreateOption, ManageOption);
-            
+
         }
 
         /// <summary>
