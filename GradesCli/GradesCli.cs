@@ -48,7 +48,7 @@ namespace Grades
 
             bool ManageOption(List<string> Options, int index)
             {
-                // switch ((index + 1).ToString())
+                // switch (Options[index])
                 switch (Options[index])
                 {
                     case var i when i.Equals(Lang.GetString("Subjects")):
@@ -189,7 +189,7 @@ namespace Grades
 
             bool ManageOption(List<string> Options, int index)
             {
-                switch ((index + 1).ToString())
+                switch (Options[index])
                 {
                     case var i when i.Equals(Lang.GetString("ReadTable")):
                         ChooseTable();
@@ -429,7 +429,7 @@ namespace Grades
 
             bool ManageOption(List<string> Options, int index)
             {
-                switch ((index + 1).ToString())
+                switch (Options[index])
                 {
                     case var i when i.Equals(Lang.GetString("Grades")):
                         ChooseGrade(s);
@@ -558,13 +558,13 @@ namespace Grades
 
             bool ManageOption(List<string> Options, int index)
             {
-                switch ((index + 1).ToString())
+                switch (Options[index])
                 {
-                    case "1":
+                    case var i when i.Equals(Lang.GetString("EditGrade")):
                         ModifyGrade(g);
                         break;
 
-                    case "2":
+                    case var i when i.Equals(Lang.GetString("DeleteGrade")):
                         // Remove the grade by using the OwnerSubject attribute.
                         // Effectively bypassing the need to pass the subject in which the grade is in.
                         g.OwnerSubject.RemGrade(g);
@@ -1023,7 +1023,7 @@ namespace Grades
 
             bool ManageOption(List<string> Options, int index)
             {
-                switch ((index + 1).ToString())
+                switch (Options[index])
                 {
                     case var i when i.Equals(Lang.GetString("ChooseLang")):
                         ChooseLang();
