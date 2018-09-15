@@ -735,58 +735,40 @@ namespace Grades
             ClearMenu();
             if (t.Subjects.Any())
             {
-                // Calculate the maximum length of any word in front of the bar diagramm.
-                int MaxLength = t.Subjects.Select(x => x.Name.Length).Max();
-                if (MaxLength < Lang.GetString("Overview").Length) { MaxLength = Lang.GetString("Overview").Length; }
-                if (MaxLength < Lang.GetString("Total").Length) { MaxLength = Lang.GetString("Total").Length; }
-                if (Properties.Settings.Default.DisplayCompensation) { if (MaxLength < Lang.GetString("Compensation").Length) { MaxLength = Lang.GetString("Compensation").Length; } }
-                // Display the bar diagramm meter.
-
-                int BarLength;
                 if (t.MinGrade == 1 && t.MaxGrade == 6)
                 {
+                    // Calculate the maximum length of any word in front of the bar diagramm.
+                    int MaxLength = t.Subjects.Select(x => x.Name.Length).Max();
+                    if (MaxLength < Lang.GetString("Overview").Length) { MaxLength = Lang.GetString("Overview").Length; }
+                    if (MaxLength < Lang.GetString("Total").Length) { MaxLength = Lang.GetString("Total").Length; }
+                    if (Properties.Settings.Default.DisplayCompensation) { if (MaxLength < Lang.GetString("Compensation").Length) { MaxLength = Lang.GetString("Compensation").Length; } }
+                    // Display the bar diagramm meter.
+                    int BarLength = 12;
                     Console.WriteLine("{0} : 1 2 3 4 5 6: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
-                    BarLength = 12;
-                }
-                else
-                {
-                    Console.WriteLine("{0} :1        50      100: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
-                    BarLength = 20;
-                }
-                
-                // Sort the subjects descending by their average grade.
-                t.Subjects.Sort((s1, s2) =>
-                {
-                    return Convert.ToInt32(s2.CalcAverage() - s1.CalcAverage());
-                });
-                // Print a diagramm for each subject.
-                foreach (Table.Subject s in t.Subjects)
-                {
-                    if (t.MinGrade == 1 && t.MaxGrade == 6)
+                    // Sort the subjects descending by their average grade.
+                    t.Subjects.Sort((s1, s2) =>
+                    {
+                        return Convert.ToInt32(s2.CalcAverage() - s1.CalcAverage());
+                    });
+                    // Print a diagramm for each subject.
+                    foreach (Table.Subject s in t.Subjects)
                     {
                         Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(BarLength, ' '), s.CalcAverage());
                     }
-                    else
-                    {
-                        Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(BarLength / (t.MaxGrade - t.MinGrade) * s.CalcAverage())).PadRight(BarLength, ' '), s.CalcAverage());
-                    }
-                }
-                // Print total average grade.
-                Console.Write("\n");
-                if (t.MinGrade == 1 && t.MaxGrade == 6)
-                {
+                    // Print total average grade.
+                    Console.Write("\n");
                     Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(BarLength, ' '), t.CalcAverage());
+                    Console.Write("\n");
+                    // Print compensation points, if enabled.
+                    if (Properties.Settings.Default.DisplayCompensation)
+                    {
+                        Console.Write("{0} {1}: {2}", Lang.GetString("Compensation").PadRight(MaxLength, ' '), new string(' ', BarLength + 1), t.CalcCompensation());
+                        Console.Write("\n");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(BarLength / (t.MaxGrade - t.MinGrade) * t.CalcAverage())).PadRight(BarLength, ' '), t.CalcAverage());
-                }
-                Console.Write("\n");
-                // Print compensation points, if enabled.
-                if (Properties.Settings.Default.DisplayCompensation)
-                {
-                    Console.Write("{0} {1}: {2}", Lang.GetString("Compensation").PadRight(MaxLength, ' '), new string(' ', BarLength + 1), t.CalcCompensation());
-                    Console.Write("\n");
+                    Console.WriteLine("{0} : {1}", Lang.GetString("Overview"), Lang.GetString("OverviewDataError"));
                 }
             }
             // If no data is available, display a message for the user.
