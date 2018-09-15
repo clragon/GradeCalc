@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Resources;
+using System.Collections.Generic;
 
 namespace Grades
 {
@@ -1257,7 +1257,6 @@ namespace Grades
                                     }
                                     else
                                     {
-                                        // InputString = InputString.Remove(InputString.Length - 1);
                                         ResetInput();
                                     }
                                 }
