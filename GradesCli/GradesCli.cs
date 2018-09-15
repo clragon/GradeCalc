@@ -48,27 +48,33 @@ namespace Grades
 
             bool ManageOption(List<string> Options, int index)
             {
-                switch ((index + 1).ToString())
+                // switch ((index + 1).ToString())
+                switch (Options[index])
                 {
-                    case "1":
+                    case var i when i.Equals(Lang.GetString("Subjects")):
                         // Calling the menu for choosing a subject.
                         ChooseSubject();
                         break;
 
-                    case "2":
+                    case var i when i.Equals(Lang.GetString("Overview")):
                         // Calling the overview menu.
                         OverviewMenu();
                         break;
 
-                    case "3":
+                    case var i when i.Equals(Lang.GetString("Table")):
                         // Calling the menu to manage tables and their files.
                         ManageTable();
                         break;
 
-                    case "4":
+                    case var i when i.Equals(Lang.GetString("Settings")):
                         // Calling the settings menu.
                         Settings();
                         break;
+
+                    case var i when i.Equals(Lang.GetString("Exit")):
+                        // Exit the app.
+                        ExitCli();
+                        return true;
 
                     default:
                         ResetInput();
@@ -185,27 +191,27 @@ namespace Grades
             {
                 switch ((index + 1).ToString())
                 {
-                    case "1":
+                    case var i when i.Equals(Lang.GetString("ReadTable")):
                         ChooseTable();
                         break;
 
-                    case "2":
+                    case var i when i.Equals(Lang.GetString("WriteTable")):
                         t.Save(true);
                         new System.Threading.ManualResetEvent(false).WaitOne(20);
                         break;
 
-                    case "3":
+                    case var i when i.Equals(Lang.GetString("DefaultTable")):
                         Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(SourceFile);
                         Properties.Settings.Default.Save();
                         new System.Threading.ManualResetEvent(false).WaitOne(20);
                         break;
 
-                    case "4":
+                    case var i when i.Equals(Lang.GetString("RenameTable")):
                         RenameTable();
                         t.Save();
                         return true;
 
-                    case "5":
+                    case var i when i.Equals(Lang.GetString("DeleteTable")):
                         bool IsDeleteInputValid = false;
                         while (!IsDeleteInputValid)
                         {
@@ -425,15 +431,15 @@ namespace Grades
             {
                 switch ((index + 1).ToString())
                 {
-                    case "1":
+                    case var i when i.Equals(Lang.GetString("Grades")):
                         ChooseGrade(s);
                         break;
 
-                    case "2":
+                    case var i when i.Equals(Lang.GetString("RenameSubject")):
                         RenameSubject(s);
                         break;
 
-                    case "3":
+                    case var i when i.Equals(Lang.GetString("DeleteSubject")):
                         t.RemSubject(t.Subjects.IndexOf(s));
                         return true;
 
@@ -753,11 +759,11 @@ namespace Grades
                     // Print a diagramm for each subject.
                     foreach (Table.Subject s in t.Subjects)
                     {
-                        Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(BarLength, ' '), s.CalcAverage());
+                        Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(BarLength, ' ').Truncate(BarLength), s.CalcAverage());
                     }
                     // Print total average grade.
                     Console.Write("\n");
-                    Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(BarLength, ' '), t.CalcAverage());
+                    Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(BarLength, ' ').Truncate(BarLength), t.CalcAverage());
                     Console.Write("\n");
                     // Print compensation points, if enabled.
                     if (Properties.Settings.Default.DisplayCompensation)
@@ -1019,11 +1025,11 @@ namespace Grades
             {
                 switch ((index + 1).ToString())
                 {
-                    case "1":
+                    case var i when i.Equals(Lang.GetString("ChooseLang")):
                         ChooseLang();
                         break;
 
-                    case "2":
+                    case var i when i.Equals(Lang.GetString("ResetSettings")):
                         try { System.IO.File.Delete(System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath); }
                         catch { }
                         Properties.Settings.Default.Reset();
