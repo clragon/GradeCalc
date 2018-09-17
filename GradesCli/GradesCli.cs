@@ -173,7 +173,7 @@ namespace Grades
         {
             t.Save();
 
-            List<string> options = new List<string> { Lang.GetString("ReadTable"), Lang.GetString("WriteTable"), Lang.GetString("DefaultTable"), Lang.GetString("RenameTable"), Lang.GetString("DeleteTable") };
+            List<string> options = new List<string> { Lang.GetString("ReadTable"), Lang.GetString("WriteTable"), Lang.GetString("SetDefaultTable"), Lang.GetString("RenameTable"), Lang.GetString("DeleteTable") };
 
             void DisplayTitle(List<string> Options)
             {
@@ -200,7 +200,7 @@ namespace Grades
                         new System.Threading.ManualResetEvent(false).WaitOne(20);
                         break;
 
-                    case var i when i.Equals(Lang.GetString("DefaultTable")):
+                    case var i when i.Equals(Lang.GetString("SetDefaultTable")):
                         Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(SourceFile);
                         Properties.Settings.Default.Save();
                         new System.Threading.ManualResetEvent(false).WaitOne(20);
@@ -216,7 +216,7 @@ namespace Grades
                         while (!IsDeleteInputValid)
                         {
                             // Ask the user for confirmation of deleting the current table.
-                            // This is language-dependent.
+                            // This is language dependent.
                             Console.Write("{0}? [{1}]> ", Lang.GetString("DeleteTable"), Lang.GetString("YesOrNo"));
                             string deleteInput = Console.ReadKey().KeyChar.ToString();
                             new System.Threading.ManualResetEvent(false).WaitOne(20);
@@ -286,16 +286,17 @@ namespace Grades
             void DisplayOption(List<string> TableFiles, string t, int index, int i)
             {
                 int MaxLength = TableFiles.Select(x => System.IO.Path.GetFileName(x).Length).Max();
+                string name;
                 try
                 {
-                    Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(TableFiles.Count).Length, ' '), System.IO.Path.GetFileName(TableFiles[index]).PadRight(MaxLength, ' ') + " | " + Table.Read(TableFiles[index]).name);
+                    name = Table.Read(TableFiles[index]).name;
                 }
                 catch (Exception)
                 {
-                    TableFiles.RemoveAt(i);
-                    i--;
+                    name = Lang.GetString("NoData");
                 }
-
+                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(TableFiles.Count).Length, ' '),
+                    System.IO.Path.GetFileName(TableFiles[index]).PadRight(MaxLength, ' ') + " | " + name);
             }
 
             bool CreateOption() { CreateTable(); return false; }
@@ -1007,7 +1008,7 @@ namespace Grades
         /// </summary>
         public static void Settings()
         {
-            List<string> options = new List<string> { Lang.GetString("ChooseLang"), Lang.GetString("ResetSettings") };
+            List<string> options = new List<string> { Lang.GetString("ChooseLang"), Lang.GetString("DefaultTable"), Lang.GetString("ResetSettings") };
 
             void DisplayTitle(List<string> Options)
             {
@@ -1027,6 +1028,10 @@ namespace Grades
                 {
                     case var i when i.Equals(Lang.GetString("ChooseLang")):
                         ChooseLang();
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("DefaultTable")):
+                        SetDefaultTable();
                         break;
 
                     case var i when i.Equals(Lang.GetString("ResetSettings")):
@@ -1095,6 +1100,66 @@ namespace Grades
 
             DisplayMenu(langs, DisplayTitle, DisplayOption, CreateOption, ManageOption, true, true);
 
+        }
+
+        /// <summary>
+        /// Displays a menu for choosing the default table.
+        /// </summary>
+        public static void SetDefaultTable()
+        {
+            List<string> tableFiles = new List<string>();
+            try
+            {
+                // Fetching all files in the app directory that have the "grades.xml" ending.
+                tableFiles = System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*grades.xml").ToList();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("DeniedTableAccess"));
+                new System.Threading.ManualResetEvent(false).WaitOne(500);
+            }
+            catch (Exception) { }
+
+            tableFiles.Sort((a, b) => b.CompareTo(a));
+
+
+            void DisplayTitle(List<string> Tables)
+            {
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("SetDefaultTable"), Tables.Count);
+            }
+
+            void DisplayOption(List<string> TableFiles, string t, int index, int i)
+            {
+                int MaxLength = TableFiles.Select(x => System.IO.Path.GetFileName(x).Length).Max();
+                string name;
+                try
+                {
+                    name = Table.Read(TableFiles[index]).name;
+                }
+                catch (Exception)
+                {
+                    name = Lang.GetString("NoData");
+                }
+                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(TableFiles.Count).Length, ' '), 
+                    System.IO.Path.GetFileName(TableFiles[index]).PadRight(MaxLength, ' ') + " | " + name);
+            }
+
+            bool CreateOption() { ResetInput(); return false; }
+
+            bool ManageOption(List<string> Tables, int index)
+            {
+                try
+                {
+                    SourceFile = Tables[index];
+                }
+                catch (Exception)
+                {
+                    ResetInput(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("ReadTableError")));
+                }
+                return false;
+            }
+
+            DisplayMenu(tableFiles, DisplayTitle, DisplayOption, CreateOption, ManageOption, true, false);
         }
 
         /// <summary>

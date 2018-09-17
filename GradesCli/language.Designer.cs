@@ -160,7 +160,7 @@ namespace Grades {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Set as default ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Default table ähnelt.
         /// </summary>
         internal static string DefaultTable {
             get {
@@ -408,6 +408,15 @@ namespace Grades {
         internal static string ResetSettings {
             get {
                 return ResourceManager.GetString("ResetSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Set as default ähnelt.
+        /// </summary>
+        internal static string SetDefaultTable {
+            get {
+                return ResourceManager.GetString("SetDefaultTable", resourceCulture);
             }
         }
         
