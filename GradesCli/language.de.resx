@@ -273,4 +273,7 @@
   <data name="DefaultTable" xml:space="preserve">
     <value>Standardtabelle</value>
   </data>
+  <data name="SetDefaultTableSuccess" xml:space="preserve">
+    <value>Tabelle erfolgreich als Standard gesetzt</value>
+  </data>
 </root>

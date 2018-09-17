@@ -273,4 +273,7 @@
   <data name="DefaultTable" xml:space="preserve">
     <value>Default table</value>
   </data>
+  <data name="SetDefaultTableSuccess" xml:space="preserve">
+    <value>Successfully set default table</value>
+  </data>
 </root>

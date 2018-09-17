@@ -32,7 +32,7 @@ namespace Grades
 
             // Displaying the menu
 
-            List<string> options = new List<string> { Lang.GetString("Subjects"), Lang.GetString("Overview"), Lang.GetString("Table"), Lang.GetString("Settings"), Lang.GetString("Exit") };
+            List<string> options = new List<string> { Lang.GetString("Subjects"), Lang.GetString("Overview"), Lang.GetString("Table"), Lang.GetString("Settings") };
 
             void DisplayTitle(List<string> Options)
             {
@@ -44,9 +44,9 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            bool CreateOption() { ResetInput(); return false; }
+            bool ZeroOption() { ResetInput(); return false; }
 
-            bool ManageOption(List<string> Options, int index)
+            bool ListOption(List<string> Options, int index)
             {
                 // switch (Options[index])
                 switch (Options[index])
@@ -71,11 +71,6 @@ namespace Grades
                         Settings();
                         break;
 
-                    case var i when i.Equals(Lang.GetString("Exit")):
-                        // Exit the app.
-                        ExitCli();
-                        return true;
-
                     default:
                         ResetInput();
                         break;
@@ -83,7 +78,7 @@ namespace Grades
                 return false;
             }
 
-            DisplayMenu(options, DisplayTitle, DisplayOption, CreateOption, ManageOption);
+            ListToMenu(options, DisplayTitle, DisplayOption, ZeroOption, ListOption, false ,false, true, "Exit");
 
             ExitCli();
         }
@@ -185,9 +180,9 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            bool CreateOption() { ResetInput(); return false; }
+            bool ZeroOption() { ResetInput(); return false; }
 
-            bool ManageOption(List<string> Options, int index)
+            bool ChoiceOption(List<string> Options, int index)
             {
                 switch (Options[index])
                 {
@@ -203,13 +198,14 @@ namespace Grades
                     case var i when i.Equals(Lang.GetString("SetDefaultTable")):
                         Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(SourceFile);
                         Properties.Settings.Default.Save();
-                        new System.Threading.ManualResetEvent(false).WaitOne(20);
+                        Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("SetDefaultTableSuccess"));
+                        new System.Threading.ManualResetEvent(false).WaitOne(500);
                         break;
 
                     case var i when i.Equals(Lang.GetString("RenameTable")):
                         RenameTable();
                         t.Save();
-                        return true;
+                        break;
 
                     case var i when i.Equals(Lang.GetString("DeleteTable")):
                         bool IsDeleteInputValid = false;
@@ -251,7 +247,7 @@ namespace Grades
                 return false;
             }
 
-            DisplayMenu(options, DisplayTitle, DisplayOption, CreateOption, ManageOption);
+            ListToMenu(options, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption);
 
         }
 
@@ -299,9 +295,9 @@ namespace Grades
                     System.IO.Path.GetFileName(TableFiles[index]).PadRight(MaxLength, ' ') + " | " + name);
             }
 
-            bool CreateOption() { CreateTable(); return false; }
+            bool ZeroOption() { CreateTable(); return false; }
 
-            bool ManageOption(List<string> Tables, int index)
+            bool ChoiceOption(List<string> Tables, int index)
             {
                 try
                 {
@@ -315,7 +311,7 @@ namespace Grades
                 return false;
             }
 
-            DisplayMenu(tableFiles, DisplayTitle, DisplayOption, CreateOption, ManageOption, true, false, UserCanAbort);
+            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption, true, false, UserCanAbort);
 
         }
 
@@ -426,9 +422,9 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            bool CreateOption() { ResetInput(); return false; }
+            bool ZeroOption() { ResetInput(); return false; }
 
-            bool ManageOption(List<string> Options, int index)
+            bool ChoiceOption(List<string> Options, int index)
             {
                 switch (Options[index])
                 {
@@ -451,7 +447,7 @@ namespace Grades
                 return false;
             }
 
-            DisplayMenu(options, DisplayTitle, DisplayOption, CreateOption, ManageOption);
+            ListToMenu(options, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption);
 
         }
 
@@ -472,15 +468,15 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Subjects.Count).Length, ' '), s.Name);
             }
 
-            bool CreateOption() { CreateSubject(); return false; }
+            bool ZeroOption() { CreateSubject(); return false; }
 
-            bool ManageOption(List<Table.Subject> Subjects, int index)
+            bool ChoiceOption(List<Table.Subject> Subjects, int index)
             {
                 ManageSubject(t.Subjects[index]);
                 return false;
             }
 
-            DisplayMenu(t.Subjects, DisplayTitle, DisplayOption, CreateOption, ManageOption);
+            ListToMenu(t.Subjects, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption);
 
         }
 
@@ -555,9 +551,9 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            bool CreateOption() { ResetInput(); return false; }
+            bool ZeroOption() { ResetInput(); return false; }
 
-            bool ManageOption(List<string> Options, int index)
+            bool ChoiceOption(List<string> Options, int index)
             {
                 switch (Options[index])
                 {
@@ -578,7 +574,7 @@ namespace Grades
                 return false;
             }
 
-            DisplayMenu(options, DisplayTitle, DisplayOption, CreateOption, ManageOption);
+            ListToMenu(options, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption);
 
         }
 
@@ -600,19 +596,19 @@ namespace Grades
                 Console.WriteLine("[{0}] {1} | {2}", Convert.ToString(i).PadLeft(Convert.ToString(Grades.Count).Length, ' '), Convert.ToString(g.Value).PadRight(MaxLength, ' '), g.Weight);
             }
 
-            bool CreateOption()
+            bool ZeroOption()
             {
                 CreateGrade(s);
                 return false;
             }
 
-            bool ManageOption(List<Table.Subject.Grade> Grades, int index)
+            bool ChoiceOption(List<Table.Subject.Grade> Grades, int index)
             {
                 ManageGrade(Grades[index]);
                 return false;
             }
 
-            DisplayMenu(s.Grades, DisplayTitle, DisplayOption, CreateOption, ManageOption);
+            ListToMenu(s.Grades, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption);
 
         }
 
@@ -1020,9 +1016,9 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            bool CreateOption() { ResetInput(); return false; }
+            bool ZeroOption() { ResetInput(); return false; }
 
-            bool ManageOption(List<string> Options, int index)
+            bool ChoiceOption(List<string> Options, int index)
             {
                 switch (Options[index])
                 {
@@ -1050,7 +1046,7 @@ namespace Grades
                 return false;
             }
 
-            DisplayMenu(options, DisplayTitle, DisplayOption, CreateOption, ManageOption);
+            ListToMenu(options, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption);
 
         }
 
@@ -1080,7 +1076,7 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Langs.Count).Length, ' '), lang.Name);
             }
 
-            bool CreateOption()
+            bool ZeroOption()
             {
                 Properties.Settings.Default.Language = System.Globalization.CultureInfo.InvariantCulture;
                 Properties.Settings.Default.OverrideLanguage = false;
@@ -1089,7 +1085,7 @@ namespace Grades
                 return true;
             }
 
-            bool ManageOption(List<System.Globalization.CultureInfo> Langs, int index)
+            bool ChoiceOption(List<System.Globalization.CultureInfo> Langs, int index)
             {
                 Properties.Settings.Default.Language = Langs[index];
                 Properties.Settings.Default.OverrideLanguage = true;
@@ -1098,7 +1094,7 @@ namespace Grades
                 return true;
             }
 
-            DisplayMenu(langs, DisplayTitle, DisplayOption, CreateOption, ManageOption, true, true);
+            ListToMenu(langs, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption, true, true);
 
         }
 
@@ -1144,13 +1140,16 @@ namespace Grades
                     System.IO.Path.GetFileName(TableFiles[index]).PadRight(MaxLength, ' ') + " | " + name);
             }
 
-            bool CreateOption() { ResetInput(); return false; }
+            bool ZeroOption() { ResetInput(); return false; }
 
-            bool ManageOption(List<string> Tables, int index)
+            bool ChoiceOption(List<string> Tables, int index)
             {
                 try
                 {
-                    SourceFile = Tables[index];
+                    Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(Tables[index]);
+                    Properties.Settings.Default.Save();
+                    Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("SetDefaultTableSuccess"));
+                    new System.Threading.ManualResetEvent(false).WaitOne(500);
                 }
                 catch (Exception)
                 {
@@ -1159,7 +1158,7 @@ namespace Grades
                 return false;
             }
 
-            DisplayMenu(tableFiles, DisplayTitle, DisplayOption, CreateOption, ManageOption, true, false);
+            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption, true, false);
         }
 
         /// <summary>
@@ -1190,7 +1189,16 @@ namespace Grades
         /// <summary>
         /// The template for displaying a menu.
         /// </summary>
-        public static void DisplayMenu<T>(List<T> Objects, Action<List<T>> DisplayTitle, Action<List<T>, T, int, int> DisplayOption, Func<bool> CreateOption, Func<List<T>, int, bool> ManageOption, bool ExitAfterManage = false, bool ExitAfterCreate = false, bool UserCanAbort = true)
+        /// <param name="Objects">A list of objects that will be displayed as choices.</param>
+        /// <param name="DisplayTitle">Pass a function that displays the title here. It should include displaying the 0-option if you want to use it.</param>
+        /// <param name="DisplayOptions">Pass a function that will display the options here.</param>
+        /// <param name="ZeroMethod">Pass a function that will handle the 0-option here, if you want to use it.</param>
+        /// <param name="ChoiceMethod">Pass a function that handles any numerical option from the passed list here.</param>
+        /// <param name="ExitAfterChoice">Defines if the menu should exit after a choice was made.</param>
+        /// <param name="ExitAfterZero">Defines if the menu should exit after the 0-option.</param>
+        /// <param name="UserCanAbort">Defines if the user can exit the menu.</param>
+        /// <param name="BackString">The string that is displayed for the option to exit the menu.</param>
+        public static void ListToMenu<T>(List<T> Objects, Action<List<T>> DisplayTitle, Action<List<T>, T, int, int> DisplayOptions, Func<bool> ZeroMethod, Func<List<T>, int, bool> ChoiceMethod, bool ExitAfterChoice = false, bool ExitAfterZero = false, bool UserCanAbort = true, string BackString = "Back")
         {
             int index = -1;
             string InputString = "";
@@ -1208,14 +1216,14 @@ namespace Grades
                         i++;
                         if (InputString == "")
                         {
-                            DisplayOption(Objects, x, i - 1, i);
+                            DisplayOptions(Objects, x, i - 1, i);
                             printedEntries++;
                         }
                         else
                         {
                             if (Convert.ToString(i).StartsWith(InputString) || Convert.ToString(i) == InputString)
                             {
-                                DisplayOption(Objects, x, i - 1, i);
+                                DisplayOptions(Objects, x, i - 1, i);
                                 printedEntries++;
                             }
                         }
@@ -1234,7 +1242,7 @@ namespace Grades
 
                 if (UserCanAbort)
                 {
-                    Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(Objects.Count).Length, ' '), Lang.GetString("Back"));
+                        Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(Objects.Count).Length, ' '), Lang.GetString(BackString));
                 }
                 Console.Write("\n");
 
@@ -1254,6 +1262,7 @@ namespace Grades
                             }
                             else
                             {
+                                Console.Write("\n");
                                 ResetInput();
                             }
                             break;
@@ -1278,7 +1287,7 @@ namespace Grades
                                 index = Convert.ToInt32(InputString) - 1;
                                 InputString = "";
                                 IsInputValid = true;
-                                if (ManageOption(Objects, index) || ExitAfterManage)
+                                if (ChoiceMethod(Objects, index) || ExitAfterChoice)
                                 {
                                     IsMenuExitPending = true;
                                 }
@@ -1293,7 +1302,7 @@ namespace Grades
                                 if ((InputString == "") && (choice == 0))
                                 {
                                     IsInputValid = true;
-                                    if (CreateOption() || ExitAfterCreate)
+                                    if (ZeroMethod() || ExitAfterZero)
                                     {
                                         IsMenuExitPending = true;
                                     }
@@ -1310,7 +1319,7 @@ namespace Grades
                                             index = Convert.ToInt32(InputString) - 1;
                                             InputString = "";
                                             IsInputValid = true;
-                                            if (ManageOption(Objects, index) || ExitAfterManage)
+                                            if (ChoiceMethod(Objects, index) || ExitAfterChoice)
                                             {
                                                 IsMenuExitPending = true;
                                             }

@@ -421,6 +421,15 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully set default table ähnelt.
+        /// </summary>
+        internal static string SetDefaultTableSuccess {
+            get {
+                return ResourceManager.GetString("SetDefaultTableSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Settings ähnelt.
         /// </summary>
         internal static string Settings {
