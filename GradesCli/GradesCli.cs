@@ -44,9 +44,9 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            bool ZeroOption() { ResetInput(); return false; }
+            bool ZeroMethod() { ResetInput(); return false; }
 
-            bool ListOption(List<string> Options, int index)
+            bool ChoiceMethod(List<string> Options, int index)
             {
                 // switch (Options[index])
                 switch (Options[index])
@@ -78,7 +78,7 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(options, DisplayTitle, DisplayOption, ZeroOption, ListOption, false ,false, true, "Exit");
+            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, false ,false, true, "Exit");
 
             ExitCli();
         }
@@ -180,9 +180,9 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            bool ZeroOption() { ResetInput(); return false; }
+            bool ZeroMethod() { ResetInput(); return false; }
 
-            bool ChoiceOption(List<string> Options, int index)
+            bool ChoiceMethod(List<string> Options, int index)
             {
                 switch (Options[index])
                 {
@@ -208,36 +208,17 @@ namespace Grades
                         break;
 
                     case var i when i.Equals(Lang.GetString("DeleteTable")):
-                        bool IsDeleteInputValid = false;
-                        while (!IsDeleteInputValid)
+                        Action Yes = () =>
                         {
-                            // Ask the user for confirmation of deleting the current table.
-                            // This is language dependent.
-                            Console.Write("{0}? [{1}]> ", Lang.GetString("DeleteTable"), Lang.GetString("YesOrNo"));
-                            string deleteInput = Console.ReadKey().KeyChar.ToString();
-                            new System.Threading.ManualResetEvent(false).WaitOne(20);
-                            Console.Write("\n");
-                            // Comparing the user input incase-sensitive to the current language's character for "Yes" (For example "Y").
-                            if (string.Equals(deleteInput, Lang.GetString("Yes"), StringComparison.OrdinalIgnoreCase))
-                            {
-                                IsDeleteInputValid = true;
-                                t.Clear(SourceFile);
-                                t = LoadTable();
-                                ChooseTable(false);
-                            }
-                            // Comparing the user input incase-sensitive to the current language's character for "No" (For example "N").
-                            else if (string.Equals(deleteInput, Lang.GetString("No"), StringComparison.OrdinalIgnoreCase))
-                            {
-                                IsDeleteInputValid = true;
-                            }
-                            // Input seems to be invalid, resetting the field.
-                            else
-                            {
-                                ResetInput();
-                            }
+                            t.Clear(SourceFile);
+                            t = LoadTable();
+                            ChooseTable(false);
 
-                        }
-                        break;
+                        };
+
+                        YesNoMenu("DeleteTable", Yes, () => { });
+
+                        break; 
 
                     default:
                         // Reset the input.
@@ -247,7 +228,7 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(options, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption);
+            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
 
         }
 
@@ -257,21 +238,27 @@ namespace Grades
         /// <param name="UserCanAbort">Wether the user can exit the menu without choosing a table or not.</param>
         public static void ChooseTable(bool UserCanAbort = true)
         {
-            List<string> tableFiles = new List<string>();
-            try
-            {
-                // Fetching all files in the app directory that have the "grades.xml" ending.
-                tableFiles = System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*grades.xml").ToList();
-            }
-            catch (UnauthorizedAccessException)
-            {
-                Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("DeniedTableAccess"));
-                new System.Threading.ManualResetEvent(false).WaitOne(500);
-            }
-            catch (Exception) { }
+            List<string> tableFiles = GetTableFiles();
 
-            tableFiles.Sort((a, b) => b.CompareTo(a));
+            List<string> GetTableFiles()
+            {
+                List<string> tables = new List<string>();
+                try
+                {
+                    // Fetching all files in the app directory that have the "grades.xml" ending.
+                    tables = System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*grades.xml").ToList();
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("DeniedTableAccess"));
+                    new System.Threading.ManualResetEvent(false).WaitOne(500);
+                }
+                catch (Exception) { }
 
+                tables.Sort((a, b) => a.CompareTo(b));
+
+                return tables;
+            }
 
             void DisplayTitle(List<string> Tables)
             {
@@ -281,6 +268,8 @@ namespace Grades
 
             void DisplayOption(List<string> TableFiles, string t, int index, int i)
             {
+                // Updating the list here.
+                TableFiles = GetTableFiles();
                 int MaxLength = TableFiles.Select(x => System.IO.Path.GetFileName(x).Length).Max();
                 string name;
                 try
@@ -295,9 +284,13 @@ namespace Grades
                     System.IO.Path.GetFileName(TableFiles[index]).PadRight(MaxLength, ' ') + " | " + name);
             }
 
-            bool ZeroOption() { CreateTable(); return false; }
+            bool ZeroMethod()
+            {
+                CreateTable();
+                return false;
+            }
 
-            bool ChoiceOption(List<string> Tables, int index)
+            bool ChoiceMethod(List<string> Tables, int index)
             {
                 try
                 {
@@ -311,7 +304,7 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption, true, false, UserCanAbort);
+            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, true, false, UserCanAbort);
 
         }
 
@@ -422,9 +415,9 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            bool ZeroOption() { ResetInput(); return false; }
+            bool ZeroMethod() { ResetInput(); return false; }
 
-            bool ChoiceOption(List<string> Options, int index)
+            bool ChoiceMethod(List<string> Options, int index)
             {
                 switch (Options[index])
                 {
@@ -447,7 +440,7 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(options, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption);
+            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
 
         }
 
@@ -468,15 +461,15 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Subjects.Count).Length, ' '), s.Name);
             }
 
-            bool ZeroOption() { CreateSubject(); return false; }
+            bool ZeroMethod() { CreateSubject(); return false; }
 
-            bool ChoiceOption(List<Table.Subject> Subjects, int index)
+            bool ChoiceMethod(List<Table.Subject> Subjects, int index)
             {
                 ManageSubject(t.Subjects[index]);
                 return false;
             }
 
-            ListToMenu(t.Subjects, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption);
+            ListToMenu(t.Subjects, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
 
         }
 
@@ -551,9 +544,9 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            bool ZeroOption() { ResetInput(); return false; }
+            bool ZeroMethod() { ResetInput(); return false; }
 
-            bool ChoiceOption(List<string> Options, int index)
+            bool ChoiceMethod(List<string> Options, int index)
             {
                 switch (Options[index])
                 {
@@ -574,7 +567,7 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(options, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption);
+            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
 
         }
 
@@ -596,19 +589,19 @@ namespace Grades
                 Console.WriteLine("[{0}] {1} | {2}", Convert.ToString(i).PadLeft(Convert.ToString(Grades.Count).Length, ' '), Convert.ToString(g.Value).PadRight(MaxLength, ' '), g.Weight);
             }
 
-            bool ZeroOption()
+            bool ZeroMethod()
             {
                 CreateGrade(s);
                 return false;
             }
 
-            bool ChoiceOption(List<Table.Subject.Grade> Grades, int index)
+            bool ChoiceMethod(List<Table.Subject.Grade> Grades, int index)
             {
                 ManageGrade(Grades[index]);
                 return false;
             }
 
-            ListToMenu(s.Grades, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption);
+            ListToMenu(s.Grades, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
 
         }
 
@@ -1016,9 +1009,9 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            bool ZeroOption() { ResetInput(); return false; }
+            bool ZeroMethod() { ResetInput(); return false; }
 
-            bool ChoiceOption(List<string> Options, int index)
+            bool ChoiceMethod(List<string> Options, int index)
             {
                 switch (Options[index])
                 {
@@ -1046,7 +1039,7 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(options, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption);
+            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
 
         }
 
@@ -1076,7 +1069,7 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Langs.Count).Length, ' '), lang.Name);
             }
 
-            bool ZeroOption()
+            bool ZeroMethod()
             {
                 Properties.Settings.Default.Language = System.Globalization.CultureInfo.InvariantCulture;
                 Properties.Settings.Default.OverrideLanguage = false;
@@ -1085,7 +1078,7 @@ namespace Grades
                 return true;
             }
 
-            bool ChoiceOption(List<System.Globalization.CultureInfo> Langs, int index)
+            bool ChoiceMethod(List<System.Globalization.CultureInfo> Langs, int index)
             {
                 Properties.Settings.Default.Language = Langs[index];
                 Properties.Settings.Default.OverrideLanguage = true;
@@ -1094,7 +1087,7 @@ namespace Grades
                 return true;
             }
 
-            ListToMenu(langs, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption, true, true);
+            ListToMenu(langs, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, true, true);
 
         }
 
@@ -1140,9 +1133,9 @@ namespace Grades
                     System.IO.Path.GetFileName(TableFiles[index]).PadRight(MaxLength, ' ') + " | " + name);
             }
 
-            bool ZeroOption() { ResetInput(); return false; }
+            bool ZeroMethod() { ResetInput(); return false; }
 
-            bool ChoiceOption(List<string> Tables, int index)
+            bool ChoiceMethod(List<string> Tables, int index)
             {
                 try
                 {
@@ -1158,7 +1151,7 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ZeroOption, ChoiceOption, true, false);
+            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, true, false);
         }
 
         /// <summary>
@@ -1341,6 +1334,38 @@ namespace Grades
                             }
                             break;
                     }
+                }
+            }
+        }
+
+        public static void YesNoMenu(string title, Action Yes, Action No)
+        {
+            bool IsInputValid = false;
+            while (!IsInputValid)
+            {
+                // Ask the user for confirmation of deleting the current table.
+                // This is language dependent.
+                Console.Write("{0}? [{1}]> ", Lang.GetString(title), Lang.GetString("YesOrNo"));
+                string Input = Console.ReadKey().KeyChar.ToString();
+                new System.Threading.ManualResetEvent(false).WaitOne(20);
+                Console.Write("\n");
+                // Comparing the user input incase-sensitive to the current language's character for "Yes" (For example "Y").
+                if (string.Equals(Input, Lang.GetString("Yes"), StringComparison.OrdinalIgnoreCase))
+                {
+                    IsInputValid = true;
+                    Yes();
+
+                }
+                // Comparing the user input incase-sensitive to the current language's character for "No" (For example "N").
+                else if (string.Equals(Input, Lang.GetString("No"), StringComparison.OrdinalIgnoreCase))
+                {
+                    IsInputValid = true;
+                    No();
+                }
+                // Input seems to be invalid, resetting the field.
+                else
+                {
+                    ResetInput();
                 }
             }
         }
