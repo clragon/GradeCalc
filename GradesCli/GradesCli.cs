@@ -1062,9 +1062,9 @@ namespace Grades
                         {
                             Properties.Settings.Default.Reset();
                             try { System.IO.File.Delete(System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath); } catch { }
+                            Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("SettingsResetSuccess"));
                         };
                         YesNoMenu("SettingsReset", Yes, () => { });
-                        Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("SettingsResetSuccess"));
                         new System.Threading.ManualResetEvent(false).WaitOne(500);
                         break;
 
