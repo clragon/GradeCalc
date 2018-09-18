@@ -88,128 +88,11 @@ namespace Grades {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Choose grade ähnelt.
-        /// </summary>
-        internal static string ChooseGrade {
-            get {
-                return ResourceManager.GetString("ChooseGrade", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Choose language ähnelt.
-        /// </summary>
-        internal static string ChooseLang {
-            get {
-                return ResourceManager.GetString("ChooseLang", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Choose subject ähnelt.
-        /// </summary>
-        internal static string ChooseSubject {
-            get {
-                return ResourceManager.GetString("ChooseSubject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Choose Table ähnelt.
-        /// </summary>
-        internal static string ChooseTable {
-            get {
-                return ResourceManager.GetString("ChooseTable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Compensation ähnelt.
         /// </summary>
         internal static string Compensation {
             get {
                 return ResourceManager.GetString("Compensation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die New grade ähnelt.
-        /// </summary>
-        internal static string CreateGrade {
-            get {
-                return ResourceManager.GetString("CreateGrade", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die New subject ähnelt.
-        /// </summary>
-        internal static string CreateSubject {
-            get {
-                return ResourceManager.GetString("CreateSubject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die New table ähnelt.
-        /// </summary>
-        internal static string CreateTable {
-            get {
-                return ResourceManager.GetString("CreateTable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Default table ähnelt.
-        /// </summary>
-        internal static string DefaultTable {
-            get {
-                return ResourceManager.GetString("DefaultTable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Delete ähnelt.
-        /// </summary>
-        internal static string DeleteGrade {
-            get {
-                return ResourceManager.GetString("DeleteGrade", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Delete ähnelt.
-        /// </summary>
-        internal static string DeleteSubject {
-            get {
-                return ResourceManager.GetString("DeleteSubject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Delete ähnelt.
-        /// </summary>
-        internal static string DeleteTable {
-            get {
-                return ResourceManager.GetString("DeleteTable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die file access denied ähnelt.
-        /// </summary>
-        internal static string DeniedTableAccess {
-            get {
-                return ResourceManager.GetString("DeniedTableAccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Edit ähnelt.
-        /// </summary>
-        internal static string EditGrade {
-            get {
-                return ResourceManager.GetString("EditGrade", resourceCulture);
             }
         }
         
@@ -241,6 +124,42 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Choose grade ähnelt.
+        /// </summary>
+        internal static string GradeChoose {
+            get {
+                return ResourceManager.GetString("GradeChoose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die New grade ähnelt.
+        /// </summary>
+        internal static string GradeCreate {
+            get {
+                return ResourceManager.GetString("GradeCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete ähnelt.
+        /// </summary>
+        internal static string GradeDelete {
+            get {
+                return ResourceManager.GetString("GradeDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Edit ähnelt.
+        /// </summary>
+        internal static string GradeEdit {
+            get {
+                return ResourceManager.GetString("GradeEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Grades ähnelt.
         /// </summary>
         internal static string Grades {
@@ -252,18 +171,45 @@ namespace Grades {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Invalid input ähnelt.
         /// </summary>
-        internal static string InvalidInput {
+        internal static string InputInvalid {
             get {
-                return ResourceManager.GetString("InvalidInput", resourceCulture);
+                return ResourceManager.GetString("InputInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Choose language ähnelt.
+        /// </summary>
+        internal static string LanguageChoose {
+            get {
+                return ResourceManager.GetString("LanguageChoose", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Default ähnelt.
         /// </summary>
-        internal static string LangDefault {
+        internal static string LanguageDefault {
             get {
-                return ResourceManager.GetString("LangDefault", resourceCulture);
+                return ResourceManager.GetString("LanguageDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully resetted language ähnelt.
+        /// </summary>
+        internal static string LanguageResetSuccess {
+            get {
+                return ResourceManager.GetString("LanguageResetSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully changed language ähnelt.
+        /// </summary>
+        internal static string LanguageSetSuccess {
+            get {
+                return ResourceManager.GetString("LanguageSetSuccess", resourceCulture);
             }
         }
         
@@ -282,33 +228,6 @@ namespace Grades {
         internal static string Manage {
             get {
                 return ResourceManager.GetString("Manage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Manage table ähnelt.
-        /// </summary>
-        internal static string ManageTable {
-            get {
-                return ResourceManager.GetString("ManageTable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Name ähnelt.
-        /// </summary>
-        internal static string NameOfSubject {
-            get {
-                return ResourceManager.GetString("NameOfSubject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Name ähnelt.
-        /// </summary>
-        internal static string NameOfTable {
-            get {
-                return ResourceManager.GetString("NameOfTable", resourceCulture);
             }
         }
         
@@ -358,78 +277,6 @@ namespace Grades {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Open ähnelt.
-        /// </summary>
-        internal static string ReadTable {
-            get {
-                return ResourceManager.GetString("ReadTable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Table could not be opened ähnelt.
-        /// </summary>
-        internal static string ReadTableError {
-            get {
-                return ResourceManager.GetString("ReadTableError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully opened table ähnelt.
-        /// </summary>
-        internal static string ReadTableSuccess {
-            get {
-                return ResourceManager.GetString("ReadTableSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rename ähnelt.
-        /// </summary>
-        internal static string RenameSubject {
-            get {
-                return ResourceManager.GetString("RenameSubject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Rename ähnelt.
-        /// </summary>
-        internal static string RenameTable {
-            get {
-                return ResourceManager.GetString("RenameTable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Reset ähnelt.
-        /// </summary>
-        internal static string ResetSettings {
-            get {
-                return ResourceManager.GetString("ResetSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Set as default ähnelt.
-        /// </summary>
-        internal static string SetDefaultTable {
-            get {
-                return ResourceManager.GetString("SetDefaultTable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully set default table ähnelt.
-        /// </summary>
-        internal static string SetDefaultTableSuccess {
-            get {
-                return ResourceManager.GetString("SetDefaultTableSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Settings ähnelt.
         /// </summary>
         internal static string Settings {
@@ -439,11 +286,74 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Reset ähnelt.
+        /// </summary>
+        internal static string SettingsReset {
+            get {
+                return ResourceManager.GetString("SettingsReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully resetted settings ähnelt.
+        /// </summary>
+        internal static string SettingsResetSuccess {
+            get {
+                return ResourceManager.GetString("SettingsResetSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Subject ähnelt.
         /// </summary>
         internal static string Subject {
             get {
                 return ResourceManager.GetString("Subject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Choose subject ähnelt.
+        /// </summary>
+        internal static string SubjectChoose {
+            get {
+                return ResourceManager.GetString("SubjectChoose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die New subject ähnelt.
+        /// </summary>
+        internal static string SubjectCreate {
+            get {
+                return ResourceManager.GetString("SubjectCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete ähnelt.
+        /// </summary>
+        internal static string SubjectDelete {
+            get {
+                return ResourceManager.GetString("SubjectDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Name ähnelt.
+        /// </summary>
+        internal static string SubjectName {
+            get {
+                return ResourceManager.GetString("SubjectName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Rename ähnelt.
+        /// </summary>
+        internal static string SubjectRename {
+            get {
+                return ResourceManager.GetString("SubjectRename", resourceCulture);
             }
         }
         
@@ -462,6 +372,150 @@ namespace Grades {
         internal static string Table {
             get {
                 return ResourceManager.GetString("Table", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Choose Table ähnelt.
+        /// </summary>
+        internal static string TableChoose {
+            get {
+                return ResourceManager.GetString("TableChoose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die New table ähnelt.
+        /// </summary>
+        internal static string TableCreate {
+            get {
+                return ResourceManager.GetString("TableCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Default table ähnelt.
+        /// </summary>
+        internal static string TableDefault {
+            get {
+                return ResourceManager.GetString("TableDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete ähnelt.
+        /// </summary>
+        internal static string TableDelete {
+            get {
+                return ResourceManager.GetString("TableDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die file access denied ähnelt.
+        /// </summary>
+        internal static string TableDeniedAccess {
+            get {
+                return ResourceManager.GetString("TableDeniedAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Manage table ähnelt.
+        /// </summary>
+        internal static string TableManage {
+            get {
+                return ResourceManager.GetString("TableManage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Name ähnelt.
+        /// </summary>
+        internal static string TableName {
+            get {
+                return ResourceManager.GetString("TableName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Open ähnelt.
+        /// </summary>
+        internal static string TableRead {
+            get {
+                return ResourceManager.GetString("TableRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Table could not be opened ähnelt.
+        /// </summary>
+        internal static string TableReadError {
+            get {
+                return ResourceManager.GetString("TableReadError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully opened table ähnelt.
+        /// </summary>
+        internal static string TableReadSuccess {
+            get {
+                return ResourceManager.GetString("TableReadSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Rename ähnelt.
+        /// </summary>
+        internal static string TableRename {
+            get {
+                return ResourceManager.GetString("TableRename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Set as default ähnelt.
+        /// </summary>
+        internal static string TableSetDefault {
+            get {
+                return ResourceManager.GetString("TableSetDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully set default table ähnelt.
+        /// </summary>
+        internal static string TableSetDefaultSuccess {
+            get {
+                return ResourceManager.GetString("TableSetDefaultSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Save ähnelt.
+        /// </summary>
+        internal static string TableWrite {
+            get {
+                return ResourceManager.GetString("TableWrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Table could not be saved ähnelt.
+        /// </summary>
+        internal static string TableWriteError {
+            get {
+                return ResourceManager.GetString("TableWriteError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully saved table ähnelt.
+        /// </summary>
+        internal static string TableWriteSuccess {
+            get {
+                return ResourceManager.GetString("TableWriteSuccess", resourceCulture);
             }
         }
         
@@ -489,33 +543,6 @@ namespace Grades {
         internal static string Weight {
             get {
                 return ResourceManager.GetString("Weight", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Save ähnelt.
-        /// </summary>
-        internal static string WriteTable {
-            get {
-                return ResourceManager.GetString("WriteTable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Table could not be saved ähnelt.
-        /// </summary>
-        internal static string WriteTableError {
-            get {
-                return ResourceManager.GetString("WriteTableError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Successfully saved table ähnelt.
-        /// </summary>
-        internal static string WriteTableSuccess {
-            get {
-                return ResourceManager.GetString("WriteTableSuccess", resourceCulture);
             }
         }
         

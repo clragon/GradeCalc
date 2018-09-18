@@ -29,17 +29,11 @@ namespace Grades
         [DataMember(Name = "MaxGrade")]
         public double MaxGrade;
         /// <summary>
-        /// If minimum grade and maximum grade limits should be checked on creation.
-        /// This value does not alter the behaviour of the table class.
-        /// </summary>
-        [DataMember(Name = "EnableGradeLimits")]
-        public bool EnableGradeLimits = true;
-        /// <summary>
         /// If the weight system should be used.
         /// This value does not alter the behaviour of the table class.
         /// </summary>
         [DataMember(Name = "EnableWeightSystem")]
-        public bool EnableWeightSystem = true;
+        public bool UseWeightSystem = true;
 
 
         /// <summary>

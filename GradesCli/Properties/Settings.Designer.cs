@@ -50,36 +50,36 @@ namespace Grades.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public double MinGrade {
+        public double DefaultMinGrade {
             get {
-                return ((double)(this["MinGrade"]));
+                return ((double)(this["DefaultMinGrade"]));
             }
             set {
-                this["MinGrade"] = value;
+                this["DefaultMinGrade"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("6")]
-        public double MaxGrade {
+        public double DefaultMaxGrade {
             get {
-                return ((double)(this["MaxGrade"]));
+                return ((double)(this["DefaultMaxGrade"]));
             }
             set {
-                this["MaxGrade"] = value;
+                this["DefaultMaxGrade"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool EnableWeightSystem {
+        public bool DefaultUseWeightSystem {
             get {
-                return ((bool)(this["EnableWeightSystem"]));
+                return ((bool)(this["DefaultUseWeightSystem"]));
             }
             set {
-                this["EnableWeightSystem"] = value;
+                this["DefaultUseWeightSystem"] = value;
             }
         }
         

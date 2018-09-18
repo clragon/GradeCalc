@@ -118,7 +118,7 @@ namespace Grades
                 // Catch UnauthorizedAccessException and display an error for the user.
                 catch (UnauthorizedAccessException)
                 {
-                    Console.WriteLine("[{0}] {1} : {2}", Lang.GetString("Error"), System.IO.Path.GetFileName(SourceFile), Lang.GetString("DeniedTableAccess"));
+                    Console.WriteLine("[{0}] {1} : {2}", Lang.GetString("Error"), System.IO.Path.GetFileName(SourceFile), Lang.GetString("TableDeniedAccess"));
                     Console.WriteLine(Lang.GetString("PressAnything"));
                     Console.ReadKey();
                     return GetEmptyTable();
@@ -153,10 +153,9 @@ namespace Grades
             {
                 // Default values for new tables.
                 name = "terminal_" + DateTime.Now.ToString("yyyy.MM.dd-HH:mm:ss"),
-                MinGrade = Properties.Settings.Default.MinGrade,
-                MaxGrade = Properties.Settings.Default.MaxGrade,
-                EnableGradeLimits = Properties.Settings.Default.EnableGradeLimits,
-                EnableWeightSystem = Properties.Settings.Default.EnableWeightSystem
+                MinGrade = Properties.Settings.Default.DefaultMinGrade,
+                MaxGrade = Properties.Settings.Default.DefaultMaxGrade,
+                UseWeightSystem = Properties.Settings.Default.DefaultUseWeightSystem
             };
             return t;
         }
@@ -168,11 +167,11 @@ namespace Grades
         {
             t.Save();
 
-            List<string> options = new List<string> { Lang.GetString("ReadTable"), Lang.GetString("WriteTable"), Lang.GetString("SetDefaultTable"), Lang.GetString("RenameTable"), Lang.GetString("DeleteTable") };
+            List<string> options = new List<string> { Lang.GetString("TableRead"), Lang.GetString("TableWrite"), Lang.GetString("TableSetDefault"), Lang.GetString("TableRename"), Lang.GetString("TableDelete") };
 
             void DisplayTitle(List<string> Options)
             {
-                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ManageTable"), t.name);
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableManage"), t.name);
             }
 
             void DisplayOption(List<string> Options, string o, int index, int i)
@@ -186,39 +185,36 @@ namespace Grades
             {
                 switch (Options[index])
                 {
-                    case var i when i.Equals(Lang.GetString("ReadTable")):
+                    case var i when i.Equals(Lang.GetString("TableRead")):
                         ChooseTable();
                         break;
 
-                    case var i when i.Equals(Lang.GetString("WriteTable")):
+                    case var i when i.Equals(Lang.GetString("TableWrite")):
                         t.Save(true);
                         new System.Threading.ManualResetEvent(false).WaitOne(20);
                         break;
 
-                    case var i when i.Equals(Lang.GetString("SetDefaultTable")):
+                    case var i when i.Equals(Lang.GetString("TableSetDefault")):
                         Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(SourceFile);
                         Properties.Settings.Default.Save();
-                        Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("SetDefaultTableSuccess"));
+                        Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("TableSetDefaultSuccess"));
                         new System.Threading.ManualResetEvent(false).WaitOne(500);
                         break;
 
-                    case var i when i.Equals(Lang.GetString("RenameTable")):
+                    case var i when i.Equals(Lang.GetString("TableRename")):
                         RenameTable();
                         t.Save();
                         break;
 
-                    case var i when i.Equals(Lang.GetString("DeleteTable")):
+                    case var i when i.Equals(Lang.GetString("TableDelete")):
                         Action Yes = () =>
                         {
                             t.Clear(SourceFile);
                             t = LoadTable();
                             ChooseTable(false);
-
                         };
-
-                        YesNoMenu("DeleteTable", Yes, () => { });
-
-                        break; 
+                        YesNoMenu("TableDelete", Yes, () => { });
+                        break;
 
                     default:
                         // Reset the input.
@@ -250,7 +246,7 @@ namespace Grades
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("DeniedTableAccess"));
+                    Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableDeniedAccess"));
                     new System.Threading.ManualResetEvent(false).WaitOne(500);
                 }
                 catch (Exception) { }
@@ -262,8 +258,8 @@ namespace Grades
 
             void DisplayTitle(List<string> Tables)
             {
-                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseTable"), Tables.Count);
-                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Tables.Count).Length, ' '), Lang.GetString("CreateTable"));
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableChoose"), Tables.Count);
+                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Tables.Count).Length, ' '), Lang.GetString("TableCreate"));
             }
 
             void DisplayOption(List<string> TableFiles, string t, int index, int i)
@@ -299,7 +295,7 @@ namespace Grades
                 }
                 catch (Exception)
                 {
-                    ResetInput(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("ReadTableError")));
+                    ResetInput(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableReadError")));
                 }
                 return false;
             }
@@ -316,7 +312,7 @@ namespace Grades
             // Get a new table.
             Table x = GetEmptyTable();
             // Get the name for it through user input.
-            x.name = GetTable(string.Format("--- {0} ---", Lang.GetString("CreateTable")));
+            x.name = GetTable(string.Format("--- {0} ---", Lang.GetString("TableCreate")));
             // Create a file for the table.
             // Files will be automatically named grades.xml with an increasing number in front of them.
             if (System.IO.File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "grades.xml")))
@@ -345,7 +341,7 @@ namespace Grades
         public static void RenameTable()
         {
             // Get the new name for the table through user input.
-            t.name = GetTable(string.Format("--- {0} : {1} ---", Lang.GetString("RenameTable"), t.name));
+            t.name = GetTable(string.Format("--- {0} : {1} ---", Lang.GetString("TableRename"), t.name));
             // Save the table to it's file.
             t.Save();
         }
@@ -364,7 +360,7 @@ namespace Grades
                 ClearMenu();
                 Console.WriteLine(title);
                 Console.Write("\n");
-                Console.Write("{0}> ", Lang.GetString("NameOfTable"));
+                Console.Write("{0}> ", Lang.GetString("TableName"));
                 input = Console.ReadLine();
 
                 // Trim the input.
@@ -372,7 +368,7 @@ namespace Grades
                 if (!string.IsNullOrWhiteSpace(input))
                 {
                     // Check if the input is equal to the CreateTable option to counter sneaky users.
-                    if (!input.Equals(string.Format("({0})", Lang.GetString("CreateTable")), StringComparison.InvariantCultureIgnoreCase))
+                    if (!input.Equals(string.Format("({0})", Lang.GetString("TableCreate")), StringComparison.InvariantCultureIgnoreCase))
                     {
                         IsInputValid = true;
                     }
@@ -396,7 +392,7 @@ namespace Grades
         /// <param name="s">The subject that is to be managed.</param>
         public static void ManageSubject(Table.Subject s)
         {
-            List<string> options = new List<string> { Lang.GetString("Grades"), Lang.GetString("RenameSubject"), Lang.GetString("DeleteSubject") };
+            List<string> options = new List<string> { Lang.GetString("Grades"), Lang.GetString("SubjectRename"), Lang.GetString("SubjectDelete") };
 
             void DisplayTitle(List<string> Options)
             {
@@ -425,11 +421,11 @@ namespace Grades
                         ChooseGrade(s);
                         break;
 
-                    case var i when i.Equals(Lang.GetString("RenameSubject")):
+                    case var i when i.Equals(Lang.GetString("SubjectRename")):
                         RenameSubject(s);
                         break;
 
-                    case var i when i.Equals(Lang.GetString("DeleteSubject")):
+                    case var i when i.Equals(Lang.GetString("SubjectDelete")):
                         t.RemSubject(t.Subjects.IndexOf(s));
                         return true;
 
@@ -452,8 +448,8 @@ namespace Grades
 
             void DisplayTitle(List<Table.Subject> Subjects)
             {
-                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseSubject"), Subjects.Count);
-                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(t.Subjects.Count).Length, ' '), Lang.GetString("CreateSubject"));
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("SubjectChoose"), Subjects.Count);
+                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(t.Subjects.Count).Length, ' '), Lang.GetString("SubjectCreate"));
             }
 
             void DisplayOption(List<Table.Subject> Subjects, Table.Subject s, int index, int i)
@@ -478,7 +474,7 @@ namespace Grades
         /// </summary>
         public static void CreateSubject()
         {
-            t.AddSubject(GetSubject(string.Format("--- {0} ---", Lang.GetString("CreateSubject"))));
+            t.AddSubject(GetSubject(string.Format("--- {0} ---", Lang.GetString("SubjectCreate"))));
             t.Save();
         }
 
@@ -488,7 +484,7 @@ namespace Grades
         /// <param name="s">The subject that is to be renamed.</param>
         public static void RenameSubject(Table.Subject s)
         {
-            s.EditSubject(GetSubject(string.Format("--- {0} : {1} ---", Lang.GetString("RenameSubject"), s.Name)));
+            s.EditSubject(GetSubject(string.Format("--- {0} : {1} ---", Lang.GetString("SubjectRename"), s.Name)));
             t.Save();
         }
 
@@ -502,13 +498,13 @@ namespace Grades
                 ClearMenu();
                 Console.WriteLine(title);
                 Console.Write("\n");
-                Console.Write("{0}> ", Lang.GetString("NameOfSubject"));
+                Console.Write("{0}> ", Lang.GetString("SubjectName"));
                 input = Console.ReadLine();
 
                 input.Trim();
                 if (!string.IsNullOrWhiteSpace(input))
                 {
-                    if (!input.Equals(string.Format("({0})", Lang.GetString("CreateSubject")), StringComparison.InvariantCultureIgnoreCase))
+                    if (!input.Equals(string.Format("({0})", Lang.GetString("SubjectCreate")), StringComparison.InvariantCultureIgnoreCase))
                     {
                         IsInputValid = true;
                     }
@@ -532,11 +528,11 @@ namespace Grades
         /// <param name="g">The grade that is to be managed.</param>
         public static void ManageGrade(Table.Subject.Grade g)
         {
-            List<string> options = new List<string> { Lang.GetString("EditGrade"), Lang.GetString("DeleteGrade") };
+            List<string> options = new List<string> { Lang.GetString("GradeEdit"), Lang.GetString("GradeDelete") };
 
             void DisplayTitle(List<string> Options)
             {
-                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ManageTable"), t.name);
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableManage"), t.name);
             }
 
             void DisplayOption(List<string> Options, string o, int index, int i)
@@ -550,11 +546,11 @@ namespace Grades
             {
                 switch (Options[index])
                 {
-                    case var i when i.Equals(Lang.GetString("EditGrade")):
+                    case var i when i.Equals(Lang.GetString("GradeEdit")):
                         ModifyGrade(g);
                         break;
 
-                    case var i when i.Equals(Lang.GetString("DeleteGrade")):
+                    case var i when i.Equals(Lang.GetString("GradeDelete")):
                         // Remove the grade by using the OwnerSubject attribute.
                         // Effectively bypassing the need to pass the subject in which the grade is in.
                         g.OwnerSubject.RemGrade(g);
@@ -579,8 +575,8 @@ namespace Grades
         {
             void DisplayTitle(List<Table.Subject.Grade> Grades)
             {
-                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseGrade"), Grades.Count);
-                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Grades.Count).Length, ' '), Lang.GetString("CreateGrade"));
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("GradeChoose"), Grades.Count);
+                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Grades.Count).Length, ' '), Lang.GetString("GradeCreate"));
             }
 
             void DisplayOption(List<Table.Subject.Grade> Grades, Table.Subject.Grade g, int index, int i)
@@ -612,7 +608,7 @@ namespace Grades
         public static void CreateGrade(Table.Subject s)
         {
             // Gets the values needed to create a grade from the menu template as tuple.
-            Tuple<double, double> g = GetGrade(s, string.Format("--- {0} ---", Lang.GetString("CreateGrade")));
+            Tuple<double, double> g = GetGrade(s, string.Format("--- {0} ---", Lang.GetString("GradeCreate")));
             // Adds a new grade with the received values.
             s.AddGrade(g.Item1, g.Item2);
             t.Save();
@@ -626,7 +622,7 @@ namespace Grades
         public static void ModifyGrade(Table.Subject.Grade g)
         {
             // Gets the values needed to edit a grade from the menu template as tuple.
-            Tuple<double, double> n = GetGrade(g.OwnerSubject, string.Format("--- {0} : {1} | {2} ---", Lang.GetString("EditGrade"), g.Value, g.Weight));
+            Tuple<double, double> n = GetGrade(g.OwnerSubject, string.Format("--- {0} : {1} | {2} ---", Lang.GetString("GradeEdit"), g.Value, g.Weight));
             // Edits the grade with the received values.
             g.EditGrade(n.Item1, n.Item2);
             t.Save();
@@ -656,7 +652,7 @@ namespace Grades
                 if (double.TryParse(input, out value))
                 {
                     // Check if the table has grade limits enabled.
-                    if (s.OwnerTable.EnableGradeLimits)
+                    if (Properties.Settings.Default.EnableGradeLimits)
                     {
                         if (s.OwnerTable.MaxGrade > s.OwnerTable.MinGrade)
                         {
@@ -695,7 +691,7 @@ namespace Grades
                 }
             }
             // Check if the table has the weight system enabled.
-            if (s.OwnerTable.EnableWeightSystem)
+            if (s.OwnerTable.UseWeightSystem)
             {
                 // Get a weight for the grade from user input.
                 bool IsSecondInputValid = false;
@@ -794,7 +790,7 @@ namespace Grades
                 // Print a message that it was successful, if details are enabled.
                 if (verbose)
                 {
-                    Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("WriteTableSuccess"));
+                    Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("TableWriteSuccess"));
                     new System.Threading.ManualResetEvent(false).WaitOne(500);
                 }
                 return true;
@@ -804,7 +800,7 @@ namespace Grades
             {
                 if (verbose)
                 {
-                    Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("DeniedTableAccess"));
+                    Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableDeniedAccess"));
                     new System.Threading.ManualResetEvent(false).WaitOne(500);
                 }
                 return false;
@@ -813,7 +809,7 @@ namespace Grades
             {
                 if (verbose)
                 {
-                    Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("WriteTableError"));
+                    Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableWriteError"));
                     new System.Threading.ManualResetEvent(false).WaitOne(500);
                 }
                 return false;
@@ -851,7 +847,7 @@ namespace Grades
                 foreach (Table.Subject.Grade g in s.Grades)
                 {
                     // If the weight system is enabled, get the weight of the grade.
-                    if (s.OwnerTable.EnableWeightSystem)
+                    if (s.OwnerTable.UseWeightSystem)
                     {
                         weights += g.Weight;
                         // Actual value of a grade equals its value times it's weight.
@@ -881,8 +877,16 @@ namespace Grades
             double points = 0;
             // Compensation points are calculated by subtracting 4 of the grade value.
             // Positive points have to outweight negative ones twice.
-            points = (s.CalcAverage() - 4);
-            if (points < 0) { points = (points * 2); }
+            if (s.CalcAverage() != 0)
+            {
+                points = (s.CalcAverage() - 4);
+                if (points < 0) { points = (points * 2); }
+            }
+            else
+            {
+                points = 0;
+            }
+            
             return points;
         }
 
@@ -937,15 +941,10 @@ namespace Grades
         /// Will also display a error message for a short time. 
         /// </summary>
         /// <param name="error">The error message to be displayed.</param>
-        public static void ResetInput(string error = "$(default)")
+        public static void ResetInput(string error = "InputInvalid")
         {
-            // If no message was specified, display default.
-            if (error == "$(default)")
-            {
-                error = string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("InvalidInput"));
-            }
             // Display error and wait.
-            Console.Write(error);
+            Console.Write(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString(error)));
             new System.Threading.ManualResetEvent(false).WaitOne(150);
             // Clear the current line.
             ClearCurrentConsoleLine();
@@ -997,7 +996,7 @@ namespace Grades
         /// </summary>
         public static void Settings()
         {
-            List<string> options = new List<string> { Lang.GetString("ChooseLang"), Lang.GetString("DefaultTable"), Lang.GetString("ResetSettings") };
+            List<string> options = new List<string> { Lang.GetString("LanguageChoose"), Lang.GetString("TableDefault"), Lang.GetString("SettingsReset") };
 
             void DisplayTitle(List<string> Options)
             {
@@ -1015,19 +1014,23 @@ namespace Grades
             {
                 switch (Options[index])
                 {
-                    case var i when i.Equals(Lang.GetString("ChooseLang")):
+                    case var i when i.Equals(Lang.GetString("LanguageChoose")):
                         ChooseLang();
                         break;
 
-                    case var i when i.Equals(Lang.GetString("DefaultTable")):
+                    case var i when i.Equals(Lang.GetString("TableDefault")):
                         SetDefaultTable();
                         break;
 
-                    case var i when i.Equals(Lang.GetString("ResetSettings")):
-                        try { System.IO.File.Delete(System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath); }
-                        catch { }
-                        Properties.Settings.Default.Reset();
-                        // Implement log here
+                    case var i when i.Equals(Lang.GetString("SettingsReset")):
+                        Action Yes = () =>
+                        {
+                            Properties.Settings.Default.Reset();
+                            try { System.IO.File.Delete(System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath); } catch { }
+                        };
+                        YesNoMenu("SettingsReset", Yes, () => { });
+                        Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("SettingsResetSuccess"));
+                        new System.Threading.ManualResetEvent(false).WaitOne(500);
                         break;
 
                     default:
@@ -1055,13 +1058,13 @@ namespace Grades
             {
                 if (string.IsNullOrEmpty(Properties.Settings.Default.Language.Name))
                 {
-                    Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseLang"), Langs.Count);
+                    Console.WriteLine("--- {0} : {1} ---", Lang.GetString("LanguageChoose"), Langs.Count);
                 }
                 else
                 {
-                    Console.WriteLine("--- {0} : {1} ---", Lang.GetString("ChooseLang"), Properties.Settings.Default.Language.Name);
+                    Console.WriteLine("--- {0} : {1} ---", Lang.GetString("LanguageChoose"), Properties.Settings.Default.Language.Name);
                 }
-                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Langs.Count).Length, ' '), Lang.GetString("LangDefault"));
+                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Langs.Count).Length, ' '), Lang.GetString("LanguageDefault"));
             }
 
             void DisplayOption(List<System.Globalization.CultureInfo> Langs, System.Globalization.CultureInfo lang, int index, int i)
@@ -1074,7 +1077,7 @@ namespace Grades
                 Properties.Settings.Default.Language = System.Globalization.CultureInfo.InvariantCulture;
                 Properties.Settings.Default.OverrideLanguage = false;
                 Properties.Settings.Default.Save();
-                // Implement log here
+                Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("LanguageResetSuccess"));
                 return true;
             }
 
@@ -1083,7 +1086,7 @@ namespace Grades
                 Properties.Settings.Default.Language = Langs[index];
                 Properties.Settings.Default.OverrideLanguage = true;
                 Properties.Settings.Default.Save();
-                // Implement log here
+                Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("LanguageSetSuccess"));
                 return true;
             }
 
@@ -1104,7 +1107,7 @@ namespace Grades
             }
             catch (UnauthorizedAccessException)
             {
-                Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("DeniedTableAccess"));
+                Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableDeniedAccess"));
                 new System.Threading.ManualResetEvent(false).WaitOne(500);
             }
             catch (Exception) { }
@@ -1114,7 +1117,7 @@ namespace Grades
 
             void DisplayTitle(List<string> Tables)
             {
-                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("SetDefaultTable"), Tables.Count);
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableSetDefault"), Tables.Count);
             }
 
             void DisplayOption(List<string> TableFiles, string t, int index, int i)
@@ -1141,12 +1144,12 @@ namespace Grades
                 {
                     Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(Tables[index]);
                     Properties.Settings.Default.Save();
-                    Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("SetDefaultTableSuccess"));
+                    Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("TableSetDefaultSuccess"));
                     new System.Threading.ManualResetEvent(false).WaitOne(500);
                 }
                 catch (Exception)
                 {
-                    ResetInput(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("ReadTableError")));
+                    ResetInput(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableReadError")));
                 }
                 return false;
             }
@@ -1271,11 +1274,7 @@ namespace Grades
 
                         case "\n":
                         case "\r":
-                            if (InputString == "")
-                            {
-                                Console.SetCursorPosition(0, Console.CursorTop - 1);
-                            }
-                            else
+                            if (InputString != "")
                             {
                                 index = Convert.ToInt32(InputString) - 1;
                                 InputString = "";

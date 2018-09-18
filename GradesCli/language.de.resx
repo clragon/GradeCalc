@@ -135,43 +135,43 @@
   <data name="Table" xml:space="preserve">
     <value>Tabelle</value>
   </data>
-  <data name="ManageTable" xml:space="preserve">
+  <data name="TableManage" xml:space="preserve">
     <value>Tabelle verwalten</value>
   </data>
-  <data name="ChooseTable" xml:space="preserve">
+  <data name="TableChoose" xml:space="preserve">
     <value>Tabelle wählen</value>
   </data>
-  <data name="CreateTable" xml:space="preserve">
+  <data name="TableCreate" xml:space="preserve">
     <value>Neue Tabelle</value>
   </data>
-  <data name="NameOfTable" xml:space="preserve">
+  <data name="TableName" xml:space="preserve">
     <value>Name</value>
   </data>
-  <data name="RenameTable" xml:space="preserve">
+  <data name="TableRename" xml:space="preserve">
     <value>Umbenennen</value>
   </data>
-  <data name="ReadTable" xml:space="preserve">
+  <data name="TableRead" xml:space="preserve">
     <value>Öffnen</value>
   </data>
-  <data name="WriteTable" xml:space="preserve">
+  <data name="TableWrite" xml:space="preserve">
     <value>Speichern</value>
   </data>
-  <data name="DeleteTable" xml:space="preserve">
+  <data name="TableDelete" xml:space="preserve">
     <value>Löschen</value>
   </data>
-  <data name="WriteTableSuccess" xml:space="preserve">
+  <data name="TableWriteSuccess" xml:space="preserve">
     <value>Tabelle erfolgreich gespeichert</value>
   </data>
-  <data name="WriteTableError" xml:space="preserve">
+  <data name="TableWriteError" xml:space="preserve">
     <value>Tabelle konnte nicht gespeichert werden</value>
   </data>
-  <data name="ReadTableSuccess" xml:space="preserve">
+  <data name="TableReadSuccess" xml:space="preserve">
     <value>Tabelle erfolgreich geöffnet</value>
   </data>
-  <data name="ReadTableError" xml:space="preserve">
+  <data name="TableReadError" xml:space="preserve">
     <value>Tabelle konnte nicht geöffnet werden</value>
   </data>
-  <data name="DeniedTableAccess" xml:space="preserve">
+  <data name="TableDeniedAccess" xml:space="preserve">
     <value>Dateizugriff verweigert</value>
   </data>
   <data name="Subject" xml:space="preserve">
@@ -180,19 +180,19 @@
   <data name="Subjects" xml:space="preserve">
     <value>Fächer</value>
   </data>
-  <data name="ChooseSubject" xml:space="preserve">
+  <data name="SubjectChoose" xml:space="preserve">
     <value>Fach wählen</value>
   </data>
-  <data name="CreateSubject" xml:space="preserve">
+  <data name="SubjectCreate" xml:space="preserve">
     <value>Neues Fach</value>
   </data>
-  <data name="NameOfSubject" xml:space="preserve">
+  <data name="SubjectName" xml:space="preserve">
     <value>Name</value>
   </data>
-  <data name="RenameSubject" xml:space="preserve">
+  <data name="SubjectRename" xml:space="preserve">
     <value>Umbenennen</value>
   </data>
-  <data name="DeleteSubject" xml:space="preserve">
+  <data name="SubjectDelete" xml:space="preserve">
     <value>Löschen</value>
   </data>
   <data name="Grade" xml:space="preserve">
@@ -204,16 +204,16 @@
   <data name="Weight" xml:space="preserve">
     <value>Gewicht</value>
   </data>
-  <data name="ChooseGrade" xml:space="preserve">
+  <data name="GradeChoose" xml:space="preserve">
     <value>Note wählen</value>
   </data>
-  <data name="CreateGrade" xml:space="preserve">
+  <data name="GradeCreate" xml:space="preserve">
     <value>Neue Note</value>
   </data>
-  <data name="EditGrade" xml:space="preserve">
+  <data name="GradeEdit" xml:space="preserve">
     <value>bearbeiten</value>
   </data>
-  <data name="DeleteGrade" xml:space="preserve">
+  <data name="GradeDelete" xml:space="preserve">
     <value>Löschen</value>
   </data>
   <data name="Overview" xml:space="preserve">
@@ -234,7 +234,7 @@
   <data name="Error" xml:space="preserve">
     <value>Fehler</value>
   </data>
-  <data name="InvalidInput" xml:space="preserve">
+  <data name="InputInvalid" xml:space="preserve">
     <value>Ungültige Eingabe</value>
   </data>
   <data name="PressAnything" xml:space="preserve">
@@ -255,25 +255,34 @@
   <data name="OverviewDataError" xml:space="preserve">
     <value>Diese Tabelle kann leider nicht zusammengefasst werden.</value>
   </data>
-  <data name="ChooseLang" xml:space="preserve">
+  <data name="LanguageChoose" xml:space="preserve">
     <value>Sprache wählen</value>
   </data>
-  <data name="LangDefault" xml:space="preserve">
+  <data name="LanguageDefault" xml:space="preserve">
     <value>Standard</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
-  <data name="SetDefaultTable" xml:space="preserve">
+  <data name="TableSetDefault" xml:space="preserve">
     <value>Als Standard setzen</value>
   </data>
-  <data name="ResetSettings" xml:space="preserve">
+  <data name="SettingsReset" xml:space="preserve">
     <value>Zurücksetzen</value>
   </data>
-  <data name="DefaultTable" xml:space="preserve">
+  <data name="TableDefault" xml:space="preserve">
     <value>Standardtabelle</value>
   </data>
-  <data name="SetDefaultTableSuccess" xml:space="preserve">
+  <data name="SettingsResetSuccess" xml:space="preserve">
+    <value>Einstellungen erfolgreich zurückgesetzt</value>
+  </data>
+  <data name="TableSetDefaultSuccess" xml:space="preserve">
     <value>Tabelle erfolgreich als Standard gesetzt</value>
+  </data>
+  <data name="LanguageResetSuccess" xml:space="preserve">
+    <value>Sprache erfolgreich zurückgesetztz</value>
+  </data>
+  <data name="LanguageSetSuccess" xml:space="preserve">
+    <value>Sprache erfolgreich geändert</value>
   </data>
 </root>
