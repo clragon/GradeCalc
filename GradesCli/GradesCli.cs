@@ -51,7 +51,6 @@ namespace Grades
             // Handling the options.
             bool ChoiceMethod(List<string> Options, int index)
             {
-                // switch (Options[index])
                 switch (Options[index])
                 {
                     case var i when i.Equals(Lang.GetString("Subjects")):
