@@ -30,22 +30,25 @@ namespace Grades
             NewConsoleTitle = Lang.GetString("Title");
             Console.Title = NewConsoleTitle;
 
-            // Displaying the menu
-
+            // List of options for the main menu.
             List<string> options = new List<string> { Lang.GetString("Subjects"), Lang.GetString("Overview"), Lang.GetString("Table"), Lang.GetString("Settings") };
 
+            // Displaying the main menu title which is the same as the console title.
             void DisplayTitle(List<string> Options)
             {
                 Console.WriteLine("--- {0} ---", NewConsoleTitle);
             }
 
+            // Template for printing the options.
             void DisplayOption(List<string> Options, string o, int index, int i)
             {
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
+            // Nullifying the Zero-Method since there is no use for it in this menu.
             bool ZeroMethod() { ResetInput(); return false; }
 
+            // Handling the options.
             bool ChoiceMethod(List<string> Options, int index)
             {
                 // switch (Options[index])
@@ -78,8 +81,10 @@ namespace Grades
                 return false;
             }
 
+            // Calling the menu template to display the main menu with the specified parameters.
             ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, false ,false, true, "Exit");
 
+            // Exit the app when the main menu closes.
             ExitCli();
         }
 
@@ -151,7 +156,7 @@ namespace Grades
             // Create a new table.
             Table t = new Table
             {
-                // Default values for new tables.
+                // Default values for new tables, pulled from the settings file.
                 name = "terminal_" + DateTime.Now.ToString("yyyy.MM.dd-HH:mm:ss"),
                 MinGrade = Properties.Settings.Default.DefaultMinGrade,
                 MaxGrade = Properties.Settings.Default.DefaultMaxGrade,
@@ -165,54 +170,67 @@ namespace Grades
         /// </summary>
         public static void ManageTable()
         {
+            // Make sure the current table is saved.
             t.Save();
 
+            // List of options.
             List<string> options = new List<string> { Lang.GetString("TableRead"), Lang.GetString("TableWrite"), Lang.GetString("TableSetDefault"), Lang.GetString("TableRename"), Lang.GetString("TableDelete") };
 
+            // Title.
             void DisplayTitle(List<string> Options)
             {
                 Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableManage"), t.name);
             }
 
+            // Option displaying template.
             void DisplayOption(List<string> Options, string o, int index, int i)
             {
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
+            // No Zero Method.
             bool ZeroMethod() { ResetInput(); return false; }
 
+            // Handle options.
             bool ChoiceMethod(List<string> Options, int index)
             {
                 switch (Options[index])
                 {
                     case var i when i.Equals(Lang.GetString("TableRead")):
+                        // Call the table to choose a table to load.
                         ChooseTable();
                         break;
 
                     case var i when i.Equals(Lang.GetString("TableWrite")):
+                        // Save the table.
                         t.Save(true);
                         new System.Threading.ManualResetEvent(false).WaitOne(20);
                         break;
 
                     case var i when i.Equals(Lang.GetString("TableSetDefault")):
+                        // Set the current table as new default table on startup.
                         Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(SourceFile);
                         Properties.Settings.Default.Save();
+                        // Display log message.
                         Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("TableSetDefaultSuccess"));
                         new System.Threading.ManualResetEvent(false).WaitOne(500);
                         break;
 
                     case var i when i.Equals(Lang.GetString("TableRename")):
+                        // Call the menu for renaming a table.
                         RenameTable();
                         t.Save();
                         break;
 
                     case var i when i.Equals(Lang.GetString("TableDelete")):
+                        // Define the Yes option for the following confirmation menu.
                         Action Yes = () =>
                         {
                             t.Clear(SourceFile);
                             t = LoadTable();
                             ChooseTable(false);
                         };
+                        // Call a Yes/No menu for ensuring the user wants to delete the table.
                         YesNoMenu("TableDelete", Yes, () => { });
                         break;
 
@@ -224,6 +242,7 @@ namespace Grades
                 return false;
             }
 
+            // Display the menu.
             ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
 
         }
@@ -234,8 +253,10 @@ namespace Grades
         /// <param name="UserCanAbort">Wether the user can exit the menu without choosing a table or not.</param>
         public static void ChooseTable(bool UserCanAbort = true)
         {
+            // Create a list for storing names of files that hold tables.
             List<string> tableFiles = GetTableFiles();
 
+            // Get a list of strings of files that contain a table.
             List<string> GetTableFiles()
             {
                 List<string> tables = new List<string>();
@@ -251,22 +272,27 @@ namespace Grades
                 }
                 catch (Exception) { }
 
+                // Sort list alphabetically.
                 tables.Sort((a, b) => a.CompareTo(b));
 
                 return tables;
             }
 
+            // Display the title and the 0-option (creating a new table).
             void DisplayTitle(List<string> Tables)
             {
                 Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableChoose"), Tables.Count);
                 Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Tables.Count).Length, ' '), Lang.GetString("TableCreate"));
             }
 
+            // Method for displaying the options.
             void DisplayOption(List<string> TableFiles, string t, int index, int i)
             {
-                // Updating the list here.
+                // Updating the list here to display newly created tables as well.
                 TableFiles = GetTableFiles();
+                // Maxlength for padding.
                 int MaxLength = TableFiles.Select(x => System.IO.Path.GetFileName(x).Length).Max();
+                // Name of the table. If it fails to load, display the NoData string.
                 string name;
                 try
                 {
@@ -276,16 +302,20 @@ namespace Grades
                 {
                     name = Lang.GetString("NoData");
                 }
+                // Display the table as option.
                 Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(TableFiles.Count).Length, ' '),
                     System.IO.Path.GetFileName(TableFiles[index]).PadRight(MaxLength, ' ') + " | " + name);
             }
 
+            // handling Zero Method.
             bool ZeroMethod()
             {
+                // Call the menu for creating a new table.
                 CreateTable();
                 return false;
             }
 
+            // Handling the options.
             bool ChoiceMethod(List<string> Tables, int index)
             {
                 try
@@ -300,6 +330,7 @@ namespace Grades
                 return false;
             }
 
+            // Display the menu.
             ListToMenu(tableFiles, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, true, false, UserCanAbort);
 
         }
@@ -317,12 +348,16 @@ namespace Grades
             // Files will be automatically named grades.xml with an increasing number in front of them.
             if (System.IO.File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "grades.xml")))
             {
+                // Names start at 2.
                 int i = 1;
                 while (true)
                 {
+                    // Increase the number in front of the file's name.
                     i++;
+                    // Check if there is no file with that name already.
                     if (!(System.IO.File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + string.Format("/" + i + "." + "grades.xml")))))
                     {
+                        // Create it.
                         x.Write(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + string.Format("/" + i + "." + "grades.xml")));
                         break;
                     }
@@ -330,6 +365,7 @@ namespace Grades
             }
             else
             {
+                // Create a file without a number.
                 x.Write(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "grades.xml"));
             }
 
