@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace Grades
@@ -84,6 +85,44 @@ namespace Grades
         }
 
         /// <summary>
+        /// Override method to calculate the average grade of a table.
+        /// Uses the override method to calculate the average of a subject to function.
+        /// </summary>
+        public double CalcAverage()
+        {
+            if (Subjects.Any())
+            {
+                double averages = 0;
+                foreach (Subject s in Subjects)
+                {
+                    averages += s.CalcAverage();
+                }
+                // Rounded to 0.5
+                // Average of the table is calculated by all averages of the subjects divided by the amounts of subjects.
+                return Math.Round((averages / Subjects.Count) * 2, MidpointRounding.ToEven) / 2;
+            }
+            else { return 0; }
+        }
+
+        /// <summary>
+        /// Override method to calculate the compensation needed for a table.
+        /// Uses the override method to calculate the compensation needed for a subject to function.
+        /// </summary>
+        public double CalcCompensation()
+        {
+            if (Subjects.Any())
+            {
+                double points = 0;
+                foreach (Subject s in Subjects)
+                {
+                    points += s.CalcCompensation();
+                }
+                return points;
+            }
+            else { return 0; }
+        }
+
+        /// <summary>
         /// The subject class. It stores grades.
         /// </summary>
         [DataContract(Name = "Subject")]
@@ -120,6 +159,60 @@ namespace Grades
             {
                 OwnerTable.RemSubject(this);
                 t.AddSubject(this);
+            }
+
+            /// <summary>
+            /// Override method to calculate the average grade of a subject.
+            /// </summary>
+            public double CalcAverage()
+            {
+                if (Grades.Any())
+                {
+                    double values = 0, weights = 0;
+                    foreach (Grade g in Grades)
+                    {
+                        // If the weight system is enabled, get the weight of the grade.
+                        if (OwnerTable.UseWeightSystem)
+                        {
+                            weights += g.Weight;
+                            // Actual value of a grade equals its value times it's weight.
+                            values += g.Value * g.Weight;
+                        }
+                        // Else use the default weight of 1 for all grades.
+                        else
+                        {
+                            weights++;
+                            values += g.Value;
+                        }
+                        // Old relict. Left in here for future reference.
+                        // Math.Round(g.weight * 4, MidpointRounding.ToEven) / 4
+                    }
+                    // Rounded to 0.5
+                    // Subject average is calculated by all avergaes of the grades divided by the amount of grades.
+                    return Math.Round((values / weights) * 2, MidpointRounding.ToEven) / 2;
+                }
+                else { return 0; }
+            }
+
+            /// <summary>
+            /// Override method to calculate the compensation needed for a subject.
+            /// </summary>
+            public double CalcCompensation()
+            {
+                double points = 0;
+                // Compensation points are calculated by subtracting 4 of the grade value.
+                // Positive points have to outweight negative ones twice.
+                if (CalcAverage() != 0)
+                {
+                    points = (CalcAverage() - 4);
+                    if (points < 0) { points = (points * 2); }
+                }
+                else
+                {
+                    points = 0;
+                }
+
+                return points;
             }
 
             /// <summary>
