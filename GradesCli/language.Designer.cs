@@ -97,6 +97,15 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Credits ähnelt.
+        /// </summary>
+        internal static string Credits {
+            get {
+                return ResourceManager.GetString("Credits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Error ähnelt.
         /// </summary>
         internal static string Error {

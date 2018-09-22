@@ -939,7 +939,7 @@ namespace Grades
         /// </summary>
         public static void Settings()
         {
-            List<string> options = new List<string> { Lang.GetString("LanguageChoose"), Lang.GetString("TableDefault"), Lang.GetString("SettingsReset") };
+            List<string> options = new List<string> { Lang.GetString("LanguageChoose"), Lang.GetString("TableDefault"), Lang.GetString("SettingsReset"), Lang.GetString("Credits") };
 
             void DisplayTitle(List<string> Options)
             {
@@ -974,6 +974,14 @@ namespace Grades
                         };
                         YesNoMenu("SettingsReset", Yes, () => { });
                         new System.Threading.ManualResetEvent(false).WaitOne(500);
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("Credits")):
+                        ClearMenu();
+                        Console.WriteLine("--- Icon ---\nCalculator by Artem Kovyazin\nfrom the Noun Project\nLicensed under Creative Commons");
+                        Console.WriteLine();
+                        Console.WriteLine(Lang.GetString("PressAnything"));
+                        Console.ReadKey();
                         break;
 
                     default:
