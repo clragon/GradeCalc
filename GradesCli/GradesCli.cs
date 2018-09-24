@@ -81,7 +81,7 @@ namespace Grades
             }
 
             // Calling the menu template to display the main menu with the specified parameters.
-            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, false ,false, true, "Exit");
+            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, true, "Exit");
 
             // Exit the app when the main menu closes.
             ExitCli();
@@ -326,11 +326,11 @@ namespace Grades
                 {
                     ResetInput(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableReadError")));
                 }
-                return false;
+                return true;
             }
 
             // Display the menu.
-            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, true, false, UserCanAbort);
+            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, UserCanAbort);
 
         }
 
@@ -1041,7 +1041,7 @@ namespace Grades
                 return true;
             }
 
-            ListToMenu(langs, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, true, true);
+            ListToMenu(langs, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
 
         }
 
@@ -1102,10 +1102,10 @@ namespace Grades
                 {
                     ResetInput(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableReadError")));
                 }
-                return false;
+                return true;
             }
 
-            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, true, false);
+            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
         }
 
         /// <summary>
@@ -1145,7 +1145,7 @@ namespace Grades
         /// <param name="ExitAfterZero">Defines if the menu should exit after the 0-option.</param>
         /// <param name="UserCanAbort">Defines if the user can exit the menu.</param>
         /// <param name="BackString">The string that is displayed for the option to exit the menu.</param>
-        public static void ListToMenu<T>(List<T> Objects, Action<List<T>> DisplayTitle, Action<List<T>, T, int, int> DisplayOptions, Func<bool> ZeroMethod, Func<List<T>, int, bool> ChoiceMethod, bool ExitAfterChoice = false, bool ExitAfterZero = false, bool UserCanAbort = true, string BackString = "Back")
+        public static void ListToMenu<T>(List<T> Objects, Action<List<T>> DisplayTitle, Action<List<T>, T, int, int> DisplayOptions, Func<bool> ZeroMethod, Func<List<T>, int, bool> ChoiceMethod, bool UserCanAbort = true, string BackString = "Back")
         {
             int index = -1;
             string InputString = "";
@@ -1230,7 +1230,7 @@ namespace Grades
                                 index = Convert.ToInt32(InputString) - 1;
                                 InputString = "";
                                 IsInputValid = true;
-                                if (ChoiceMethod(Objects, index) || ExitAfterChoice)
+                                if (ChoiceMethod(Objects, index))
                                 {
                                     IsMenuExitPending = true;
                                 }
@@ -1245,7 +1245,7 @@ namespace Grades
                                 if ((InputString == "") && (choice == 0))
                                 {
                                     IsInputValid = true;
-                                    if (ZeroMethod() || ExitAfterZero)
+                                    if (ZeroMethod())
                                     {
                                         IsMenuExitPending = true;
                                     }
@@ -1262,7 +1262,7 @@ namespace Grades
                                             index = Convert.ToInt32(InputString) - 1;
                                             InputString = "";
                                             IsInputValid = true;
-                                            if (ChoiceMethod(Objects, index) || ExitAfterChoice)
+                                            if (ChoiceMethod(Objects, index))
                                             {
                                                 IsMenuExitPending = true;
                                             }
