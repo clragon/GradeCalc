@@ -784,7 +784,7 @@ namespace Grades
         public static void OverviewMenu()
         {
             ClearMenu();
-            if (t.Subjects.Any())
+            if (t.Subjects.Any() && t.Subjects.SelectMany(s => s.Grades).Any())
             {
 
                 // Calculate the maximum length of any word in front of the bar diagramm.
