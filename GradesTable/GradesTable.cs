@@ -93,13 +93,18 @@ namespace Grades
             if (Subjects.Any())
             {
                 double averages = 0;
+                int count = 0;
                 foreach (Subject s in Subjects)
                 {
-                    averages += s.CalcAverage();
+                    if (s.Grades.Any())
+                    {
+                        averages += s.CalcAverage();
+                        count++;
+                    }
                 }
                 // Rounded to 0.5
                 // Average of the table is calculated by all averages of the subjects divided by the amounts of subjects.
-                return Math.Round((averages / Subjects.Count) * 2, MidpointRounding.ToEven) / 2;
+                return Math.Round((averages / count) * 2, MidpointRounding.ToEven) / 2;
             }
             else { return 0; }
         }
@@ -115,7 +120,10 @@ namespace Grades
                 double points = 0;
                 foreach (Subject s in Subjects)
                 {
-                    points += s.CalcCompensation();
+                    if (s.Grades.Any())
+                    {
+                        points += s.CalcCompensation();
+                    }
                 }
                 return points;
             }

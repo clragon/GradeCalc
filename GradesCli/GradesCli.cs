@@ -301,7 +301,7 @@ namespace Grades
                 }
                 catch (Exception)
                 {
-                    name = Lang.GetString("NoData");
+                    name = Lang.GetString("NoDataAvailable");
                 }
                 // Display the table as option.
                 Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(TableFiles.Count).Length, ' '),
@@ -815,7 +815,12 @@ namespace Grades
                         {
                             Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(BarLength, ' ').Truncate(BarLength), s.CalcAverage());
                         }
+                        else
+                        {
+                            Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string(' ', BarLength), Lang.GetString("NoData"));
+                        }
                     }
+
                     // Print total average grade.
                     Console.Write("\n");
                     Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(BarLength, ' ').Truncate(BarLength), t.CalcAverage());
@@ -844,9 +849,13 @@ namespace Grades
                         if (s.Grades.Any())
                         {
                             Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(BarLength / (t.MaxGrade - t.MinGrade) * s.CalcAverage())).PadRight(BarLength, ' '), s.CalcAverage());
-
+                        }
+                        else
+                        {
+                            Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string(' ', BarLength), Lang.GetString("NoData"));
                         }
                     }
+
                     // Print total average grade.
                     Console.Write("\n");
                     Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(BarLength / (t.MaxGrade - t.MinGrade) * t.CalcAverage())).PadRight(BarLength, ' '), t.CalcAverage());
@@ -857,7 +866,7 @@ namespace Grades
             // If no data is available, display a message for the user.
             else
             {
-                Console.WriteLine("{0} : {1}", Lang.GetString("Overview"), Lang.GetString("NoData"));
+                Console.WriteLine("{0} : {1}", Lang.GetString("Overview"), Lang.GetString("NoDataAvailable"));
             }
 
             Console.Write("\n");

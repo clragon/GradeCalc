@@ -250,11 +250,20 @@ namespace Grades {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die No data available ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die No data ähnelt.
         /// </summary>
         internal static string NoData {
             get {
                 return ResourceManager.GetString("NoData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No data available ähnelt.
+        /// </summary>
+        internal static string NoDataAvailable {
+            get {
+                return ResourceManager.GetString("NoDataAvailable", resourceCulture);
             }
         }
         

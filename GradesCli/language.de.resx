@@ -222,7 +222,7 @@
   <data name="Total" xml:space="preserve">
     <value>Total</value>
   </data>
-  <data name="NoData" xml:space="preserve">
+  <data name="NoDataAvailable" xml:space="preserve">
     <value>Keine Daten vorhanden</value>
   </data>
   <data name="Average" xml:space="preserve">
@@ -287,5 +287,8 @@
   </data>
   <data name="Credits" xml:space="preserve">
     <value>Mitwirkende</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>Keine Daten</value>
   </data>
 </root>
