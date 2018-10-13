@@ -11,8 +11,8 @@ GradeCalc is made of essential 3 parts
 
 
 ### Notice
-This project is focused on the grade system in switzerland. It _can_ calulate with other grade-systems but keep in mind it wsn't primarily intended to do so. 
+This project is focused on the grade system in switzerland. It can calulate with other grade-systems but keep in mind it wsn't primarily intended to do so.
 
 Feel free to use it under the provided [license](https://github.com/clragon/GradeCalc/blob/master/LICENSE).
-Furthermore I welcome any pull requests, issues or suggestions that would improve the project in this or any regard.
+I welcome any pull request, issue or suggestion.
 
