@@ -811,7 +811,10 @@ namespace Grades
                     // Print a diagramm for each subject.
                     foreach (Table.Subject s in t.Subjects)
                     {
-                        Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(BarLength, ' ').Truncate(BarLength), s.CalcAverage());
+                        if (s.Grades.Any())
+                        {
+                            Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(BarLength, ' ').Truncate(BarLength), s.CalcAverage());
+                        }
                     }
                     // Print total average grade.
                     Console.Write("\n");
@@ -838,9 +841,12 @@ namespace Grades
                     // Print a diagramm for each subject.
                     foreach (Table.Subject s in t.Subjects)
                     {
-                        Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(BarLength / (t.MaxGrade - t.MinGrade) * s.CalcAverage())).PadRight(BarLength, ' '), s.CalcAverage());
-                    }
+                        if (s.Grades.Any())
+                        {
+                            Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(BarLength / (t.MaxGrade - t.MinGrade) * s.CalcAverage())).PadRight(BarLength, ' '), s.CalcAverage());
 
+                        }
+                    }
                     // Print total average grade.
                     Console.Write("\n");
                     Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(BarLength / (t.MaxGrade - t.MinGrade) * t.CalcAverage())).PadRight(BarLength, ' '), t.CalcAverage());
@@ -1028,7 +1034,7 @@ namespace Grades
 
                     case var i when i.Equals(Lang.GetString("Credits")):
                         ClearMenu();
-                        Console.WriteLine("--- Icon ---\nCalculator by Artem Kovyazin\nfrom the Noun Project\nLicensed under Creative Commons");
+                        Console.WriteLine("--- Icon ---\nCalculator by icons8.com\nLicensed under Creative Commons");
                         Console.WriteLine();
                         Console.WriteLine(Lang.GetString("PressAnything"));
                         Console.ReadKey();
