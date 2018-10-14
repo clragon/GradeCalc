@@ -20,8 +20,6 @@ namespace Grades
                 System.Threading.Thread.CurrentThread.CurrentUICulture = Properties.Settings.Default.Language;
             }
 
-            // Properties.Settings.Default.DisplayCompensation = false;
-
             // Catching CTRL+C event
             Console.CancelKeyPress += new ConsoleCancelEventHandler(IsCliExitPendingHandler);
 
@@ -82,8 +80,10 @@ namespace Grades
                 return false;
             }
 
+            List<string> UpdateObjects(List<string> Objects) { return Objects; }
+
             // Calling the menu template to display the main menu with the specified parameters.
-            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, true, "Exit");
+            ListToMenu(options, DisplayTitle, DisplayOption, ChoiceMethod, ZeroMethod, UpdateObjects, true, Lang.GetString("Exit"));
 
             // Exit the app when the main menu closes.
             ExitCli();
@@ -189,9 +189,6 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            // No Zero Method.
-            bool ZeroMethod() { ResetInput(); return false; }
-
             // Handle options.
             bool ChoiceMethod(List<string> Options, int index)
             {
@@ -244,7 +241,7 @@ namespace Grades
             }
 
             // Display the menu.
-            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
+            ListToMenu(options, DisplayTitle, DisplayOption, ChoiceMethod);
 
         }
 
@@ -289,8 +286,6 @@ namespace Grades
             // Method for displaying the options.
             void DisplayOption(List<string> TableFiles, string t, int index, int i)
             {
-                // Updating the list here to display newly created tables as well.
-                TableFiles = GetTableFiles();
                 // Maxlength for padding.
                 int MaxLength = TableFiles.Select(x => System.IO.Path.GetFileName(x).Length).Max();
                 // Name of the table. If it fails to load, display the NoData string.
@@ -331,8 +326,13 @@ namespace Grades
                 return true;
             }
 
+            List<string> UpdateObjects(List<string> tables)
+            {
+                return GetTableFiles();
+            }
+
             // Display the menu.
-            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod, UserCanAbort);
+            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ChoiceMethod, ZeroMethod, UpdateObjects, UserCanAbort);
 
         }
 
@@ -515,9 +515,6 @@ namespace Grades
 
             }
 
-            // No Zero Method.
-            bool ZeroMethod() { ResetInput(); return false; }
-
             // Handle options.
             bool ChoiceMethod(List<string> Options, int index)
             {
@@ -558,7 +555,7 @@ namespace Grades
             }
 
             // Display the menu.
-            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
+            ListToMenu(options, DisplayTitle, DisplayOption, ChoiceMethod);
         }
 
         /// <summary>
@@ -586,8 +583,6 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            bool ZeroMethod() { ResetInput(); return false; }
-
             bool ChoiceMethod(List<string> Options, int index)
             {
                 switch (Options[index])
@@ -611,7 +606,7 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
+            ListToMenu(options, DisplayTitle, DisplayOption, ChoiceMethod);
 
         }
 
@@ -632,15 +627,13 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Subjects.Count).Length, ' '), s.Name);
             }
 
-            bool ZeroMethod() { CreateSubject(); return false; }
-
             bool ChoiceMethod(List<Table.Subject> Subjects, int index)
             {
                 ManageSubject(t.Subjects[index]);
                 return false;
             }
 
-            ListToMenu(t.Subjects, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
+            ListToMenu(t.Subjects, DisplayTitle, DisplayOption, ChoiceMethod);
 
         }
 
@@ -722,8 +715,6 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            bool ZeroMethod() { ResetInput(); return false; }
-
             bool ChoiceMethod(List<string> Options, int index)
             {
                 switch (Options[index])
@@ -745,7 +736,7 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
+            ListToMenu(options, DisplayTitle, DisplayOption, ChoiceMethod);
 
         }
 
@@ -786,7 +777,12 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(s.Grades, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
+            List<Table.Subject.Grade> UpdateObjects(List<Table.Subject.Grade> grades)
+            {
+                return s.Grades;
+            }
+
+            ListToMenu(s.Grades, DisplayTitle, DisplayOption, ChoiceMethod, ZeroMethod, UpdateObjects);
 
         }
 
@@ -1154,8 +1150,6 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            bool ZeroMethod() { ResetInput(); return false; }
-
             bool ChoiceMethod(List<string> Options, int index)
             {
                 switch (Options[index])
@@ -1196,7 +1190,7 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
+            ListToMenu(options, DisplayTitle, DisplayOption, ChoiceMethod);
 
         }
 
@@ -1244,7 +1238,9 @@ namespace Grades
                 return true;
             }
 
-            ListToMenu(langs, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
+            List<System.Globalization.CultureInfo> UpdateObjects(List<System.Globalization.CultureInfo> Objects) { return Objects; }
+
+            ListToMenu(langs, DisplayTitle, DisplayOption, ChoiceMethod, ZeroMethod, UpdateObjects);
 
         }
 
@@ -1290,8 +1286,6 @@ namespace Grades
                     System.IO.Path.GetFileName(TableFiles[index]).PadRight(MaxLength, ' ') + " | " + name);
             }
 
-            bool ZeroMethod() { ResetInput(); return false; }
-
             bool ChoiceMethod(List<string> Tables, int index)
             {
                 try
@@ -1308,7 +1302,10 @@ namespace Grades
                 return true;
             }
 
-            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
+            // Left here for future reference.
+            // (List<string> List) => { return List; }
+
+            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ChoiceMethod );
         }
 
         /// <summary>
@@ -1335,6 +1332,21 @@ namespace Grades
             return result;
         }
 
+        /// <summary>
+        /// Overload for ListToMenu without the UpdateObjects method and the ZeroMethod.
+        /// </summary>
+        /// /// <param name="Objects">A list of objects that will be displayed as choices.</param>
+        /// <param name="DisplayTitle">Pass a function that displays the title here. It should include displaying the 0-option if you want to use it.</param>
+        /// <param name="DisplayOptions">Pass a function that will display the options here.</param>
+        /// <param name="ChoiceMethod">Pass a function that handles any numerical option from the passed list here.</param>
+        /// <param name="ExitAfterChoice">Defines if the menu should exit after a choice was made.</param>
+        /// <param name="ExitAfterZero">Defines if the menu should exit after the 0-option.</param>
+        /// <param name="UserCanAbort">Defines if the user can exit the menu.</param>
+        /// <param name="BackString">The string that is displayed for the option to exit the menu.</param>
+        public static void ListToMenu<T>(List<T> Objects, Action<List<T>> DisplayTitle, Action<List<T>, T, int, int> DisplayOptions, Func<List<T>, int, bool> ChoiceMethod, bool UserCanAbort = true)
+        {
+            ListToMenu<T>(Objects, DisplayTitle, DisplayOptions, ChoiceMethod, () => { ResetInput(); return false; }, (List<T> List) => { return List; }, UserCanAbort, Lang.GetString("Back"));
+        }
 
         /// <summary>
         /// The template for displaying a menu.
@@ -1342,13 +1354,14 @@ namespace Grades
         /// <param name="Objects">A list of objects that will be displayed as choices.</param>
         /// <param name="DisplayTitle">Pass a function that displays the title here. It should include displaying the 0-option if you want to use it.</param>
         /// <param name="DisplayOptions">Pass a function that will display the options here.</param>
-        /// <param name="ZeroMethod">Pass a function that will handle the 0-option here, if you want to use it.</param>
         /// <param name="ChoiceMethod">Pass a function that handles any numerical option from the passed list here.</param>
+        /// <param name="ZeroMethod">Pass a function that will handle the 0-option here, if you want to use it.</param>
+        /// <param name="UpdateObjects">Pass a function that will handle updating the objects list here.</param>
         /// <param name="ExitAfterChoice">Defines if the menu should exit after a choice was made.</param>
         /// <param name="ExitAfterZero">Defines if the menu should exit after the 0-option.</param>
         /// <param name="UserCanAbort">Defines if the user can exit the menu.</param>
         /// <param name="BackString">The string that is displayed for the option to exit the menu.</param>
-        public static void ListToMenu<T>(List<T> Objects, Action<List<T>> DisplayTitle, Action<List<T>, T, int, int> DisplayOptions, Func<bool> ZeroMethod, Func<List<T>, int, bool> ChoiceMethod, bool UserCanAbort = true, string BackString = "Back")
+        public static void ListToMenu<T>(List<T> Objects, Action<List<T>> DisplayTitle, Action<List<T>, T, int, int> DisplayOptions, Func<List<T>, int, bool> ChoiceMethod, Func<bool> ZeroMethod, Func<List<T>, List<T>> UpdateObjects, bool UserCanAbort = true, string BackString = null )
         {
             int index = -1;
             string InputString = "";
@@ -1357,6 +1370,7 @@ namespace Grades
             {
                 ClearMenu();
                 int printedEntries = 0;
+                Objects = UpdateObjects(Objects);
                 DisplayTitle(Objects);
                 if (Objects.Any())
                 {
@@ -1392,7 +1406,8 @@ namespace Grades
 
                 if (UserCanAbort)
                 {
-                    Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(Objects.Count).Length, ' '), Lang.GetString(BackString));
+                    if (BackString == null) { BackString = Lang.GetString("Back"); }
+                    Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(Objects.Count).Length, ' '), BackString);
                 }
                 Console.Write("\n");
 
