@@ -45,9 +45,6 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", i, o);
             }
 
-            // Nullifying the Zero-Method since there is no use for it in this menu.
-            bool ZeroMethod() { ResetInput(); return false; }
-
             // Handling the options.
             bool ChoiceMethod(List<string> Options, int index)
             {
@@ -80,10 +77,8 @@ namespace Grades
                 return false;
             }
 
-            List<string> UpdateObjects(List<string> Objects) { return Objects; }
-
             // Calling the menu template to display the main menu with the specified parameters.
-            ListToMenu(options, DisplayTitle, DisplayOption, ChoiceMethod, ZeroMethod, UpdateObjects, true, Lang.GetString("Exit"));
+            ListToMenu(options, DisplayTitle, DisplayOption, ChoiceMethod, true, Lang.GetString("Exit"));
 
             // Exit the app when the main menu closes.
             ExitCli();
@@ -1302,10 +1297,7 @@ namespace Grades
                 return true;
             }
 
-            // Left here for future reference.
-            // (List<string> List) => { return List; }
-
-            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ChoiceMethod );
+            ListToMenu(tableFiles, DisplayTitle, DisplayOption, ChoiceMethod);
         }
 
         /// <summary>
@@ -1343,9 +1335,9 @@ namespace Grades
         /// <param name="ExitAfterZero">Defines if the menu should exit after the 0-option.</param>
         /// <param name="UserCanAbort">Defines if the user can exit the menu.</param>
         /// <param name="BackString">The string that is displayed for the option to exit the menu.</param>
-        public static void ListToMenu<T>(List<T> Objects, Action<List<T>> DisplayTitle, Action<List<T>, T, int, int> DisplayOptions, Func<List<T>, int, bool> ChoiceMethod, bool UserCanAbort = true)
+        public static void ListToMenu<T>(List<T> Objects, Action<List<T>> DisplayTitle, Action<List<T>, T, int, int> DisplayOptions, Func<List<T>, int, bool> ChoiceMethod, bool UserCanAbort = true, string BackString = null)
         {
-            ListToMenu<T>(Objects, DisplayTitle, DisplayOptions, ChoiceMethod, () => { ResetInput(); return false; }, (List<T> List) => { return List; }, UserCanAbort, Lang.GetString("Back"));
+            ListToMenu<T>(Objects, DisplayTitle, DisplayOptions, ChoiceMethod, () => { ResetInput(); return false; }, (List<T> List) => { return List; }, UserCanAbort, BackString);
         }
 
         /// <summary>
@@ -1361,7 +1353,7 @@ namespace Grades
         /// <param name="ExitAfterZero">Defines if the menu should exit after the 0-option.</param>
         /// <param name="UserCanAbort">Defines if the user can exit the menu.</param>
         /// <param name="BackString">The string that is displayed for the option to exit the menu.</param>
-        public static void ListToMenu<T>(List<T> Objects, Action<List<T>> DisplayTitle, Action<List<T>, T, int, int> DisplayOptions, Func<List<T>, int, bool> ChoiceMethod, Func<bool> ZeroMethod, Func<List<T>, List<T>> UpdateObjects, bool UserCanAbort = true, string BackString = null )
+        public static void ListToMenu<T>(List<T> Objects, Action<List<T>> DisplayTitle, Action<List<T>, T, int, int> DisplayOptions, Func<List<T>, int, bool> ChoiceMethod, Func<bool> ZeroMethod, Func<List<T>, List<T>> UpdateObjects, bool UserCanAbort = true, string BackString = null)
         {
             int index = -1;
             string InputString = "";
