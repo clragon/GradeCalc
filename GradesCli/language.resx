@@ -291,4 +291,16 @@
   <data name="NoData" xml:space="preserve">
     <value>No data</value>
   </data>
+  <data name="MaxGrade" xml:space="preserve">
+    <value>Maximum grade</value>
+  </data>
+  <data name="MinGrade" xml:space="preserve">
+    <value>Minimum grade</value>
+  </data>
+  <data name="TableEdit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="TableUseWeight" xml:space="preserve">
+    <value>Use weight system</value>
+  </data>
 </root>

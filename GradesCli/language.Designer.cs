@@ -241,6 +241,24 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Maximum grade ähnelt.
+        /// </summary>
+        internal static string MaxGrade {
+            get {
+                return ResourceManager.GetString("MaxGrade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Minimum grade ähnelt.
+        /// </summary>
+        internal static string MinGrade {
+            get {
+                return ResourceManager.GetString("MinGrade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die N ähnelt.
         /// </summary>
         internal static string No {
@@ -439,6 +457,15 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Edit ähnelt.
+        /// </summary>
+        internal static string TableEdit {
+            get {
+                return ResourceManager.GetString("TableEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Manage table ähnelt.
         /// </summary>
         internal static string TableManage {
@@ -507,6 +534,15 @@ namespace Grades {
         internal static string TableSetDefaultSuccess {
             get {
                 return ResourceManager.GetString("TableSetDefaultSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Use weight system ähnelt.
+        /// </summary>
+        internal static string TableUseWeight {
+            get {
+                return ResourceManager.GetString("TableUseWeight", resourceCulture);
             }
         }
         

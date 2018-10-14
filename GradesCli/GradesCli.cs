@@ -158,7 +158,7 @@ namespace Grades
             Table t = new Table
             {
                 // Default values for new tables, pulled from the settings file.
-                name = "terminal_" + DateTime.Now.ToString("yyyy.MM.dd-HH:mm:ss"),
+                Name = "terminal_" + DateTime.Now.ToString("yyyy.MM.dd-HH:mm:ss"),
                 MinGrade = Properties.Settings.Default.DefaultMinGrade,
                 MaxGrade = Properties.Settings.Default.DefaultMaxGrade,
                 UseWeightSystem = Properties.Settings.Default.DefaultUseWeightSystem
@@ -175,12 +175,12 @@ namespace Grades
             t.Save();
 
             // List of options.
-            List<string> options = new List<string> { Lang.GetString("TableRead"), Lang.GetString("TableWrite"), Lang.GetString("TableSetDefault"), Lang.GetString("TableRename"), Lang.GetString("TableDelete") };
+            List<string> options = new List<string> { Lang.GetString("TableRead"), Lang.GetString("TableWrite"), Lang.GetString("TableEdit"), Lang.GetString("TableDelete") };
 
             // Title.
             void DisplayTitle(List<string> Options)
             {
-                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableManage"), t.name);
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableManage"), t.Name);
             }
 
             // Option displaying template.
@@ -217,9 +217,9 @@ namespace Grades
                         new System.Threading.ManualResetEvent(false).WaitOne(500);
                         break;
 
-                    case var i when i.Equals(Lang.GetString("TableRename")):
+                    case var i when i.Equals(Lang.GetString("TableEdit")):
                         // Call the menu for renaming a table.
-                        RenameTable();
+                        ModifyTable();
                         t.Save();
                         break;
 
@@ -297,7 +297,7 @@ namespace Grades
                 string name;
                 try
                 {
-                    name = Table.Read(TableFiles[index]).name;
+                    name = Table.Read(TableFiles[index]).Name;
                 }
                 catch (Exception)
                 {
@@ -344,7 +344,7 @@ namespace Grades
             // Get a new table.
             Table x = GetEmptyTable();
             // Get the name for it through user input.
-            x.name = GetTable(string.Format("--- {0} ---", Lang.GetString("TableCreate")));
+            x.Name = GetTable(string.Format("--- {0} ---", Lang.GetString("TableCreate")));
             // Create a file for the table.
             // Files will be automatically named grades.xml with an increasing number in front of them.
             if (System.IO.File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "grades.xml")))
@@ -378,7 +378,7 @@ namespace Grades
         public static void RenameTable()
         {
             // Get the new name for the table through user input.
-            t.name = GetTable(string.Format("--- {0} : {1} ---", Lang.GetString("TableRename"), t.name));
+            t.Name = GetTable(string.Format("--- {0} : {1} ---", Lang.GetString("TableRename"), t.Name));
             // Save the table to it's file.
             t.Save();
         }
@@ -421,6 +421,144 @@ namespace Grades
             }
 
             return input;
+        }
+
+        public static void SetTableGradeLimits(bool UseMinGrade)
+        {
+            string input = "";
+            double value = -1;
+            bool IsInputValid = false;
+            while (!IsInputValid)
+            {
+                ClearMenu();
+                string limit;
+                if (UseMinGrade)
+                {
+                    limit = "MinGrade";
+                }
+                else
+                {
+                    limit = "MaxGrade";
+                }
+
+                Console.WriteLine("{0} : {1}", Lang.GetString("TableEdit"), Lang.GetString(limit));
+
+                Console.Write("\n");
+                Console.Write("{0}> ", Lang.GetString(limit));
+                input = Console.ReadLine();
+
+                if (double.TryParse(input, out value))
+                {
+                    IsInputValid = true;
+                }
+                else
+                {
+                    ResetInput();
+                }
+            }
+
+            if (UseMinGrade)
+            {
+                t.MinGrade = value;
+            }
+            else
+            {
+                t.MaxGrade = value;
+            }
+
+            t.Save();
+        }
+
+        public static void ModifyTable()
+        {
+            // Make sure the current table is saved.
+            t.Save();
+
+            // List of options.
+            List<string> options = new List<string> { Lang.GetString("TableName"), Lang.GetString("MinGrade"), Lang.GetString("MaxGrade"), Lang.GetString("TableUseWeight"), Lang.GetString("TableSetDefault") };
+
+            // Dictionatry mapping options to object properties.
+            Dictionary<string, string> ValueMap = new Dictionary<string, string>
+            {
+                { Lang.GetString("TableName"), "Name" },
+                { Lang.GetString("MinGrade"), "MinGrade" },
+                { Lang.GetString("MaxGrade"), "MaxGrade" },
+                { Lang.GetString("TableUseWeight"), "UseWeightSystem" }
+            };
+
+            // Title.
+            void DisplayTitle(List<string> Options)
+            {
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableEdit"), t.Name);
+            }
+
+            // Getting the maximum length of all strings.
+            int MaxLength = options.Select(x => x.Length).Max();
+            // Option displaying template.
+            void DisplayOption(List<string> Options, string o, int index, int i)
+            {
+                string display;
+
+                if (o != Lang.GetString("TableSetDefault"))
+                {
+                    display = t.GetType().GetProperty(ValueMap[o]).GetValue(t).ToString();
+                }
+                else
+                {
+                    display = (System.IO.Path.GetFileName(SourceFile) == Properties.Settings.Default.SourceFile).ToString();
+                }
+
+                if (display == "True") { display = Lang.GetString("Yes"); }
+                if (display == "False") { display = Lang.GetString("No"); }
+
+                Console.WriteLine("[{0}] {1} | {2}", i, o.PadRight(MaxLength, ' '), display);
+
+            }
+
+            // No Zero Method.
+            bool ZeroMethod() { ResetInput(); return false; }
+
+            // Handle options.
+            bool ChoiceMethod(List<string> Options, int index)
+            {
+                switch (Options[index])
+                {
+                    case var i when i.Equals(Lang.GetString("TableName")):
+                        RenameTable();
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("MinGrade")):
+                        SetTableGradeLimits(true);
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("MaxGrade")):
+                        SetTableGradeLimits(false);
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("TableUseWeight")):
+                        t.UseWeightSystem = !t.UseWeightSystem;
+                        t.Save();
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("TableSetDefault")):
+                        // Set the current table as new default table on startup.
+                        Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(SourceFile);
+                        Properties.Settings.Default.Save();
+                        // Display log message.
+                        Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("TableSetDefaultSuccess"));
+                        new System.Threading.ManualResetEvent(false).WaitOne(500);
+                        break;
+
+                    default:
+                        // Reset the input.
+                        ResetInput();
+                        break;
+                }
+                return false;
+            }
+
+            // Display the menu.
+            ListToMenu(options, DisplayTitle, DisplayOption, ZeroMethod, ChoiceMethod);
         }
 
         /// <summary>
@@ -581,7 +719,7 @@ namespace Grades
 
             void DisplayOption(List<string> Options, string o, int index, int i)
             {
-                    Console.WriteLine("[{0}] {1}", i, o);
+                Console.WriteLine("[{0}] {1}", i, o);
             }
 
             bool ZeroMethod() { ResetInput(); return false; }
@@ -803,7 +941,7 @@ namespace Grades
                 // Overview for the swiss grade system.
                 if (t.MinGrade == 1 && t.MaxGrade == 6)
                 {
-                    
+
                     // Display the bar diagramm meter.
                     BarLength = 12;
                     Console.WriteLine("{0} : 1 2 3 4 5 6: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
@@ -1142,13 +1280,13 @@ namespace Grades
                 string name;
                 try
                 {
-                    name = Table.Read(TableFiles[index]).name;
+                    name = Table.Read(TableFiles[index]).Name;
                 }
                 catch (Exception)
                 {
                     name = Lang.GetString("NoData");
                 }
-                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(TableFiles.Count).Length, ' '), 
+                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(TableFiles.Count).Length, ' '),
                     System.IO.Path.GetFileName(TableFiles[index]).PadRight(MaxLength, ' ') + " | " + name);
             }
 
@@ -1254,7 +1392,7 @@ namespace Grades
 
                 if (UserCanAbort)
                 {
-                        Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(Objects.Count).Length, ' '), Lang.GetString(BackString));
+                    Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(Objects.Count).Length, ' '), Lang.GetString(BackString));
                 }
                 Console.Write("\n");
 

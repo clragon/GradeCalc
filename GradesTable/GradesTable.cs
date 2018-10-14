@@ -16,25 +16,25 @@ namespace Grades
         /// The name of the table.
         /// </summary>
         [DataMember(Name = "Name")]
-        public string name;
+        public string Name { get; set; }
         /// <summary>
         /// The minimum grade value for this table and system.
         /// This value does not alter the behaviour of the table class.
         /// </summary>
         [DataMember(Name = "MinGrade")]
-        public double MinGrade;
+        public double MinGrade { get; set; }
         /// <summary>
         /// The maximum grade value for this table and system.
         /// This value does not alter the behaviour of the table class.
         /// </summary>
         [DataMember(Name = "MaxGrade")]
-        public double MaxGrade;
+        public double MaxGrade { get; set; }
         /// <summary>
         /// If the weight system should be used.
         /// This value does not alter the behaviour of the table class.
         /// </summary>
         [DataMember(Name = "EnableWeightSystem")]
-        public bool UseWeightSystem = true;
+        public bool UseWeightSystem { get; set; } = true;
 
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Grades
         }
 
         /// <summary>
-        /// Override method to calculate the average grade of a table.
+        /// Method to calculate the average grade of a table.
         /// Uses the override method to calculate the average of a subject to function.
         /// </summary>
         public double CalcAverage()
@@ -110,7 +110,7 @@ namespace Grades
         }
 
         /// <summary>
-        /// Override method to calculate the compensation needed for a table.
+        /// Method to calculate the compensation needed for a table.
         /// Uses the override method to calculate the compensation needed for a subject to function.
         /// </summary>
         public double CalcCompensation()
@@ -170,7 +170,7 @@ namespace Grades
             }
 
             /// <summary>
-            /// Override method to calculate the average grade of a subject.
+            /// Method to calculate the average grade of a subject.
             /// </summary>
             public double CalcAverage()
             {
@@ -203,7 +203,7 @@ namespace Grades
             }
 
             /// <summary>
-            /// Override method to calculate the compensation needed for a subject.
+            /// Method to calculate the compensation needed for a subject.
             /// </summary>
             public double CalcCompensation()
             {
