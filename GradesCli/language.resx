@@ -308,4 +308,16 @@
 Calculator by icons8.com
 Licensed under Creative Commons Attribution-NoDerivs 3.0 Unported</value>
   </data>
+  <data name="SettingsClearMenus" xml:space="preserve">
+    <value>Clear when switching menu</value>
+  </data>
+  <data name="SettingsEnableGradeLimits" xml:space="preserve">
+    <value>Enable grade limits</value>
+  </data>
+  <data name="SettingsOptions" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="SettingsShowCompensation" xml:space="preserve">
+    <value>Display compensation</value>
+  </data>
 </root>

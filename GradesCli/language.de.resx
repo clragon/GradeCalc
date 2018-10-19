@@ -308,4 +308,16 @@
 Calculator von icons8.com
 Lizensiert unter Creative Commons Attribution-NoDerivs 3.0 Unported</value>
   </data>
+  <data name="SettingsClearMenus" xml:space="preserve">
+    <value>Menüs aufräumen</value>
+  </data>
+  <data name="SettingsEnableGradeLimits" xml:space="preserve">
+    <value>Notenlimit beachten</value>
+  </data>
+  <data name="SettingsOptions" xml:space="preserve">
+    <value>Optionen</value>
+  </data>
+  <data name="SettingsShowCompensation" xml:space="preserve">
+    <value>Kompensation anzeigen</value>
+  </data>
 </root>

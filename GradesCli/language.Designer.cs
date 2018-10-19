@@ -333,6 +333,33 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Clear when switching menu ähnelt.
+        /// </summary>
+        internal static string SettingsClearMenus {
+            get {
+                return ResourceManager.GetString("SettingsClearMenus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Enable grade limits ähnelt.
+        /// </summary>
+        internal static string SettingsEnableGradeLimits {
+            get {
+                return ResourceManager.GetString("SettingsEnableGradeLimits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Options ähnelt.
+        /// </summary>
+        internal static string SettingsOptions {
+            get {
+                return ResourceManager.GetString("SettingsOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Reset ähnelt.
         /// </summary>
         internal static string SettingsReset {
@@ -347,6 +374,15 @@ namespace Grades {
         internal static string SettingsResetSuccess {
             get {
                 return ResourceManager.GetString("SettingsResetSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Display compensation ähnelt.
+        /// </summary>
+        internal static string SettingsShowCompensation {
+            get {
+                return ResourceManager.GetString("SettingsShowCompensation", resourceCulture);
             }
         }
         

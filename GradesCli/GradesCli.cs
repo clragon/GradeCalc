@@ -23,9 +23,6 @@ namespace Grades
             // Catching CTRL+C event
             Console.CancelKeyPress += new ConsoleCancelEventHandler(IsCliExitPendingHandler);
 
-            // Setting the bool for clearing console on menu switch
-            ClearOnSwitch = true;
-
             // Setting the console and menu title
             NewConsoleTitle = Lang.GetString("Title");
             Console.Title = NewConsoleTitle;
@@ -210,7 +207,7 @@ namespace Grades
                         break;
 
                     case var i when i.Equals(Lang.GetString("TableEdit")):
-                        // Call the menu for renaming a table.
+                        // Call the menu for editing a table.
                         ModifyTable();
                         t.Save();
                         break;
@@ -492,7 +489,7 @@ namespace Grades
             // Option displaying template.
             void DisplayOption(List<string> Options, string o, int index, int i)
             {
-                string display = (System.IO.Path.GetFileName(SourceFile) == Properties.Settings.Default.SourceFile).ToString();
+                string display = t.GetType().GetProperty(ValueMap[o]).GetValue(t).ToString();
 
                 if (display == "True") { display = Lang.GetString("Yes"); }
                 if (display == "False") { display = Lang.GetString("No"); }
@@ -604,13 +601,24 @@ namespace Grades
                 Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Subjects.Count).Length, ' '), s.Name);
             }
 
+            bool ZeroMethod()
+            {
+                CreateSubject();
+                return false;
+            }
+
             bool ChoiceMethod(List<Table.Subject> Subjects, int index)
             {
                 ManageSubject(t.Subjects[index]);
                 return false;
             }
 
-            ListToMenu(t.Subjects, DisplayTitle, DisplayOption, ChoiceMethod);
+            List<Table.Subject> UpdateObjects(List<Table.Subject> grades)
+            {
+                return t.Subjects;
+            }
+
+            ListToMenu(t.Subjects, DisplayTitle, DisplayOption, ChoiceMethod, ZeroMethod, UpdateObjects);
 
         }
 
@@ -1115,7 +1123,7 @@ namespace Grades
         /// </summary>
         public static void Settings()
         {
-            List<string> options = new List<string> { Lang.GetString("LanguageChoose"), Lang.GetString("TableDefault"), Lang.GetString("SettingsReset"), Lang.GetString("Credits") };
+            List<string> options = new List<string> { Lang.GetString("SettingsOptions"), Lang.GetString("Credits") };
 
             void DisplayTitle(List<string> Options)
             {
@@ -1131,23 +1139,8 @@ namespace Grades
             {
                 switch (Options[index])
                 {
-                    case var i when i.Equals(Lang.GetString("LanguageChoose")):
-                        ChooseLang();
-                        break;
-
-                    case var i when i.Equals(Lang.GetString("TableDefault")):
-                        SetDefaultTable();
-                        break;
-
-                    case var i when i.Equals(Lang.GetString("SettingsReset")):
-                        Action Yes = () =>
-                        {
-                            Properties.Settings.Default.Reset();
-                            try { System.IO.File.Delete(System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath); } catch { }
-                            Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("SettingsResetSuccess"));
-                        };
-                        YesNoMenu("SettingsReset", Yes, () => { });
-                        new System.Threading.ManualResetEvent(false).WaitOne(500);
+                    case var i when i.Equals(Lang.GetString("SettingsOptions")):
+                        ModifySettings();
                         break;
 
                     case var i when i.Equals(Lang.GetString("Credits")):
@@ -1169,6 +1162,97 @@ namespace Grades
 
             ListToMenu(options, DisplayTitle, DisplayOption, ChoiceMethod);
 
+        }
+
+        public static void ModifySettings()
+        {
+            // Make sure the current table is saved.
+            t.Save();
+
+            // List of options.
+            List<string> options = new List<string> { Lang.GetString("LanguageChoose"), Lang.GetString("SettingsClearMenus"), Lang.GetString("SettingsShowCompensation"), Lang.GetString("SettingsEnableGradeLimits") };
+
+            // Dictionatry mapping options to object properties.
+            Dictionary<string, string> ValueMap = new Dictionary<string, string>
+            {
+                { Lang.GetString("LanguageChoose"), "Language" },
+                { Lang.GetString("SettingsClearMenus"), "ClearOnSwitch" },
+                { Lang.GetString("SettingsShowCompensation"), "DisplayCompensation" },
+                { Lang.GetString("SettingsEnableGradeLimits"), "EnableGradeLimits" },
+                
+            };
+
+            // Title.
+            void DisplayTitle(List<string> Options)
+            {
+                Console.WriteLine("--- {0} : {1} ---", NewConsoleTitle, Lang.GetString("SettingsOptions"));
+            }
+
+            // Getting the maximum length of all strings.
+            int MaxLength = options.Select(x => x.Length).Max();
+            // Option displaying template.
+            void DisplayOption(List<string> Options, string o, int index, int i)
+            {
+                string display = Properties.Settings.Default.GetType().GetProperty(ValueMap[o]).GetValue(Properties.Settings.Default).ToString();
+
+                if (string.IsNullOrEmpty(display)) { display = Lang.GetString("NoData"); }
+                if (display == "True") { display = Lang.GetString("Yes"); }
+                if (display == "False") { display = Lang.GetString("No"); }
+
+                Console.WriteLine("[{0}] {1} | {2}", i, o.PadRight(MaxLength, ' '), display);
+
+            }
+
+            bool ZeroMethod()
+            {
+                Action Yes = () =>
+                {
+                    Properties.Settings.Default.Reset();
+                    try { System.IO.File.Delete(System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath); } catch { }
+                    Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("SettingsResetSuccess"));
+                };
+                YesNoMenu("SettingsReset", Yes, () => { });
+                new System.Threading.ManualResetEvent(false).WaitOne(500);
+                return false;
+            }
+
+
+            // Handle options.
+            bool ChoiceMethod(List<string> Options, int index)
+            {
+                switch (Options[index])
+                {
+                    case var i when i.Equals(Lang.GetString("SettingsClearMenus")):
+                        Properties.Settings.Default.ClearOnSwitch = !Properties.Settings.Default.ClearOnSwitch;
+                        Properties.Settings.Default.Save();
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("LanguageChoose")):
+                        ChooseLang();
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("SettingsShowCompensation")):
+                        Properties.Settings.Default.DisplayCompensation = !Properties.Settings.Default.DisplayCompensation;
+                        Properties.Settings.Default.Save();
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("SettingsEnableGradeLimits")):
+                        Properties.Settings.Default.EnableGradeLimits = !Properties.Settings.Default.EnableGradeLimits;
+                        Properties.Settings.Default.Save();
+                        break;
+
+                    default:
+                        // Reset the input.
+                        ResetInput();
+                        break;
+                }
+                return false;
+            }
+
+            List<string> UpdateObjects(List<string> Objects) { return Objects; }
+
+            // Display the menu.
+            ListToMenu(options, DisplayTitle, DisplayOption, ChoiceMethod, ZeroMethod, UpdateObjects);
         }
 
         /// <summary>
