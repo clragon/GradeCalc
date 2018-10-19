@@ -996,6 +996,7 @@ namespace Grades
             // Prompt the user to press any key as soon as he is done looking at the diagramm.
             Console.Write("{0} {1}", Lang.GetString("PressAnything"), " ");
             Console.ReadKey();
+            Console.WriteLine("\n");
         }
 
         /// <summary>
@@ -1550,6 +1551,7 @@ namespace Grades
                         case "q":
                             if (UserCanAbort)
                             {
+                                Console.Write("\n");
                                 IsInputValid = true;
                                 IsMenuExitPending = true;
                             }
