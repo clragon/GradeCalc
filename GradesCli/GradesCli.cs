@@ -420,20 +420,23 @@ namespace Grades
             string input = "";
             double value = -1;
             bool IsInputValid = false;
+            double old = -1;
             while (!IsInputValid)
             {
                 ClearMenu();
                 string limit;
                 if (UseMinGrade)
                 {
-                    limit = "MinGrade";
+                    limit = "GradeMin";
+                    old = t.MinGrade;
                 }
                 else
                 {
-                    limit = "MaxGrade";
+                    limit = "GradeMax";
+                    old = t.MaxGrade;
                 }
 
-                Console.WriteLine("{0} : {1}", Lang.GetString("TableEdit"), Lang.GetString(limit));
+                Console.WriteLine("{0} : {1}", Lang.GetString(limit), old);
 
                 Console.Write("\n");
                 Console.Write("{0}> ", Lang.GetString(limit));
@@ -467,14 +470,14 @@ namespace Grades
             t.Save();
 
             // List of options.
-            List<string> options = new List<string> { Lang.GetString("TableName"), Lang.GetString("MinGrade"), Lang.GetString("MaxGrade"), Lang.GetString("TableUseWeight") };
+            List<string> options = new List<string> { Lang.GetString("TableName"), Lang.GetString("GradeMin"), Lang.GetString("GradeMax"), Lang.GetString("TableUseWeight") };
 
             // Dictionatry mapping options to object properties.
             Dictionary<string, string> ValueMap = new Dictionary<string, string>
             {
                 { Lang.GetString("TableName"), "Name" },
-                { Lang.GetString("MinGrade"), "MinGrade" },
-                { Lang.GetString("MaxGrade"), "MaxGrade" },
+                { Lang.GetString("GradeMin"), "MinGrade" },
+                { Lang.GetString("GradeMax"), "MaxGrade" },
                 { Lang.GetString("TableUseWeight"), "UseWeightSystem" }
             };
 
@@ -491,6 +494,7 @@ namespace Grades
             {
                 string display = t.GetType().GetProperty(ValueMap[o]).GetValue(t).ToString();
 
+                if (string.IsNullOrEmpty(display)) { display = Lang.GetString("NoData"); }
                 if (display == "True") { display = Lang.GetString("Yes"); }
                 if (display == "False") { display = Lang.GetString("No"); }
 
@@ -507,11 +511,11 @@ namespace Grades
                         RenameTable();
                         break;
 
-                    case var i when i.Equals(Lang.GetString("MinGrade")):
+                    case var i when i.Equals(Lang.GetString("GradeMin")):
                         SetTableGradeLimits(true);
                         break;
 
-                    case var i when i.Equals(Lang.GetString("MaxGrade")):
+                    case var i when i.Equals(Lang.GetString("GradeMax")):
                         SetTableGradeLimits(false);
                         break;
 
@@ -1123,7 +1127,7 @@ namespace Grades
         /// </summary>
         public static void Settings()
         {
-            List<string> options = new List<string> { Lang.GetString("SettingsOptions"), Lang.GetString("Credits") };
+            List<string> options = new List<string> { Lang.GetString("SettingsOptions"), Lang.GetString("Tables"), Lang.GetString("SettingsReset"), Lang.GetString("Credits"), };
 
             void DisplayTitle(List<string> Options)
             {
@@ -1143,9 +1147,26 @@ namespace Grades
                         ModifySettings();
                         break;
 
+                    case var i when i.Equals(Lang.GetString("Tables")):
+                        ModifyTableDefaults();
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("SettingsReset")):
+                        void Yes()
+                        {
+                            Properties.Settings.Default.Reset();
+                            try { System.IO.File.Delete(System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath); } catch { }
+                            Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("SettingsResetSuccess"));
+                        }
+                        YesNoMenu("SettingsReset", Yes, () => { });
+                        new System.Threading.ManualResetEvent(false).WaitOne(500);
+                        break;
+
                     case var i when i.Equals(Lang.GetString("Credits")):
                         ClearMenu();
-                        Console.WriteLine(Lang.GetString("IconCredits"));
+                        Console.WriteLine(Lang.GetString("CreditsApp"));
+                        Console.WriteLine();
+                        Console.WriteLine(Lang.GetString("CreditsIcon"));
                         Console.WriteLine();
                         Console.WriteLine(Lang.GetString("PressAnything"));
                         Console.ReadKey();
@@ -1166,20 +1187,18 @@ namespace Grades
 
         public static void ModifySettings()
         {
-            // Make sure the current table is saved.
-            t.Save();
-
             // List of options.
-            List<string> options = new List<string> { Lang.GetString("LanguageChoose"), Lang.GetString("SettingsClearMenus"), Lang.GetString("SettingsShowCompensation"), Lang.GetString("SettingsEnableGradeLimits") };
+            List<string> options = new List<string> { Lang.GetString("TableDefault"), Lang.GetString("LanguageChoose"), Lang.GetString("SettingsClearMenus"), Lang.GetString("SettingsEnableGradeLimits"), Lang.GetString("SettingsShowCompensation"), };
 
             // Dictionatry mapping options to object properties.
             Dictionary<string, string> ValueMap = new Dictionary<string, string>
             {
+                { Lang.GetString("TableDefault"), "SourceFile" },
                 { Lang.GetString("LanguageChoose"), "Language" },
                 { Lang.GetString("SettingsClearMenus"), "ClearOnSwitch" },
-                { Lang.GetString("SettingsShowCompensation"), "DisplayCompensation" },
                 { Lang.GetString("SettingsEnableGradeLimits"), "EnableGradeLimits" },
-                
+                { Lang.GetString("SettingsShowCompensation"), "DisplayCompensation" },
+
             };
 
             // Title.
@@ -1203,32 +1222,22 @@ namespace Grades
 
             }
 
-            bool ZeroMethod()
-            {
-                Action Yes = () =>
-                {
-                    Properties.Settings.Default.Reset();
-                    try { System.IO.File.Delete(System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath); } catch { }
-                    Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("SettingsResetSuccess"));
-                };
-                YesNoMenu("SettingsReset", Yes, () => { });
-                new System.Threading.ManualResetEvent(false).WaitOne(500);
-                return false;
-            }
-
-
             // Handle options.
             bool ChoiceMethod(List<string> Options, int index)
             {
                 switch (Options[index])
                 {
-                    case var i when i.Equals(Lang.GetString("SettingsClearMenus")):
-                        Properties.Settings.Default.ClearOnSwitch = !Properties.Settings.Default.ClearOnSwitch;
-                        Properties.Settings.Default.Save();
+                    case var i when i.Equals(Lang.GetString("TableDefault")):
+                        SetDefaultTable();
                         break;
 
                     case var i when i.Equals(Lang.GetString("LanguageChoose")):
                         ChooseLang();
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("SettingsClearMenus")):
+                        Properties.Settings.Default.ClearOnSwitch = !Properties.Settings.Default.ClearOnSwitch;
+                        Properties.Settings.Default.Save();
                         break;
 
                     case var i when i.Equals(Lang.GetString("SettingsShowCompensation")):
@@ -1249,10 +1258,8 @@ namespace Grades
                 return false;
             }
 
-            List<string> UpdateObjects(List<string> Objects) { return Objects; }
-
             // Display the menu.
-            ListToMenu(options, DisplayTitle, DisplayOption, ChoiceMethod, ZeroMethod, UpdateObjects);
+            ListToMenu(options, DisplayTitle, DisplayOption, ChoiceMethod);
         }
 
         /// <summary>
@@ -1364,6 +1371,69 @@ namespace Grades
             }
 
             ListToMenu(tableFiles, DisplayTitle, DisplayOption, ChoiceMethod);
+        }
+
+        public static void ModifyTableDefaults()
+        {
+            // List of options.
+            List<string> options = new List<string> { Lang.GetString("GradeMin"), Lang.GetString("GradeMax"), Lang.GetString("TableUseWeight") };
+
+            // Dictionatry mapping options to object properties.
+            Dictionary<string, string> ValueMap = new Dictionary<string, string>
+            {
+                { Lang.GetString("GradeMin"), "DefaultMinGrade" },
+                { Lang.GetString("GradeMax"), "DefaultMaxGrade" },
+                { Lang.GetString("TableUseWeight"), "DefaultUseWeightSystem" },
+
+            };
+
+            // Title.
+            void DisplayTitle(List<string> Options)
+            {
+                Console.WriteLine("--- {0} : {1} ---", NewConsoleTitle, Lang.GetString("Defaults"));
+            }
+
+            // Getting the maximum length of all strings.
+            int MaxLength = options.Select(x => x.Length).Max();
+            // Option displaying template.
+            void DisplayOption(List<string> Options, string o, int index, int i)
+            {
+                string display = Properties.Settings.Default.GetType().GetProperty(ValueMap[o]).GetValue(Properties.Settings.Default).ToString();
+
+                if (string.IsNullOrEmpty(display)) { display = Lang.GetString("NoData"); }
+                if (display == "True") { display = Lang.GetString("Yes"); }
+                if (display == "False") { display = Lang.GetString("No"); }
+
+                Console.WriteLine("[{0}] {1} | {2}", i, o.PadRight(MaxLength, ' '), display);
+
+            }
+
+            // Handle options.
+            bool ChoiceMethod(List<string> Options, int index)
+            {
+                switch (Options[index])
+                {
+                    case var i when i.Equals(Lang.GetString("DefaultGradeMin")):
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("DefaultGradeMax")):
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("DefaultUseWeight")):
+                        Properties.Settings.Default.DefaultUseWeightSystem = !Properties.Settings.Default.DefaultUseWeightSystem;
+                        Properties.Settings.Default.Save();
+                        break;
+
+                    default:
+                        // Reset the input.
+                        ResetInput();
+                        break;
+                }
+                return false;
+            }
+
+            // Display the menu.
+            ListToMenu(options, DisplayTitle, DisplayOption, ChoiceMethod);
         }
 
         /// <summary>

@@ -291,10 +291,10 @@
   <data name="NoData" xml:space="preserve">
     <value>Keine Daten</value>
   </data>
-  <data name="MaxGrade" xml:space="preserve">
+  <data name="GradeMax" xml:space="preserve">
     <value>Maximale Note</value>
   </data>
-  <data name="MinGrade" xml:space="preserve">
+  <data name="GradeMin" xml:space="preserve">
     <value>Minimale Note</value>
   </data>
   <data name="TableEdit" xml:space="preserve">
@@ -303,7 +303,7 @@
   <data name="TableUseWeight" xml:space="preserve">
     <value>Gewicht-System benutzen</value>
   </data>
-  <data name="IconCredits" xml:space="preserve">
+  <data name="CreditsIcon" xml:space="preserve">
     <value>--- Icon ---
 Calculator von icons8.com
 Lizensiert unter Creative Commons Attribution-NoDerivs 3.0 Unported</value>
@@ -319,5 +319,25 @@ Lizensiert unter Creative Commons Attribution-NoDerivs 3.0 Unported</value>
   </data>
   <data name="SettingsShowCompensation" xml:space="preserve">
     <value>Kompensation anzeigen</value>
+  </data>
+  <data name="CreditsApp" xml:space="preserve">
+    <value>--- App ---
+GradeCalc von clragon @ github.com/clragon/GradeCalc
+Lizensiert unter GNU General Public License v3.0</value>
+  </data>
+  <data name="Tables" xml:space="preserve">
+    <value>Tabellen</value>
+  </data>
+  <data name="DefaultGradeMax" xml:space="preserve">
+    <value>Standard maximale Note</value>
+  </data>
+  <data name="DefaultGradeMin" xml:space="preserve">
+    <value>Standard minimale Note</value>
+  </data>
+  <data name="Defaults" xml:space="preserve">
+    <value>Standards</value>
+  </data>
+  <data name="DefaultUseWeight" xml:space="preserve">
+    <value>Benutze Gewicht-System standardmässig</value>
   </data>
 </root>

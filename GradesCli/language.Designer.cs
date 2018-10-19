@@ -106,6 +106,64 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die --- App ---
+        ///GradeCalc by clragon @ github.com/clragon/GradeCalc
+        ///Licensed under GNU General Public License v3.0 ähnelt.
+        /// </summary>
+        internal static string CreditsApp {
+            get {
+                return ResourceManager.GetString("CreditsApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die --- Icon ---
+        ///Calculator by icons8.com
+        ///Licensed under Creative Commons Attribution-NoDerivs 3.0 Unported ähnelt.
+        /// </summary>
+        internal static string CreditsIcon {
+            get {
+                return ResourceManager.GetString("CreditsIcon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Default maximum grade ähnelt.
+        /// </summary>
+        internal static string DefaultGradeMax {
+            get {
+                return ResourceManager.GetString("DefaultGradeMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Default minimum grade ähnelt.
+        /// </summary>
+        internal static string DefaultGradeMin {
+            get {
+                return ResourceManager.GetString("DefaultGradeMin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Defaults ähnelt.
+        /// </summary>
+        internal static string Defaults {
+            get {
+                return ResourceManager.GetString("Defaults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Use weight system by default ähnelt.
+        /// </summary>
+        internal static string DefaultUseWeight {
+            get {
+                return ResourceManager.GetString("DefaultUseWeight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Error ähnelt.
         /// </summary>
         internal static string Error {
@@ -169,22 +227,29 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Maximum grade ähnelt.
+        /// </summary>
+        internal static string GradeMax {
+            get {
+                return ResourceManager.GetString("GradeMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Minimum grade ähnelt.
+        /// </summary>
+        internal static string GradeMin {
+            get {
+                return ResourceManager.GetString("GradeMin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Grades ähnelt.
         /// </summary>
         internal static string Grades {
             get {
                 return ResourceManager.GetString("Grades", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die --- Icon ---
-        ///Calculator by icons8.com
-        ///Licensed under Creative Commons Attribution-NoDerivs 3.0 Unported ähnelt.
-        /// </summary>
-        internal static string IconCredits {
-            get {
-                return ResourceManager.GetString("IconCredits", resourceCulture);
             }
         }
         
@@ -248,24 +313,6 @@ namespace Grades {
         internal static string Manage {
             get {
                 return ResourceManager.GetString("Manage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Maximum grade ähnelt.
-        /// </summary>
-        internal static string MaxGrade {
-            get {
-                return ResourceManager.GetString("MaxGrade", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Minimum grade ähnelt.
-        /// </summary>
-        internal static string MinGrade {
-            get {
-                return ResourceManager.GetString("MinGrade", resourceCulture);
             }
         }
         
@@ -563,6 +610,15 @@ namespace Grades {
         internal static string TableRename {
             get {
                 return ResourceManager.GetString("TableRename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Tables ähnelt.
+        /// </summary>
+        internal static string Tables {
+            get {
+                return ResourceManager.GetString("Tables", resourceCulture);
             }
         }
         
