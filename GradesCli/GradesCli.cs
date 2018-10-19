@@ -470,7 +470,7 @@ namespace Grades
             t.Save();
 
             // List of options.
-            List<string> options = new List<string> { Lang.GetString("TableName"), Lang.GetString("MinGrade"), Lang.GetString("MaxGrade"), Lang.GetString("TableUseWeight"), Lang.GetString("TableSetDefault") };
+            List<string> options = new List<string> { Lang.GetString("TableName"), Lang.GetString("MinGrade"), Lang.GetString("MaxGrade"), Lang.GetString("TableUseWeight") };
 
             // Dictionatry mapping options to object properties.
             Dictionary<string, string> ValueMap = new Dictionary<string, string>
@@ -492,16 +492,7 @@ namespace Grades
             // Option displaying template.
             void DisplayOption(List<string> Options, string o, int index, int i)
             {
-                string display;
-
-                if (o != Lang.GetString("TableSetDefault"))
-                {
-                    display = t.GetType().GetProperty(ValueMap[o]).GetValue(t).ToString();
-                }
-                else
-                {
-                    display = (System.IO.Path.GetFileName(SourceFile) == Properties.Settings.Default.SourceFile).ToString();
-                }
+                string display = (System.IO.Path.GetFileName(SourceFile) == Properties.Settings.Default.SourceFile).ToString();
 
                 if (display == "True") { display = Lang.GetString("Yes"); }
                 if (display == "False") { display = Lang.GetString("No"); }
@@ -530,15 +521,6 @@ namespace Grades
                     case var i when i.Equals(Lang.GetString("TableUseWeight")):
                         t.UseWeightSystem = !t.UseWeightSystem;
                         t.Save();
-                        break;
-
-                    case var i when i.Equals(Lang.GetString("TableSetDefault")):
-                        // Set the current table as new default table on startup.
-                        Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(SourceFile);
-                        Properties.Settings.Default.Save();
-                        // Display log message.
-                        Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("TableSetDefaultSuccess"));
-                        new System.Threading.ManualResetEvent(false).WaitOne(500);
                         break;
 
                     default:
