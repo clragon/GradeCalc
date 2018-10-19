@@ -178,6 +178,17 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die --- Icon ---
+        ///Calculator by icons8.com
+        ///Licensed under Creative Commons Attribution-NoDerivs 3.0 Unported ähnelt.
+        /// </summary>
+        internal static string IconCredits {
+            get {
+                return ResourceManager.GetString("IconCredits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Invalid input ähnelt.
         /// </summary>
         internal static string InputInvalid {

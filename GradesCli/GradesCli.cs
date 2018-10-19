@@ -1170,7 +1170,7 @@ namespace Grades
 
                     case var i when i.Equals(Lang.GetString("Credits")):
                         ClearMenu();
-                        Console.WriteLine("--- Icon ---\nCalculator by icons8.com\nLicensed under Creative Commons");
+                        Console.WriteLine(Lang.GetString("IconCredits"));
                         Console.WriteLine();
                         Console.WriteLine(Lang.GetString("PressAnything"));
                         Console.ReadKey();
