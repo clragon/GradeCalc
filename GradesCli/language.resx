@@ -325,15 +325,6 @@ Licensed under Creative Commons Attribution-NoDerivs 3.0 Unported</value>
 GradeCalc by clragon @ github.com/clragon/GradeCalc
 Licensed under GNU General Public License v3.0</value>
   </data>
-  <data name="DefaultGradeMax" xml:space="preserve">
-    <value>Default maximum grade</value>
-  </data>
-  <data name="DefaultGradeMin" xml:space="preserve">
-    <value>Default minimum grade</value>
-  </data>
-  <data name="DefaultUseWeight" xml:space="preserve">
-    <value>Use weight system by default</value>
-  </data>
   <data name="Tables" xml:space="preserve">
     <value>Tables</value>
   </data>

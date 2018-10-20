@@ -128,38 +128,11 @@ namespace Grades {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Default maximum grade ähnelt.
-        /// </summary>
-        internal static string DefaultGradeMax {
-            get {
-                return ResourceManager.GetString("DefaultGradeMax", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Default minimum grade ähnelt.
-        /// </summary>
-        internal static string DefaultGradeMin {
-            get {
-                return ResourceManager.GetString("DefaultGradeMin", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Defaults ähnelt.
         /// </summary>
         internal static string Defaults {
             get {
                 return ResourceManager.GetString("Defaults", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Use weight system by default ähnelt.
-        /// </summary>
-        internal static string DefaultUseWeight {
-            get {
-                return ResourceManager.GetString("DefaultUseWeight", resourceCulture);
             }
         }
         

@@ -328,16 +328,7 @@ Lizensiert unter GNU General Public License v3.0</value>
   <data name="Tables" xml:space="preserve">
     <value>Tabellen</value>
   </data>
-  <data name="DefaultGradeMax" xml:space="preserve">
-    <value>Standard maximale Note</value>
-  </data>
-  <data name="DefaultGradeMin" xml:space="preserve">
-    <value>Standard minimale Note</value>
-  </data>
   <data name="Defaults" xml:space="preserve">
     <value>Standards</value>
-  </data>
-  <data name="DefaultUseWeight" xml:space="preserve">
-    <value>Benutze Gewicht-System standardmässig</value>
   </data>
 </root>
