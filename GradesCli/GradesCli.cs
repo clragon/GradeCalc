@@ -1239,6 +1239,7 @@ namespace Grades
                     case var i when i.Equals(Lang.GetString("SettingsClearMenus")):
                         Properties.Settings.Default.ClearOnSwitch = !Properties.Settings.Default.ClearOnSwitch;
                         Properties.Settings.Default.Save();
+                        ClearOnSwitch = Properties.Settings.Default.ClearOnSwitch;
                         break;
 
                     case var i when i.Equals(Lang.GetString("SettingsShowCompensation")):
