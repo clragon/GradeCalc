@@ -575,6 +575,7 @@ namespace Grades
 
                     case var i when i.Equals(Lang.GetString("SubjectDelete")):
                         t.RemSubject(t.Subjects.IndexOf(s));
+                        t.Save();
                         return true;
 
                     default:
@@ -716,6 +717,7 @@ namespace Grades
                         // Remove the grade by using the OwnerSubject attribute.
                         // Effectively bypassing the need to pass the subject in which the grade is in.
                         g.OwnerSubject.RemGrade(g);
+                        t.Save();
                         return true;
 
                     default:
