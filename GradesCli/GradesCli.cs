@@ -919,12 +919,6 @@ namespace Grades
                 if (Properties.Settings.Default.DisplayCompensation) { if (MaxLength < Lang.GetString("Compensation").Length) { MaxLength = Lang.GetString("Compensation").Length; } }
                 int BarLength;
 
-                // Sort the subjects descending by their average grade.
-                t.Subjects.Sort((s1, s2) =>
-                {
-                    return Convert.ToInt32(s2.CalcAverage() - s1.CalcAverage());
-                });
-
                 // Overview for the swiss grade system.
                 if (t.MinGrade == 1 && t.MaxGrade == 6)
                 {
@@ -933,8 +927,9 @@ namespace Grades
                     BarLength = 12;
                     Console.WriteLine("{0} : 1 2 3 4 5 6: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
 
+                    // Sort the subjects descending by their average grade.
                     // Print a diagramm for each subject.
-                    foreach (Table.Subject s in t.Subjects)
+                    foreach (Table.Subject s in t.Subjects.OrderByDescending(x => x.CalcAverage()).ToList())
                     {
                         if (s.Grades.Any())
                         {
