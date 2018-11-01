@@ -928,8 +928,10 @@ namespace Grades
                     Console.WriteLine("{0} : 1 2 3 4 5 6: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
 
                     // Sort the subjects descending by their average grade.
+                    // Or maybe... actually... not.
+                    // t.Subjects.OrderByDescending(x => x.CalcAverage()).ToList()
                     // Print a diagramm for each subject.
-                    foreach (Table.Subject s in t.Subjects.OrderByDescending(x => x.CalcAverage()).ToList())
+                    foreach (Table.Subject s in t.Subjects)
                     {
                         if (s.Grades.Any())
                         {
