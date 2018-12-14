@@ -11,6 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradeCalc", "GradeCalc\Grad
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradesCli", "GradesCli\GradesCli.csproj", "{31DE8B93-353A-49BC-B5BC-27F3ADE3C312}"
+	ProjectSection(ProjectDependencies) = postProject
+		{16FCF73A-3088-462B-81AC-F5F8F28DE157} = {16FCF73A-3088-462B-81AC-F5F8F28DE157}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloe", "Cloe\Cloe.csproj", "{16FCF73A-3088-462B-81AC-F5F8F28DE157}"
 EndProject

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cloe
 {
@@ -47,7 +45,7 @@ namespace Cloe
         /// The static default DisplayEntry function
         /// Setting it will provide a new default.
         /// </summary>
-        public static Action<List<T>, T, int, int> DefaultDisplayEntry = (List<T> entries, T entry, int index, int num) => { Console.WriteLine("[{0}] {1}", Convert.ToString(index).PadLeft(Convert.ToString(entries.Count).Length, ' '), entry); };
+        public static Action<List<T>, T, int, int> DefaultDisplayEntry = (List<T> entries, T entry, int index, int num) => { Console.WriteLine("[{0}] {1}", Convert.ToString(num).PadLeft(Convert.ToString(entries.Count).Length, ' '), entry); };
 
         /// <summary>
         /// The function that is called when the user enters 0;
@@ -190,6 +188,8 @@ namespace Cloe
                     Console.WriteLine("[{0}] {1}", Convert.ToString(ExitKey).PadLeft(Convert.ToString(Entries.Count).Length, ' '), ExitEntry);
                 }
 
+                Console.WriteLine();
+
                 bool InputIsValid = false;
                 while (!InputIsValid)
                 {
@@ -225,16 +225,16 @@ namespace Cloe
                         case var key when key.Key.Equals(ConsoleKey.Enter):
                             if (!string.IsNullOrEmpty(readInput))
                             {
-                                readInput = string.Empty;
                                 if (HandleEntry(Entries, (Convert.ToInt32(readInput) - 1)))
                                 {
                                     MenuExitIsPending = true;
                                 }
+                                readInput = string.Empty;
                                 InputIsValid = true;
                             }
                             break;
 
-                        case var key when int.TryParse(key.Key.ToString(), out choiceNum):
+                        case var key when int.TryParse(key.KeyChar.ToString(), out choiceNum):
                             if (string.IsNullOrEmpty(readInput) && choiceNum.Equals(0))
                             {
                                 InputIsValid = true;
@@ -256,11 +256,11 @@ namespace Cloe
                                     }
                                     if ((readInput.Length == Convert.ToString(Entries.Count).Length) || (matchingEntries == 1))
                                     {
-                                        readInput = string.Empty;
                                         if (HandleEntry(Entries, (Convert.ToInt32(readInput) - 1)))
                                         {
                                             MenuExitIsPending = true;
                                         }
+                                        readInput = string.Empty;
                                     }
                                 }
                                 else
@@ -271,6 +271,7 @@ namespace Cloe
                             break;
 
                         default:
+                            Console.WriteLine();
                             ResetInput();
                             break;
                     }
@@ -287,7 +288,7 @@ namespace Cloe
         public static void ResetInput(string errorMsg = "")
         {
             // Display error and wait.
-            Console.Write(string.Format("[{0}] {1}", DefaultErrorName, errorMsg ?? DefaultInputError));
+            Console.Write(string.Format("[{0}] {1}", DefaultErrorName, !string.IsNullOrWhiteSpace(errorMsg) ? errorMsg : DefaultInputError));
             new System.Threading.ManualResetEvent(false).WaitOne(150);
             // Clear the current line.
             ClearCurrentConsoleLine();
