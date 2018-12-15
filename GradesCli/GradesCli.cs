@@ -70,7 +70,7 @@ namespace Grades
             }
 
             // Calling the menu template to display the main menu with the specified parameters.
-            ListToMenu(options, HandleOption, DisplayTitle, ExitOption:Lang.GetString("Exit"));
+            ListToMenu(options, HandleOption, DisplayTitle, ExitEntry:Lang.GetString("Exit"));
 
             // Exit the app when the main menu closes.
             ExitCli();
@@ -1448,168 +1448,164 @@ namespace Grades
 
         /// <summary>
         /// The template for displaying a menu.
+        /// <para>Rest in peace, Cloe.</para>
         /// </summary>
-        /// <param name="Objects">A list of objects that will be displayed as choices.</param>
+        /// <param name="Entries">A list of objects that will be displayed as choices.</param>
         /// <param name="DisplayTitle">Pass a function that displays the title here. It should include displaying the 0-option if you want to use it.</param>
-        /// <param name="DisplayOption">Pass a function that will display the options here.</param>
-        /// <param name="HandleOption">Pass a function that handles any numerical option from the passed list here.</param>
-        /// <param name="ZeroOption">Pass a function that will handle the 0-option here, if you want to use it.</param>
-        /// <param name="UpdateObjects">Pass a function that will handle updating the objects list here.</param>
+        /// <param name="DisplayEntry">Pass a function that will display the options here.</param>
+        /// <param name="HandleEntry">Pass a function that handles any numerical option from the passed list here.</param>
+        /// <param name="ZeroEntry">Pass a function that will handle the 0-option here, if you want to use it.</param>
+        /// <param name="RefreshEntries">Pass a function that will handle updating the objects list here.</param>
         /// <param name="ExitAfterChoice">Defines if the menu should exit after a choice was made.</param>
         /// <param name="ExitAfterZero">Defines if the menu should exit after the 0-option.</param>
         /// <param name="UserCanAbort">Defines if the user can exit the menu.</param>
-        /// <param name="ExitOption">The string that is displayed for the option to exit the menu.</param>
-        public static void ListToMenu<T>(List<T> Objects, Func<List<T>, int, bool> HandleOption, Action<List<T>> DisplayTitle = null, Action<List<T>, T, int, int> DisplayOption = null, Func<List<T>, bool> ZeroOption = null, Func<List<T>, List<T>> UpdateObjects = null, bool UserCanAbort = true, string ExitOption = null)
+        /// <param name="ExitEntry">The string that is displayed for the option to exit the menu.</param>
+        public static void ListToMenu<T>(List<T> Entries, Func<List<T>, int, bool> HandleEntry, Action<List<T>> DisplayTitle = null, Action<List<T>, T, int, int> DisplayEntry = null, Func<List<T>, bool> ZeroEntry = null, Func<List<T>, List<T>> RefreshEntries = null, bool UserCanAbort = true, string ExitEntry = null)
         {
 
             DisplayTitle = DisplayTitle ?? ((List<T> entries) => { });
-            DisplayOption = DisplayOption ?? ((List<T> entries, T entry, int index_, int num) => { Console.WriteLine("[{0}] {1}", Convert.ToString(num).PadLeft(Convert.ToString(entries.Count).Length, ' '), entry); });
-            UpdateObjects = UpdateObjects ?? ((List<T> entries) => { return entries; });
-            ZeroOption = ZeroOption ?? ((List<T> entries) => { ResetInput(); return false; });
-            ExitOption = ExitOption ?? string.Empty;
+            DisplayEntry = DisplayEntry ?? ((List<T> entries, T entry, int index_, int num) => { Console.WriteLine("[{0}] {1}", Convert.ToString(num).PadLeft(Convert.ToString(entries.Count).Length, ' '), entry); });
+            RefreshEntries = RefreshEntries ?? ((List<T> entries) => { return entries; });
+            ZeroEntry = ZeroEntry ?? ((List<T> entries) => { ResetInput(); return false; });
+            ExitEntry = ExitEntry ?? Lang.GetString("Back");
+
+            char ExitKey = 'q';
+            string Prompt = Lang.GetString("Choose");
 
 
-            int index = -1;
-            string InputString = "";
-            bool IsMenuExitPending = false;
-            while (!IsMenuExitPending)
+            string readInput = string.Empty;
+            bool MenuExitIsPending = false;
+            while (!MenuExitIsPending)
             {
                 ClearMenu();
                 int printedEntries = 0;
-                Objects = UpdateObjects(Objects);
-                DisplayTitle(Objects);
-                if (Objects.Any())
+                Entries = RefreshEntries(Entries);
+                DisplayTitle(Entries);
+                if (Entries.Any())
                 {
-                    int i = 0;
-                    foreach (T x in Objects)
+                    int num = 0;
+                    foreach (T entry in Entries)
                     {
-                        i++;
-                        if (InputString == "")
+                        num++;
+                        if (string.IsNullOrEmpty(readInput) || Convert.ToString(num).StartsWith(readInput))
                         {
-                            DisplayOption(Objects, x, i - 1, i);
+                            DisplayEntry(Entries, entry, Entries.IndexOf(entry), num);
                             printedEntries++;
                         }
-                        else
-                        {
-                            if (Convert.ToString(i).StartsWith(InputString) || Convert.ToString(i) == InputString)
-                            {
-                                DisplayOption(Objects, x, i - 1, i);
-                                printedEntries++;
-                            }
-                        }
 
-                        if (Objects.Count > Console.WindowHeight - 5)
+                        if (Entries.Count > Console.WindowHeight - 5)
                         {
-                            if (printedEntries == Console.WindowHeight - 6)
+                            if (printedEntries >= Console.WindowHeight - (5 + 1))
                             {
-                                Console.WriteLine("[{0}]", ".".PadLeft(Convert.ToString(Objects.Count).Length, '.'));
+                                Console.WriteLine("[{0}] +{1}", ".".PadLeft(Convert.ToString(Entries.Count).Length, '.'), Entries.Count);
                                 break;
                             }
                         }
-                        else { if (printedEntries == Console.WindowHeight - 5) { break; } }
+                        else
+                        {
+                            if (printedEntries == Console.WindowHeight - 5)
+                            {
+                                break;
+                            }
+                        }
+
                     }
                 }
 
                 if (UserCanAbort)
                 {
-                    if (ExitOption == null) { ExitOption = Lang.GetString("Back"); }
-                    Console.WriteLine("[{0}] {1}", "q".PadLeft(Convert.ToString(Objects.Count).Length, ' '), ExitOption);
+                    Console.WriteLine("[{0}] {1}", Convert.ToString(ExitKey).PadLeft(Convert.ToString(Entries.Count).Length, ' '), ExitEntry);
                 }
-                Console.Write("\n");
 
-                bool IsInputValid = false;
-                while (!IsInputValid)
+                Console.WriteLine();
+
+                bool InputIsValid = false;
+                while (!InputIsValid)
                 {
-                    Console.Write("{0}> {1}", Lang.GetString("Choose"), InputString);
-                    string input = Console.ReadKey().KeyChar.ToString();
+                    Console.Write("{0}> {1}", Prompt, readInput);
+                    ConsoleKeyInfo input = Console.ReadKey();
                     new System.Threading.ManualResetEvent(false).WaitOne(20);
+                    int choiceNum = -1;
                     switch (input)
                     {
-                        case "q":
+                        case var key when key.KeyChar.Equals(ExitKey):
                             if (UserCanAbort)
                             {
-                                Console.Write("\n");
-                                IsInputValid = true;
-                                IsMenuExitPending = true;
+                                Console.WriteLine();
+                                InputIsValid = true;
+                                MenuExitIsPending = true;
                             }
                             else
                             {
-                                Console.Write("\n");
+                                Console.WriteLine();
                                 ResetInput();
                             }
                             break;
 
-                        case "\b":
-                            if (!(InputString == ""))
+                        case var key when key.Key.Equals(ConsoleKey.Backspace):
+                            if (!string.IsNullOrEmpty(readInput))
                             {
                                 Console.Write("\b");
-                                InputString = InputString.Remove(InputString.Length - 1);
+                                readInput = readInput.Remove(readInput.Length - 1);
                             }
-                            IsInputValid = true;
+                            InputIsValid = true;
                             break;
 
-                        case "\n":
-                        case "\r":
-                            if (InputString != "")
+                        case var key when key.Key.Equals(ConsoleKey.Enter):
+                            if (!string.IsNullOrEmpty(readInput))
                             {
-                                index = Convert.ToInt32(InputString) - 1;
-                                InputString = "";
-                                IsInputValid = true;
-                                if (HandleOption(Objects, index))
+                                if (HandleEntry(Entries, (Convert.ToInt32(readInput) - 1)))
                                 {
-                                    IsMenuExitPending = true;
+                                    MenuExitIsPending = true;
+                                }
+                                readInput = string.Empty;
+                            }
+                            InputIsValid = true;
+                            break;
+
+                        case var key when int.TryParse(key.KeyChar.ToString(), out choiceNum):
+                            if (string.IsNullOrEmpty(readInput) && choiceNum.Equals(0))
+                            {
+                                InputIsValid = true;
+                                if (ZeroEntry(Entries))
+                                {
+                                    MenuExitIsPending = true;
+                                }
+                            }
+                            else
+                            {
+                                if (Convert.ToInt32(readInput + Convert.ToString(choiceNum)) <= Entries.Count)
+                                {
+                                    InputIsValid = true;
+                                    int matchingEntries = 0;
+                                    readInput = readInput + Convert.ToString(choiceNum);
+                                    for (int i = 0; i < Entries.Count; i++)
+                                    {
+                                        if (Convert.ToString(i + 1).StartsWith(readInput) || Convert.ToString(i + 1) == readInput) { matchingEntries++; }
+                                    }
+                                    if ((readInput.Length == Convert.ToString(Entries.Count).Length) || (matchingEntries == 1))
+                                    {
+                                        if (HandleEntry(Entries, (Convert.ToInt32(readInput) - 1)))
+                                        {
+                                            MenuExitIsPending = true;
+                                        }
+                                        readInput = string.Empty;
+                                    }
+                                }
+                                else
+                                {
+                                    ResetInput();
                                 }
                             }
                             break;
 
                         default:
-                            Console.Write("\n");
-                            int choice;
-                            if ((int.TryParse(input, out choice)))
-                            {
-                                if ((InputString == "") && (choice == 0))
-                                {
-                                    IsInputValid = true;
-                                    if (ZeroOption(Objects))
-                                    {
-                                        IsMenuExitPending = true;
-                                    }
-                                }
-                                else
-                                {
-                                    if (Convert.ToInt32(InputString + Convert.ToString(choice)) <= Objects.Count)
-                                    {
-                                        int MatchingItems = 0;
-                                        InputString = InputString + Convert.ToString(choice);
-                                        for (int i = 0; i < Objects.Count; i++) { if (Convert.ToString(i + 1).StartsWith(InputString) || Convert.ToString(i + 1) == InputString) { MatchingItems++; } }
-                                        if ((InputString.Length == Convert.ToString(Objects.Count).Length) || (MatchingItems == 1))
-                                        {
-                                            index = Convert.ToInt32(InputString) - 1;
-                                            InputString = "";
-                                            IsInputValid = true;
-                                            if (HandleOption(Objects, index))
-                                            {
-                                                IsMenuExitPending = true;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            IsInputValid = true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        ResetInput();
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                ResetInput();
-                            }
+                            Console.WriteLine();
+                            ResetInput();
                             break;
                     }
                 }
+
             }
         }
 

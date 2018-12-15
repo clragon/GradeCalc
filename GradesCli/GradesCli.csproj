@@ -56,10 +56,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cloe\Cloe.csproj">
-      <Project>{16fcf73a-3088-462b-81ac-f5f8f28de157}</Project>
-      <Name>Cloe</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GradesTable\GradesTable.csproj">
       <Project>{9540baaf-0feb-4905-baeb-b039ac301366}</Project>
       <Name>GradesTable</Name>

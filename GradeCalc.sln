@@ -11,11 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradeCalc", "GradeCalc\Grad
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GradesCli", "GradesCli\GradesCli.csproj", "{31DE8B93-353A-49BC-B5BC-27F3ADE3C312}"
-	ProjectSection(ProjectDependencies) = postProject
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157} = {16FCF73A-3088-462B-81AC-F5F8F28DE157}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloe", "Cloe\Cloe.csproj", "{16FCF73A-3088-462B-81AC-F5F8F28DE157}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,22 +72,6 @@ Global
 		{31DE8B93-353A-49BC-B5BC-27F3ADE3C312}.Release|x64.Build.0 = Release|Any CPU
 		{31DE8B93-353A-49BC-B5BC-27F3ADE3C312}.Release|x86.ActiveCfg = Release|Any CPU
 		{31DE8B93-353A-49BC-B5BC-27F3ADE3C312}.Release|x86.Build.0 = Release|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Debug|ARM.Build.0 = Debug|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Debug|x64.Build.0 = Debug|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Debug|x86.Build.0 = Debug|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Release|Any CPU.Build.0 = Release|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Release|ARM.ActiveCfg = Release|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Release|ARM.Build.0 = Release|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Release|x64.ActiveCfg = Release|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Release|x64.Build.0 = Release|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Release|x86.ActiveCfg = Release|Any CPU
-		{16FCF73A-3088-462B-81AC-F5F8F28DE157}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
