@@ -1457,19 +1457,17 @@ namespace Grades
 
 
         /// <summary>
-        /// The template for displaying a menu.
+        /// A function that displays a list as an enumerated menu on the Cli. Items can be chosen and will be processed by passed functions.
         /// <para>Rest in peace, Cloe.</para>
         /// </summary>
         /// <param name="Entries">A list of objects that will be displayed as choices.</param>
-        /// <param name="DisplayTitle">Pass a function that displays the title here. It should include displaying the 0-option if you want to use it.</param>
-        /// <param name="DisplayEntry">Pass a function that will display the options here.</param>
-        /// <param name="HandleEntry">Pass a function that handles any numerical option from the passed list here.</param>
-        /// <param name="ZeroEntry">Pass a function that will handle the 0-option here, if you want to use it.</param>
-        /// <param name="RefreshEntries">Pass a function that will handle updating the objects list here.</param>
-        /// <param name="ExitAfterChoice">Defines if the menu should exit after a choice was made.</param>
-        /// <param name="ExitAfterZero">Defines if the menu should exit after the 0-option.</param>
+        /// <param name="DisplayTitle">The function that displays the title. It should include displaying the 0th entry if you want to use it.</param>
+        /// <param name="DisplayEntry">The function that displays an entry. The default function can display strings, for any other objects you will have to pass a custom one.</param>
+        /// <param name="HandleEntry">The function that handles the chosen entry.</param>
+        /// <param name="ZeroEntry">The 0th entry. It is different from the passed list and can be used for example to create new entries.</param>
+        /// <param name="RefreshEntries">Pass a function that will handle updating the list of objects here.</param>
         /// <param name="UserCanAbort">Defines if the user can exit the menu.</param>
-        /// <param name="ExitEntry">The string that is displayed for the option to exit the menu.</param>
+        /// <param name="ExitEntry">The string that is displayed for the entry that closes the menu.</param>
         public static void ListToMenu<T>(List<T> Entries, Func<List<T>, int, bool> HandleEntry, Action<List<T>> DisplayTitle = null, Action<List<T>, T, int, int> DisplayEntry = null, Func<List<T>, bool> ZeroEntry = null, Func<List<T>, List<T>> RefreshEntries = null, bool UserCanAbort = true, string ExitEntry = null)
         {
 
@@ -1574,6 +1572,7 @@ namespace Grades
                             break;
 
                         case var key when int.TryParse(key.KeyChar.ToString(), out choiceNum):
+                            Console.WriteLine();
                             if (string.IsNullOrEmpty(readInput) && choiceNum.Equals(0))
                             {
                                 InputIsValid = true;
@@ -1604,6 +1603,7 @@ namespace Grades
                                 }
                                 else
                                 {
+                                    Console.WriteLine();
                                     ResetInput();
                                 }
                             }
