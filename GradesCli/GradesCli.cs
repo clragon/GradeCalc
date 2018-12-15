@@ -29,18 +29,18 @@ namespace Grades
             Console.Title = NewConsoleTitle;
 
             // List of options for the main menu.
-            List<string> options = new List<string> { Lang.GetString("Subjects"), Lang.GetString("Overview"), Lang.GetString("Table"), Lang.GetString("Settings") };
+            List<string> Entries = new List<string> { Lang.GetString("Subjects"), Lang.GetString("Overview"), Lang.GetString("Table"), Lang.GetString("Settings") };
 
             // Displaying the main menu title which is the same as the console title.
-            void DisplayTitle(List<string> Options)
+            void DisplayTitle(List<string> entries)
             {
                 Console.WriteLine("--- {0} ---", NewConsoleTitle);
             }
 
             // Handling the options.
-            bool HandleOption(List<string> Options, int index)
+            bool HandleEntries(List<string> entries, int index)
             {
-                switch (Options[index])
+                switch (entries[index])
                 {
                     case var i when i.Equals(Lang.GetString("Subjects")):
                         // Calling the menu for choosing a subject.
@@ -70,7 +70,7 @@ namespace Grades
             }
 
             // Calling the menu template to display the main menu with the specified parameters.
-            ListToMenu(options, HandleOption, DisplayTitle, ExitEntry:Lang.GetString("Exit"));
+            ListToMenu(Entries, HandleEntries, DisplayTitle, ExitEntry:Lang.GetString("Exit"));
 
             // Exit the app when the main menu closes.
             ExitCli();
@@ -162,18 +162,18 @@ namespace Grades
             t.Save();
 
             // List of options.
-            List<string> options = new List<string> { Lang.GetString("TableRead"), Lang.GetString("TableWrite"), Lang.GetString("TableEdit"), Lang.GetString("TableDelete") };
+            List<string> Entries = new List<string> { Lang.GetString("TableRead"), Lang.GetString("TableWrite"), Lang.GetString("TableEdit"), Lang.GetString("TableDelete") };
 
             // Title.
-            void DisplayTitle(List<string> Options)
+            void DisplayTitle(List<string> entries)
             {
                 Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableManage"), t.Name);
             }
 
             // Handle options.
-            bool HandleOption(List<string> Options, int index)
+            bool HandleEntries(List<string> entries, int index)
             {
-                switch (Options[index])
+                switch (entries[index])
                 {
                     case var i when i.Equals(Lang.GetString("TableRead")):
                         // Call the table to choose a table to load.
@@ -222,7 +222,7 @@ namespace Grades
             }
 
             // Display the menu.
-            ListToMenu(options, HandleOption, DisplayTitle);
+            ListToMenu(Entries, HandleEntries, DisplayTitle);
 
         }
 
@@ -233,7 +233,7 @@ namespace Grades
         public static void ChooseTable(bool UserCanAbort = true)
         {
             // Create a list for storing names of files that hold tables.
-            List<string> tableFiles = GetTableFiles();
+            List<string> Tables = GetTableFiles();
 
             // Get a list of strings of files that contain a table.
             List<string> GetTableFiles()
@@ -258,14 +258,14 @@ namespace Grades
             }
 
             // Display the title and the 0-option (creating a new table).
-            void DisplayTitle(List<string> Tables)
+            void DisplayTitle(List<string> tables)
             {
-                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableChoose"), Tables.Count);
-                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Tables.Count).Length, ' '), Lang.GetString("TableCreate"));
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableChoose"), tables.Count);
+                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(tables.Count).Length, ' '), Lang.GetString("TableCreate"));
             }
 
             // Method for displaying the options.
-            void DisplayOption(List<string> TableFiles, string t, int index, int i)
+            void DisplayEntry(List<string> TableFiles, string t, int index, int i)
             {
                 // Maxlength for padding.
                 int MaxLength = TableFiles.Select(x => System.IO.Path.GetFileName(x).Length).Max();
@@ -285,7 +285,7 @@ namespace Grades
             }
 
             // handling Zero Method.
-            bool ZeroOption(List<string> options)
+            bool ZeroEntry(List<string> entries)
             {
                 // Call the menu for creating a new table.
                 CreateTable();
@@ -293,12 +293,12 @@ namespace Grades
             }
 
             // Handling the options.
-            bool HandleOption(List<string> Tables, int index)
+            bool HandleEntry(List<string> tables, int index)
             {
                 try
                 {
-                    t = Table.Read(Tables[index]);
-                    SourceFile = Tables[index];
+                    t = Table.Read(tables[index]);
+                    SourceFile = tables[index];
                 }
                 catch (Exception)
                 {
@@ -313,7 +313,7 @@ namespace Grades
             }
 
             // Display the menu.
-            ListToMenu(tableFiles, HandleOption, DisplayTitle, DisplayOption, ZeroOption, UpdateObjects, UserCanAbort);
+            ListToMenu(Tables, HandleEntry, DisplayTitle, DisplayEntry, ZeroEntry, UpdateObjects, UserCanAbort);
 
         }
 
@@ -459,7 +459,7 @@ namespace Grades
             t.Save();
 
             // List of options.
-            List<string> options = new List<string> { Lang.GetString("TableName"), Lang.GetString("GradeMin"), Lang.GetString("GradeMax"), Lang.GetString("TableUseWeight") };
+            List<string> Entries = new List<string> { Lang.GetString("TableName"), Lang.GetString("GradeMin"), Lang.GetString("GradeMax"), Lang.GetString("TableUseWeight") };
 
             // Dictionatry mapping options to object properties.
             Dictionary<string, string> ValueMap = new Dictionary<string, string>
@@ -471,30 +471,30 @@ namespace Grades
             };
 
             // Title.
-            void DisplayTitle(List<string> Options)
+            void DisplayTitle(List<string> entries)
             {
                 Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableEdit"), t.Name);
             }
 
             // Getting the maximum length of all strings.
-            int MaxLength = options.Select(x => x.Length).Max();
+            int MaxLength = Entries.Select(x => x.Length).Max();
             // Option displaying template.
-            void DisplayOption(List<string> Options, string o, int index, int i)
+            void DisplayEntry(List<string> entries, string entry, int index, int num)
             {
-                string display = t.GetType().GetProperty(ValueMap[o]).GetValue(t).ToString();
+                string display = t.GetType().GetProperty(ValueMap[entry]).GetValue(t).ToString();
 
                 if (string.IsNullOrEmpty(display)) { display = Lang.GetString("NoData"); }
                 if (display == "True") { display = Lang.GetString("Yes"); }
                 if (display == "False") { display = Lang.GetString("No"); }
 
-                Console.WriteLine("[{0}] {1} | {2}", i, o.PadRight(MaxLength, ' '), display);
+                Console.WriteLine("[{0}] {1} | {2}", num, entry.PadRight(MaxLength, ' '), display);
 
             }
 
             // Handle options.
-            bool HandleOption(List<string> Options, int index)
+            bool HandleEntry(List<string> entries, int index)
             {
-                switch (Options[index])
+                switch (entries[index])
                 {
                     case var i when i.Equals(Lang.GetString("TableName")):
                         RenameTable();
@@ -522,43 +522,43 @@ namespace Grades
             }
 
             // Display the menu.
-            ListToMenu(options, HandleOption, DisplayTitle, DisplayOption);
+            ListToMenu(Entries, HandleEntry, DisplayTitle, DisplayEntry);
         }
 
         /// <summary>
         /// Displays a menu for managing subjects.
         /// </summary>
-        /// <param name="s">The subject that is to be managed.</param>
-        public static void ManageSubject(Table.Subject s)
+        /// <param name="subject">The subject that is to be managed.</param>
+        public static void ManageSubject(Table.Subject subject)
         {
-            List<string> options = new List<string> { Lang.GetString("Grades"), Lang.GetString("SubjectRename"), Lang.GetString("SubjectDelete") };
+            List<string> Entries = new List<string> { Lang.GetString("Grades"), Lang.GetString("SubjectRename"), Lang.GetString("SubjectDelete") };
 
-            void DisplayTitle(List<string> Options)
+            void DisplayTitle(List<string> entries)
             {
-                if (s.Grades.Any())
+                if (subject.Grades.Any())
                 {
-                    Console.WriteLine("--- {0} : {1} : {2} ---", Lang.GetString("Subject"), s.Name, s.CalcAverage());
+                    Console.WriteLine("--- {0} : {1} : {2} ---", Lang.GetString("Subject"), subject.Name, subject.CalcAverage());
                 }
                 else
                 {
-                    Console.WriteLine("--- {0} : {1} ---", Lang.GetString("Subject"), s.Name);
+                    Console.WriteLine("--- {0} : {1} ---", Lang.GetString("Subject"), subject.Name);
                 }
             }
 
-            bool HandleOption(List<string> Options, int index)
+            bool HandleEntry(List<string> entries, int index)
             {
-                switch (Options[index])
+                switch (entries[index])
                 {
                     case var i when i.Equals(Lang.GetString("Grades")):
-                        ChooseGrade(s);
+                        ChooseGrade(subject);
                         break;
 
                     case var i when i.Equals(Lang.GetString("SubjectRename")):
-                        RenameSubject(s);
+                        RenameSubject(subject);
                         break;
 
                     case var i when i.Equals(Lang.GetString("SubjectDelete")):
-                        t.RemSubject(t.Subjects.IndexOf(s));
+                        t.RemSubject(t.Subjects.IndexOf(subject));
                         t.Save();
                         return true;
 
@@ -569,7 +569,7 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(options, HandleOption, DisplayTitle);
+            ListToMenu(Entries, HandleEntry, DisplayTitle);
 
         }
 
@@ -579,35 +579,35 @@ namespace Grades
         public static void ChooseSubject()
         {
 
-            void DisplayTitle(List<Table.Subject> Subjects)
+            void DisplayTitle(List<Table.Subject> subjects)
             {
-                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("SubjectChoose"), Subjects.Count);
+                Console.WriteLine("--- {0} : {1} ---", Lang.GetString("SubjectChoose"), subjects.Count);
                 Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(t.Subjects.Count).Length, ' '), Lang.GetString("SubjectCreate"));
             }
 
-            void DisplayOption(List<Table.Subject> Subjects, Table.Subject s, int index, int i)
+            void DisplayEntry(List<Table.Subject> subjects, Table.Subject subject, int index, int num)
             {
-                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Subjects.Count).Length, ' '), s.Name);
+                Console.WriteLine("[{0}] {1}", Convert.ToString(num).PadLeft(Convert.ToString(subjects.Count).Length, ' '), subject.Name);
             }
 
-            bool ZeroOption(List<Table.Subject> Subjects)
+            bool ZeroEntry(List<Table.Subject> subjects)
             {
                 CreateSubject();
                 return false;
             }
 
-            bool HandleOption(List<Table.Subject> Subjects, int index)
+            bool HandleEntry(List<Table.Subject> subjects, int index)
             {
                 ManageSubject(t.Subjects[index]);
                 return false;
             }
 
-            List<Table.Subject> UpdateObjects(List<Table.Subject> grades)
+            List<Table.Subject> UpdateEntries(List<Table.Subject> grades)
             {
                 return t.Subjects;
             }
 
-            ListToMenu(t.Subjects, HandleOption, DisplayTitle, DisplayOption, ZeroOption, UpdateObjects);
+            ListToMenu(t.Subjects, HandleEntry, DisplayTitle, DisplayEntry, ZeroEntry, UpdateEntries);
 
         }
 
@@ -623,10 +623,10 @@ namespace Grades
         /// <summary>
         /// Displays a menu for renaming an existing subject.
         /// </summary>
-        /// <param name="s">The subject that is to be renamed.</param>
-        public static void RenameSubject(Table.Subject s)
+        /// <param name="subject">The subject that is to be renamed.</param>
+        public static void RenameSubject(Table.Subject subject)
         {
-            s.EditSubject(GetSubject(string.Format("--- {0} : {1} ---", Lang.GetString("SubjectRename"), s.Name)));
+            subject.EditSubject(GetSubject(string.Format("--- {0} : {1} ---", Lang.GetString("SubjectRename"), subject.Name)));
             t.Save();
         }
 
@@ -667,40 +667,40 @@ namespace Grades
         /// <summary>
         /// Displays a menu for managing a grade.
         /// </summary>
-        /// <param name="g">The grade that is to be managed.</param>
-        public static void ManageGrade(Table.Subject.Grade g)
+        /// <param name="grade">The grade that is to be managed.</param>
+        public static void ManageGrade(Table.Subject.Grade grade)
         {
-            List<string> options = new List<string> { Lang.GetString("GradeEdit"), Lang.GetString("GradeDelete") };
+            List<string> Entries = new List<string> { Lang.GetString("GradeEdit"), Lang.GetString("GradeDelete") };
 
-            void DisplayTitle(List<string> Options)
+            void DisplayTitle(List<string> entries)
             {
-                if (g.OwnerSubject.OwnerTable.UseWeightSystem)
+                if (grade.OwnerSubject.OwnerTable.UseWeightSystem)
                 {
-                    Console.WriteLine("--- {0} : {1} | {2} ---", Lang.GetString("Grade"), g.Value, g.Weight);
+                    Console.WriteLine("--- {0} : {1} | {2} ---", Lang.GetString("Grade"), grade.Value, grade.Weight);
                 }
                 else
                 {
-                    Console.WriteLine("--- {0} : {1} ---", Lang.GetString("Grade"), g.Value);
+                    Console.WriteLine("--- {0} : {1} ---", Lang.GetString("Grade"), grade.Value);
                 }
             }
 
-            void DisplayOption(List<string> Options, string o, int index, int i)
+            void DisplayEntry(List<string> entries, string entry, int index, int num)
             {
-                Console.WriteLine("[{0}] {1}", i, o);
+                Console.WriteLine("[{0}] {1}", num, entry);
             }
 
-            bool HandleOption(List<string> Options, int index)
+            bool HandleEntry(List<string> entries, int index)
             {
-                switch (Options[index])
+                switch (entries[index])
                 {
                     case var i when i.Equals(Lang.GetString("GradeEdit")):
-                        ModifyGrade(g);
+                        ModifyGrade(grade);
                         break;
 
                     case var i when i.Equals(Lang.GetString("GradeDelete")):
                         // Remove the grade by using the OwnerSubject attribute.
                         // Effectively bypassing the need to pass the subject in which the grade is in.
-                        g.OwnerSubject.RemGrade(g);
+                        grade.OwnerSubject.RemGrade(grade);
                         t.Save();
                         return true;
 
@@ -711,15 +711,15 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(options, HandleOption, DisplayTitle, DisplayOption);
+            ListToMenu(Entries, HandleEntry, DisplayTitle, DisplayEntry);
 
         }
 
         /// <summary>
         /// Displays a menu for choosing a grade.
         /// </summary>
-        /// <param name="s">The subject which grades can be chosen from.</param>
-        public static void ChooseGrade(Table.Subject s)
+        /// <param name="subject">The subject which grades can be chosen from.</param>
+        public static void ChooseGrade(Table.Subject subject)
         {
             void DisplayTitle(List<Table.Subject.Grade> Grades)
             {
@@ -727,50 +727,50 @@ namespace Grades
                 Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Grades.Count).Length, ' '), Lang.GetString("GradeCreate"));
             }
 
-            void DisplayOption(List<Table.Subject.Grade> Grades, Table.Subject.Grade g, int index, int i)
+            void DisplayEntry(List<Table.Subject.Grade> grades, Table.Subject.Grade grade, int index, int num)
             {
-                int MaxLength = Grades.Select(x => x.Value.ToString().Length).Max();
-                if (s.OwnerTable.UseWeightSystem)
+                int MaxLength = grades.Select(x => x.Value.ToString().Length).Max();
+                if (subject.OwnerTable.UseWeightSystem)
                 {
-                    Console.WriteLine("[{0}] {1} | {2}", Convert.ToString(i).PadLeft(Convert.ToString(Grades.Count).Length, ' '), Convert.ToString(g.Value).PadRight(MaxLength, ' '), g.Weight);
+                    Console.WriteLine("[{0}] {1} | {2}", Convert.ToString(num).PadLeft(Convert.ToString(grades.Count).Length, ' '), Convert.ToString(grade.Value).PadRight(MaxLength, ' '), grade.Weight);
                 }
                 else
                 {
-                    Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Grades.Count).Length, ' '), Convert.ToString(g.Value).PadRight(MaxLength, ' '));
+                    Console.WriteLine("[{0}] {1}", Convert.ToString(num).PadLeft(Convert.ToString(grades.Count).Length, ' '), Convert.ToString(grade.Value).PadRight(MaxLength, ' '));
                 }
             }
 
-            bool ZeroOption(List<Table.Subject.Grade> Grades)
+            bool ZeroEntry(List<Table.Subject.Grade> grades)
             {
-                CreateGrade(s);
+                CreateGrade(subject);
                 return false;
             }
 
-            bool HandleOption(List<Table.Subject.Grade> Grades, int index)
+            bool HandleEntry(List<Table.Subject.Grade> grades, int index)
             {
-                ManageGrade(Grades[index]);
+                ManageGrade(grades[index]);
                 return false;
             }
 
-            List<Table.Subject.Grade> UpdateObjects(List<Table.Subject.Grade> grades)
+            List<Table.Subject.Grade> UpdateEntries(List<Table.Subject.Grade> grades)
             {
-                return s.Grades;
+                return subject.Grades;
             }
 
-            ListToMenu(s.Grades, HandleOption, DisplayTitle, DisplayOption, ZeroOption, UpdateObjects);
+            ListToMenu(subject.Grades, HandleEntry, DisplayTitle, DisplayEntry, ZeroEntry, UpdateEntries);
 
         }
 
         /// <summary>
         /// Displays a menu for creating a new grade.
         /// </summary>
-        /// <param name="s">The subject in which a grade is to be created in.</param>
-        public static void CreateGrade(Table.Subject s)
+        /// <param name="subject">The subject in which a grade is to be created in.</param>
+        public static void CreateGrade(Table.Subject subject)
         {
             // Gets the values needed to create a grade from the menu template as tuple.
-            Tuple<double, double> g = GetGrade(s, string.Format("--- {0} ---", Lang.GetString("GradeCreate")));
+            Tuple<double, double> g = GetGrade(subject, string.Format("--- {0} ---", Lang.GetString("GradeCreate")));
             // Adds a new grade with the received values.
-            s.AddGrade(g.Item1, g.Item2);
+            subject.AddGrade(g.Item1, g.Item2);
             t.Save();
 
         }
@@ -778,21 +778,21 @@ namespace Grades
         /// <summary>
         /// Displays a menu for editing an existing grade.
         /// </summary>
-        /// <param name="g">The grade which is to be renamed.</param>
-        public static void ModifyGrade(Table.Subject.Grade g)
+        /// <param name="grade">The grade which is to be renamed.</param>
+        public static void ModifyGrade(Table.Subject.Grade grade)
         {
             // Gets the values needed to edit a grade from the menu template as tuple.
             Tuple<double, double> n;
-            if (g.OwnerSubject.OwnerTable.UseWeightSystem)
+            if (grade.OwnerSubject.OwnerTable.UseWeightSystem)
             {
-                n = GetGrade(g.OwnerSubject, string.Format("--- {0} : {1} | {2} ---", Lang.GetString("GradeEdit"), g.Value, g.Weight));
+                n = GetGrade(grade.OwnerSubject, string.Format("--- {0} : {1} | {2} ---", Lang.GetString("GradeEdit"), grade.Value, grade.Weight));
             }
             else
             {
-                n = GetGrade(g.OwnerSubject, string.Format("--- {0} : {1} ---", Lang.GetString("GradeEdit"), g.Value));
+                n = GetGrade(grade.OwnerSubject, string.Format("--- {0} : {1} ---", Lang.GetString("GradeEdit"), grade.Value));
             }
             // Edits the grade with the received values.
-            g.EditGrade(n.Item1, n.Item2);
+            grade.EditGrade(n.Item1, n.Item2);
             t.Save();
 
         }
@@ -801,8 +801,8 @@ namespace Grades
         /// Basic underlying menu scheme for creating or editing a grade.
         /// </summary>
         /// <param name="title">Title of the menu. Usually create or edit.</param>
-        /// <param name="s">The subject in which grades are to be edited in.</param>
-        public static Tuple<double, double> GetGrade(Table.Subject s, string title)
+        /// <param name="subject">The subject in which grades are to be edited in.</param>
+        public static Tuple<double, double> GetGrade(Table.Subject subject, string title)
         {
             string input = "";
             double value = -1;
@@ -822,10 +822,10 @@ namespace Grades
                     // Check if the table has grade limits enabled.
                     if (Properties.Settings.Default.EnableGradeLimits)
                     {
-                        if (s.OwnerTable.MaxGrade > s.OwnerTable.MinGrade)
+                        if (subject.OwnerTable.MaxGrade > subject.OwnerTable.MinGrade)
                         {
                             // Check if the grade is within the table limits.
-                            if ((value >= s.OwnerTable.MinGrade) && (value <= s.OwnerTable.MaxGrade))
+                            if ((value >= subject.OwnerTable.MinGrade) && (value <= subject.OwnerTable.MaxGrade))
                             {
                                 IsFirstInputValid = true;
                             }
@@ -836,7 +836,7 @@ namespace Grades
                         }
                         else
                         {
-                            if ((value <= s.OwnerTable.MinGrade) && (value >= s.OwnerTable.MaxGrade))
+                            if ((value <= subject.OwnerTable.MinGrade) && (value >= subject.OwnerTable.MaxGrade))
                             {
                                 IsFirstInputValid = true;
                             }
@@ -859,7 +859,7 @@ namespace Grades
                 }
             }
             // Check if the table has the weight system enabled.
-            if (s.OwnerTable.UseWeightSystem)
+            if (subject.OwnerTable.UseWeightSystem)
             {
                 // Get a weight for the grade from user input.
                 bool IsSecondInputValid = false;
@@ -1111,21 +1111,21 @@ namespace Grades
         /// </summary>
         public static void Settings()
         {
-            List<string> options = new List<string> { Lang.GetString("SettingsOptions"), Lang.GetString("Tables"), Lang.GetString("SettingsReset"), Lang.GetString("Credits"), };
+            List<string> Entries = new List<string> { Lang.GetString("SettingsOptions"), Lang.GetString("Tables"), Lang.GetString("SettingsReset"), Lang.GetString("Credits"), };
 
-            void DisplayTitle(List<string> Options)
+            void DisplayTitle(List<string> entries)
             {
                 Console.WriteLine("--- {0} : {1} ---", NewConsoleTitle, Lang.GetString("Settings"));
             }
 
-            void DisplayOption(List<string> Options, string o, int index, int i)
+            void DisplayEntry(List<string> entries, string entry, int index, int num)
             {
-                Console.WriteLine("[{0}] {1}", i, o);
+                Console.WriteLine("[{0}] {1}", num, entry);
             }
 
-            bool HandleOption(List<string> Options, int index)
+            bool HandleEntry(List<string> entries, int index)
             {
-                switch (Options[index])
+                switch (entries[index])
                 {
                     case var i when i.Equals(Lang.GetString("SettingsOptions")):
                         ModifySettings();
@@ -1165,14 +1165,14 @@ namespace Grades
                 return false;
             }
 
-            ListToMenu(options, HandleOption, DisplayTitle, DisplayOption);
+            ListToMenu(Entries, HandleEntry, DisplayTitle, DisplayEntry);
 
         }
 
         public static void ModifySettings()
         {
             // List of options.
-            List<string> options = new List<string> { Lang.GetString("TableDefault"), Lang.GetString("LanguageChoose"), Lang.GetString("SettingsClearMenus"), Lang.GetString("SettingsEnableGradeLimits"), Lang.GetString("SettingsShowCompensation"), };
+            List<string> Entries = new List<string> { Lang.GetString("TableDefault"), Lang.GetString("LanguageChoose"), Lang.GetString("SettingsClearMenus"), Lang.GetString("SettingsEnableGradeLimits"), Lang.GetString("SettingsShowCompensation"), };
 
             // Dictionatry mapping options to object properties.
             Dictionary<string, string> ValueMap = new Dictionary<string, string>
@@ -1186,30 +1186,30 @@ namespace Grades
             };
 
             // Title.
-            void DisplayTitle(List<string> Options)
+            void DisplayTitle(List<string> entries)
             {
                 Console.WriteLine("--- {0} : {1} ---", NewConsoleTitle, Lang.GetString("SettingsOptions"));
             }
 
             // Getting the maximum length of all strings.
-            int MaxLength = options.Select(x => x.Length).Max();
+            int MaxLength = Entries.Select(x => x.Length).Max();
             // Option displaying template.
-            void DisplayOption(List<string> Options, string o, int index, int i)
+            void DisplayEntry(List<string> entries, string entry, int index, int num)
             {
-                string display = Properties.Settings.Default.GetType().GetProperty(ValueMap[o]).GetValue(Properties.Settings.Default).ToString();
+                string display = Properties.Settings.Default.GetType().GetProperty(ValueMap[entry]).GetValue(Properties.Settings.Default).ToString();
 
                 if (string.IsNullOrEmpty(display)) { display = Lang.GetString("NoData"); }
                 if (display == "True") { display = Lang.GetString("Yes"); }
                 if (display == "False") { display = Lang.GetString("No"); }
 
-                Console.WriteLine("[{0}] {1} | {2}", i, o.PadRight(MaxLength, ' '), display);
+                Console.WriteLine("[{0}] {1} | {2}", num, entry.PadRight(MaxLength, ' '), display);
 
             }
 
             // Handle options.
-            bool HandleOption(List<string> Options, int index)
+            bool HandleEntry(List<string> entries, int index)
             {
-                switch (Options[index])
+                switch (entries[index])
                 {
                     case var i when i.Equals(Lang.GetString("TableDefault")):
                         SetDefaultTable();
@@ -1244,7 +1244,7 @@ namespace Grades
             }
 
             // Display the menu.
-            ListToMenu(options, HandleOption, DisplayTitle, DisplayOption);
+            ListToMenu(Entries, HandleEntry, DisplayTitle, DisplayEntry);
         }
 
         /// <summary>
@@ -1253,27 +1253,27 @@ namespace Grades
         public static void ChooseLang()
         {
 
-            List<System.Globalization.CultureInfo> langs = GetAvailableCultures(Lang);
+            List<System.Globalization.CultureInfo> Langs = GetAvailableCultures(Lang);
 
-            void DisplayTitle(List<System.Globalization.CultureInfo> Langs)
+            void DisplayTitle(List<System.Globalization.CultureInfo> langs)
             {
                 if (string.IsNullOrEmpty(Properties.Settings.Default.Language.Name))
                 {
-                    Console.WriteLine("--- {0} : {1} ---", Lang.GetString("LanguageChoose"), Langs.Count);
+                    Console.WriteLine("--- {0} : {1} ---", Lang.GetString("LanguageChoose"), langs.Count);
                 }
                 else
                 {
                     Console.WriteLine("--- {0} : {1} ---", Lang.GetString("LanguageChoose"), Properties.Settings.Default.Language.Name);
                 }
-                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(Langs.Count).Length, ' '), Lang.GetString("LanguageDefault"));
+                Console.WriteLine("[{0}] ({1})", Convert.ToString(0).PadLeft(Convert.ToString(langs.Count).Length, ' '), Lang.GetString("LanguageDefault"));
             }
 
-            void DisplayOption(List<System.Globalization.CultureInfo> Langs, System.Globalization.CultureInfo lang, int index, int i)
+            void DisplayEntry(List<System.Globalization.CultureInfo> langs, System.Globalization.CultureInfo lang, int index, int i)
             {
-                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(Langs.Count).Length, ' '), lang.Name);
+                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(langs.Count).Length, ' '), lang.Name);
             }
 
-            bool ZeroOption(List<System.Globalization.CultureInfo> Langs)
+            bool ZeroEntry(List<System.Globalization.CultureInfo> langs)
             {
                 Properties.Settings.Default.Language = System.Globalization.CultureInfo.InvariantCulture;
                 Properties.Settings.Default.OverrideLanguage = false;
@@ -1282,9 +1282,9 @@ namespace Grades
                 return true;
             }
 
-            bool HandleOption(List<System.Globalization.CultureInfo> Langs, int index)
+            bool HandleEntry(List<System.Globalization.CultureInfo> langs, int index)
             {
-                Properties.Settings.Default.Language = Langs[index];
+                Properties.Settings.Default.Language = langs[index];
                 Properties.Settings.Default.OverrideLanguage = true;
                 Properties.Settings.Default.Save();
                 Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("LanguageSetSuccess"));
@@ -1293,7 +1293,7 @@ namespace Grades
 
             List<System.Globalization.CultureInfo> UpdateObjects(List<System.Globalization.CultureInfo> Objects) { return Objects; }
 
-            ListToMenu(langs, HandleOption, DisplayTitle, DisplayOption, ZeroOption, UpdateObjects);
+            ListToMenu(Langs, HandleEntry, DisplayTitle, DisplayEntry, ZeroEntry, UpdateObjects);
 
         }
 
@@ -1302,11 +1302,11 @@ namespace Grades
         /// </summary>
         public static void SetDefaultTable()
         {
-            List<string> tableFiles = new List<string>();
+            List<string> TableFiles = new List<string>();
             try
             {
                 // Fetching all files in the app directory that have the "grades.xml" ending.
-                tableFiles = System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*grades.xml").ToList();
+                TableFiles = System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*grades.xml").ToList();
             }
             catch (UnauthorizedAccessException)
             {
@@ -1315,7 +1315,7 @@ namespace Grades
             }
             catch (Exception) { }
 
-            tableFiles.Sort((a, b) => b.CompareTo(a));
+            TableFiles.Sort((a, b) => b.CompareTo(a));
 
 
             void DisplayTitle(List<string> Tables)
@@ -1323,27 +1323,27 @@ namespace Grades
                 Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableSetDefault"), Tables.Count);
             }
 
-            void DisplayOption(List<string> TableFiles, string t, int index, int i)
+            void DisplayEntry(List<string> tableFiles, string t, int index, int i)
             {
-                int MaxLength = TableFiles.Select(x => System.IO.Path.GetFileName(x).Length).Max();
+                int MaxLength = tableFiles.Select(x => System.IO.Path.GetFileName(x).Length).Max();
                 string name;
                 try
                 {
-                    name = Table.Read(TableFiles[index]).Name;
+                    name = Table.Read(tableFiles[index]).Name;
                 }
                 catch (Exception)
                 {
                     name = Lang.GetString("NoData");
                 }
-                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(TableFiles.Count).Length, ' '),
-                    System.IO.Path.GetFileName(TableFiles[index]).PadRight(MaxLength, ' ') + " | " + name);
+                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(tableFiles.Count).Length, ' '),
+                    System.IO.Path.GetFileName(tableFiles[index]).PadRight(MaxLength, ' ') + " | " + name);
             }
 
-            bool HandleOption(List<string> Tables, int index)
+            bool HandleEntry(List<string> tableFiles, int index)
             {
                 try
                 {
-                    Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(Tables[index]);
+                    Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(tableFiles[index]);
                     Properties.Settings.Default.Save();
                     Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("TableSetDefaultSuccess"));
                     new System.Threading.ManualResetEvent(false).WaitOne(500);
@@ -1355,13 +1355,14 @@ namespace Grades
                 return true;
             }
 
-            ListToMenu(tableFiles, HandleOption, DisplayTitle, DisplayOption);
+            ListToMenu(TableFiles, HandleEntry, DisplayTitle, DisplayEntry);
+
         }
 
         public static void ModifyTableDefaults()
         {
             // List of options.
-            List<string> options = new List<string> { Lang.GetString("GradeMin"), Lang.GetString("GradeMax"), Lang.GetString("TableUseWeight") };
+            List<string> Entries = new List<string> { Lang.GetString("GradeMin"), Lang.GetString("GradeMax"), Lang.GetString("TableUseWeight") };
 
             // Dictionatry mapping options to object properties.
             Dictionary<string, string> ValueMap = new Dictionary<string, string>
@@ -1373,30 +1374,30 @@ namespace Grades
             };
 
             // Title.
-            void DisplayTitle(List<string> Options)
+            void DisplayTitle(List<string> entries)
             {
                 Console.WriteLine("--- {0} : {1} ---", NewConsoleTitle, Lang.GetString("Defaults"));
             }
 
             // Getting the maximum length of all strings.
-            int MaxLength = options.Select(x => x.Length).Max();
+            int MaxLength = Entries.Select(x => x.Length).Max();
             // Option displaying template.
-            void DisplayOption(List<string> Options, string o, int index, int i)
+            void DisplayEntry(List<string> entries, string entry, int index, int num)
             {
-                string display = Properties.Settings.Default.GetType().GetProperty(ValueMap[o]).GetValue(Properties.Settings.Default).ToString();
+                string display = Properties.Settings.Default.GetType().GetProperty(ValueMap[entry]).GetValue(Properties.Settings.Default).ToString();
 
                 if (string.IsNullOrEmpty(display)) { display = Lang.GetString("NoData"); }
                 if (display == "True") { display = Lang.GetString("Yes"); }
                 if (display == "False") { display = Lang.GetString("No"); }
 
-                Console.WriteLine("[{0}] {1} | {2}", i, o.PadRight(MaxLength, ' '), display);
+                Console.WriteLine("[{0}] {1} | {2}", num, entry.PadRight(MaxLength, ' '), display);
 
             }
 
             // Handle options.
-            bool HandleOption(List<string> Options, int index)
+            bool HandleEntry(List<string> entries, int index)
             {
-                switch (Options[index])
+                switch (entries[index])
                 {
                     case var i when i.Equals(Lang.GetString("DefaultGradeMin")):
                         break;
@@ -1418,7 +1419,7 @@ namespace Grades
             }
 
             // Display the menu.
-            ListToMenu(options, HandleOption, DisplayTitle, DisplayOption);
+            ListToMenu(Entries, HandleEntry, DisplayTitle, DisplayEntry);
         }
 
         /// <summary>
