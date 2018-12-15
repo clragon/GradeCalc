@@ -911,9 +911,12 @@ namespace Grades
                     BarLength = 12;
                     Console.WriteLine("{0} : 1 2 3 4 5 6: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
 
-                    // Sort the subjects descending by their average grade.
-                    // Or maybe... actually... not.
-                    // t.Subjects.OrderByDescending(x => x.CalcAverage()).ToList()
+                    // Sort the subjects descending by their average grade, if settings demand this.
+                    if (Properties.Settings.Default.SortOverview)
+                    {
+                        t.Subjects.OrderByDescending(x => x.CalcAverage()).ToList();
+                    }
+
                     // Print a diagramm for each subject.
                     foreach (Table.Subject s in t.Subjects)
                     {
@@ -1172,7 +1175,7 @@ namespace Grades
         public static void ModifySettings()
         {
             // List of options.
-            List<string> Entries = new List<string> { Lang.GetString("TableDefault"), Lang.GetString("LanguageChoose"), Lang.GetString("SettingsClearMenus"), Lang.GetString("SettingsEnableGradeLimits"), Lang.GetString("SettingsShowCompensation"), };
+            List<string> Entries = new List<string> { Lang.GetString("TableDefault"), Lang.GetString("LanguageChoose"), Lang.GetString("SettingsClearMenus"), Lang.GetString("SettingsEnableGradeLimits"), Lang.GetString("SettingsShowCompensation"), Lang.GetString("OverviewSortByHighest") };
 
             // Dictionatry mapping options to object properties.
             Dictionary<string, string> ValueMap = new Dictionary<string, string>
@@ -1182,6 +1185,7 @@ namespace Grades
                 { Lang.GetString("SettingsClearMenus"), "ClearOnSwitch" },
                 { Lang.GetString("SettingsEnableGradeLimits"), "EnableGradeLimits" },
                 { Lang.GetString("SettingsShowCompensation"), "DisplayCompensation" },
+                { Lang.GetString("OverviewSortByHighest"), "SortOverview" },
 
             };
 
@@ -1232,6 +1236,11 @@ namespace Grades
 
                     case var i when i.Equals(Lang.GetString("SettingsEnableGradeLimits")):
                         Properties.Settings.Default.EnableGradeLimits = !Properties.Settings.Default.EnableGradeLimits;
+                        Properties.Settings.Default.Save();
+                        break;
+
+                    case var i when i.Equals(Lang.GetString("OverviewSortByHighest")):
+                        Properties.Settings.Default.SortOverview = !Properties.Settings.Default.SortOverview;
                         Properties.Settings.Default.Save();
                         break;
 

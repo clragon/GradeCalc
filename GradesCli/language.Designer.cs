@@ -335,6 +335,15 @@ namespace Grades {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Sort overview by highest ähnelt.
+        /// </summary>
+        internal static string OverviewSortByHighest {
+            get {
+                return ResourceManager.GetString("OverviewSortByHighest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Press any key ähnelt.
         /// </summary>
         internal static string PressAnything {
