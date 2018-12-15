@@ -911,14 +911,8 @@ namespace Grades
                     BarLength = 12;
                     Console.WriteLine("{0} : 1 2 3 4 5 6: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
 
-                    // Sort the subjects descending by their average grade, if settings demand this.
-                    if (Properties.Settings.Default.SortOverview)
-                    {
-                        t.Subjects.OrderByDescending(x => x.CalcAverage()).ToList();
-                    }
-
                     // Print a diagramm for each subject.
-                    foreach (Table.Subject s in t.Subjects)
+                    foreach (Table.Subject s in Properties.Settings.Default.SortOverview ? t.Subjects.OrderByDescending(x => x.CalcAverage()).ToList() : t.Subjects)
                     {
                         if (s.Grades.Any())
                         {
