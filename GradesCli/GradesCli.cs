@@ -265,27 +265,27 @@ namespace Grades
             }
 
             // Method for displaying the options.
-            void DisplayEntry(List<string> TableFiles, string t, int index, int i)
+            void DisplayEntry(List<string> tables, string t, int index, int i)
             {
                 // Maxlength for padding.
-                int MaxLength = TableFiles.Select(x => System.IO.Path.GetFileName(x).Length).Max();
+                int MaxLength = tables.Select(x => System.IO.Path.GetFileName(x).Length).Max();
                 // Name of the table. If it fails to load, display the NoData string.
                 string name;
                 try
                 {
-                    name = Table.Read(TableFiles[index]).Name;
+                    name = Table.Read(tables[index]).Name;
                 }
                 catch (Exception)
                 {
                     name = Lang.GetString("NoDataAvailable");
                 }
                 // Display the table as option.
-                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(TableFiles.Count).Length, ' '),
-                    System.IO.Path.GetFileName(TableFiles[index]).PadRight(MaxLength, ' ') + " | " + name);
+                Console.WriteLine("[{0}] {1}", Convert.ToString(i).PadLeft(Convert.ToString(tables.Count).Length, ' '),
+                    System.IO.Path.GetFileName(tables[index]).PadRight(MaxLength, ' ') + " | " + name);
             }
 
             // handling Zero Method.
-            bool ZeroEntry(List<string> entries)
+            bool ZeroEntry(List<string> tables)
             {
                 // Call the menu for creating a new table.
                 CreateTable();
