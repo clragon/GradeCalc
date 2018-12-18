@@ -70,7 +70,7 @@ namespace Grades
             }
 
             // Calling the menu template to display the main menu with the specified parameters.
-            ListToMenu(Entries, HandleEntries, DisplayTitle, ExitEntry:Lang.GetString("Exit"));
+            ListToMenu(Entries, HandleEntries, DisplayTitle, ExitEntry: Lang.GetString("Exit"));
 
             // Exit the app when the main menu closes.
             ExitCli();
@@ -896,73 +896,71 @@ namespace Grades
             if (t.Subjects.Any() && t.Subjects.SelectMany(s => s.Grades).Any())
             {
 
+                // Prevents overview for wrong systems.
+                if (Properties.Settings.Default.DefaultMinGrade < 0 || Properties.Settings.Default.DefaultMaxGrade < 0)
+                {
+                    Console.WriteLine("{0} : {1}", Lang.GetString("Overview"), Lang.GetString("OverviewDataError"));
+                    return;
+                }
+
                 // Calculate the maximum length of any word in front of the bar diagramm.
                 int MaxLength = t.Subjects.Select(x => x.Name.Length).Max();
                 if (MaxLength < Lang.GetString("Overview").Length) { MaxLength = Lang.GetString("Overview").Length; }
                 if (MaxLength < Lang.GetString("Total").Length) { MaxLength = Lang.GetString("Total").Length; }
                 if (Properties.Settings.Default.DisplayCompensation) { if (MaxLength < Lang.GetString("Compensation").Length) { MaxLength = Lang.GetString("Compensation").Length; } }
                 int BarLength;
+                bool isSwiss;
 
                 // Overview for the swiss grade system.
                 if (t.MinGrade == 1 && t.MaxGrade == 6)
                 {
-
-                    // Display the bar diagramm meter.
+                    isSwiss = true;
                     BarLength = 12;
                     Console.WriteLine("{0} : 1 2 3 4 5 6: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
+                }
+                // Basic overview for any system. Will not work with systems that use numbers below zero.
+                else
+                {
+                    isSwiss = false;
+                    BarLength = 20;
+                    Console.WriteLine("{0} :1        50      100: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
+                }
 
-                    // Print a diagramm for each subject.
-                    foreach (Table.Subject s in Properties.Settings.Default.SortOverview ? t.Subjects.OrderByDescending(x => x.CalcAverage()).ToList() : t.Subjects)
+                foreach (Table.Subject s in Properties.Settings.Default.SortOverview ? t.Subjects.OrderByDescending(x => x.CalcAverage()).ToList() : t.Subjects)
+                {
+                    if (s.Grades.Any())
                     {
-                        if (s.Grades.Any())
+                        if (isSwiss)
                         {
                             Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(s.CalcAverage() * 2)).PadRight(BarLength, ' ').Truncate(BarLength), s.CalcAverage());
                         }
                         else
                         {
-                            Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string(' ', BarLength), Lang.GetString("NoData"));
-                        }
-                    }
-
-                    // Print total average grade.
-                    Console.Write("\n");
-                    Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(BarLength, ' ').Truncate(BarLength), t.CalcAverage());
-                    Console.Write("\n");
-
-                    // Print compensation points, if enabled.
-                    if (Properties.Settings.Default.DisplayCompensation)
-                    {
-                        Console.WriteLine("{0} {1}: {2}", Lang.GetString("Compensation").PadRight(MaxLength, ' '), new string(' ', BarLength + 1), t.CalcCompensation());
-                    }
-
-                }
-                // Basic overview for any system. Will not work with systems that use numbers below zero.
-                else
-                {
-                    // Outdated line to prevent overview for wrong systems.
-                    // Console.WriteLine("{0} : {1}", Lang.GetString("Overview"), Lang.GetString("OverviewDataError"));
-
-                    // Display the bar diagramm meter.
-                    Console.WriteLine("{0} :1        50      100: {1}", Lang.GetString("Overview").PadRight(MaxLength, ' '), Lang.GetString("Average"));
-                    BarLength = 20;
-
-                    // Print a diagramm for each subject.
-                    foreach (Table.Subject s in t.Subjects)
-                    {
-                        if (s.Grades.Any())
-                        {
                             Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(BarLength / (t.MaxGrade - t.MinGrade) * s.CalcAverage())).PadRight(BarLength, ' '), s.CalcAverage());
                         }
-                        else
-                        {
-                            Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string(' ', BarLength), Lang.GetString("NoData"));
-                        }
                     }
+                    else
+                    {
+                        Console.WriteLine("{0} :{1}: {2}", s.Name.PadRight(MaxLength, ' '), new string(' ', BarLength), Lang.GetString("NoData"));
+                    }
+                }
 
-                    // Print total average grade.
-                    Console.Write("\n");
+                // Print total average grade.
+                Console.Write("\n");
+                if (isSwiss)
+                {
+                    Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(t.CalcAverage() * 2)).PadRight(BarLength, ' ').Truncate(BarLength), t.CalcAverage());
+                }
+                else
+                {
                     Console.WriteLine("{0} :{1}: {2}", Lang.GetString("Total").PadRight(MaxLength, ' '), new string('=', Convert.ToInt32(BarLength / (t.MaxGrade - t.MinGrade) * t.CalcAverage())).PadRight(BarLength, ' '), t.CalcAverage());
-                    Console.Write("\n");
+                }
+                Console.Write("\n");
+
+                // Print compensation points, if enabled.
+                if (Properties.Settings.Default.DisplayCompensation && isSwiss)
+                {
+                    Console.WriteLine("{0} {1}: {2}", Lang.GetString("Compensation").PadRight(MaxLength, ' '), new string(' ', BarLength + 1), t.CalcCompensation());
                 }
 
             }
