@@ -1595,7 +1595,6 @@ namespace Grades
                                 }
                                 else
                                 {
-                                    Console.WriteLine();
                                     ResetInput();
                                 }
                             }
