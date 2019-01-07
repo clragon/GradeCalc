@@ -331,4 +331,7 @@ Lizensiert unter GNU General Public License v3.0</value>
   <data name="Defaults" xml:space="preserve">
     <value>Standards</value>
   </data>
+  <data name="OverviewSortByHighest" xml:space="preserve">
+    <value>Nach grösse sortieren</value>
+  </data>
 </root>

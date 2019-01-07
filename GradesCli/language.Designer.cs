@@ -335,7 +335,7 @@ namespace Grades {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Sort overview by highest ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Sort by highest ähnelt.
         /// </summary>
         internal static string OverviewSortByHighest {
             get {

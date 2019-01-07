@@ -332,6 +332,6 @@ Licensed under GNU General Public License v3.0</value>
     <value>Defaults</value>
   </data>
   <data name="OverviewSortByHighest" xml:space="preserve">
-    <value>Sort overview by highest</value>
+    <value>Sort by highest</value>
   </data>
 </root>
