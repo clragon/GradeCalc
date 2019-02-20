@@ -124,7 +124,14 @@ namespace Grades
                         // Delete the sourcefile since it might be corrupted.
                         new Table().Clear(SourceFile);
                     }
-                    catch (Exception) { }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("[{0}] {1} : {2}", Lang.GetString("Error"), System.IO.Path.GetFileName(SourceFile), Lang.GetString("TableDeniedAccess"));
+                        Console.WriteLine(Lang.GetString("PressAnything"));
+                        Console.ReadKey();
+                        return GetEmptyTable();
+
+                    }
                     // Return an empty table.
                     return GetEmptyTable();
                 }
@@ -244,12 +251,11 @@ namespace Grades
                     // Fetching all files in the app directory that have the "grades.xml" ending.
                     tables = System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*grades.xml").ToList();
                 }
-                catch (UnauthorizedAccessException)
+                catch (Exception)
                 {
                     Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableDeniedAccess"));
                     Wait(500);
                 }
-                catch (Exception) { }
 
                 // Sort list alphabetically.
                 tables.Sort((a, b) => a.CompareTo(b));
@@ -1134,7 +1140,8 @@ namespace Grades
                         void Yes()
                         {
                             Properties.Settings.Default.Reset();
-                            try { System.IO.File.Delete(System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath); } catch { }
+                            try { System.IO.File.Delete(System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath); }
+                            catch{ Console.WriteLine("[Error] Access to settings denied"); }
                             Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("SettingsResetSuccess"));
                         }
                         YesNoMenu("SettingsReset", Yes, () => { });
@@ -1309,12 +1316,11 @@ namespace Grades
                 // Fetching all files in the app directory that have the "grades.xml" ending.
                 TableFiles = System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*grades.xml").ToList();
             }
-            catch (UnauthorizedAccessException)
+            catch (Exception)
             {
                 Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableDeniedAccess"));
                 Wait(500);
             }
-            catch (Exception) { }
 
             TableFiles.Sort((a, b) => b.CompareTo(a));
 
@@ -1442,7 +1448,10 @@ namespace Grades
                         result.Add(culture);
                     }
                 }
-                catch (System.Globalization.CultureNotFoundException) { }
+                catch (System.Globalization.CultureNotFoundException)
+                {
+                    Console.WriteLine("[Error] No cultures found");
+                }
             }
             return result;
         }
@@ -1587,7 +1596,7 @@ namespace Grades
                                 {
                                     InputIsValid = true;
                                     int matchingEntries = 0;
-                                    readInput = readInput + Convert.ToString(choiceNum);
+                                    readInput = new System.Text.StringBuilder().Append(readInput).Append(Convert.ToString(choiceNum)).ToString();
                                     for (int i = 0; i < Entries.Count; i++)
                                     {
                                         if (Convert.ToString(i + 1).StartsWith(readInput) || Convert.ToString(i + 1) == readInput) { matchingEntries++; }
