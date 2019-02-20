@@ -183,7 +183,7 @@ namespace Grades
                     case var i when i.Equals(Lang.GetString("TableWrite")):
                         // Save the table.
                         t.Save(true);
-                        new System.Threading.ManualResetEvent(false).WaitOne(20);
+                        Wait(20);
                         break;
 
                     case var i when i.Equals(Lang.GetString("TableSetDefault")):
@@ -192,7 +192,7 @@ namespace Grades
                         Properties.Settings.Default.Save();
                         // Display log message.
                         Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("TableSetDefaultSuccess"));
-                        new System.Threading.ManualResetEvent(false).WaitOne(500);
+                        Wait(500);
                         break;
 
                     case var i when i.Equals(Lang.GetString("TableEdit")):
@@ -247,7 +247,7 @@ namespace Grades
                 catch (UnauthorizedAccessException)
                 {
                     Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableDeniedAccess"));
-                    new System.Threading.ManualResetEvent(false).WaitOne(500);
+                    Wait(500);
                 }
                 catch (Exception) { }
 
@@ -993,7 +993,7 @@ namespace Grades
                 if (verbose)
                 {
                     Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("TableWriteSuccess"));
-                    new System.Threading.ManualResetEvent(false).WaitOne(500);
+                    Wait(500);
                 }
                 return true;
             }
@@ -1003,7 +1003,7 @@ namespace Grades
                 if (verbose)
                 {
                     Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableDeniedAccess"));
-                    new System.Threading.ManualResetEvent(false).WaitOne(500);
+                    Wait(500);
                 }
                 return false;
             }
@@ -1012,7 +1012,7 @@ namespace Grades
                 if (verbose)
                 {
                     Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableWriteError"));
-                    new System.Threading.ManualResetEvent(false).WaitOne(500);
+                    Wait(500);
                 }
                 return false;
             }
@@ -1055,7 +1055,7 @@ namespace Grades
         {
             // Display error and wait.
             Console.Write(string.Format("[{0}] {1}", Lang.GetString("Error"), Lang.GetString(error)));
-            new System.Threading.ManualResetEvent(false).WaitOne(150);
+            Wait(150);
             // Clear the current line.
             ClearCurrentConsoleLine();
             // Clear the line above it and set it as the new cursor position.
@@ -1138,7 +1138,7 @@ namespace Grades
                             Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("SettingsResetSuccess"));
                         }
                         YesNoMenu("SettingsReset", Yes, () => { });
-                        new System.Threading.ManualResetEvent(false).WaitOne(500);
+                        Wait(500);
                         break;
 
                     case var i when i.Equals(Lang.GetString("Credits")):
@@ -1312,7 +1312,7 @@ namespace Grades
             catch (UnauthorizedAccessException)
             {
                 Console.WriteLine("[{0}] {1}", Lang.GetString("Error"), Lang.GetString("TableDeniedAccess"));
-                new System.Threading.ManualResetEvent(false).WaitOne(500);
+                Wait(500);
             }
             catch (Exception) { }
 
@@ -1347,7 +1347,7 @@ namespace Grades
                     Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(tableFiles[index]);
                     Properties.Settings.Default.Save();
                     Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("TableSetDefaultSuccess"));
-                    new System.Threading.ManualResetEvent(false).WaitOne(500);
+                    Wait(500);
                 }
                 catch (Exception)
                 {
@@ -1447,6 +1447,14 @@ namespace Grades
             return result;
         }
 
+        public static void Wait(int ms)
+        {
+            using (System.Threading.ManualResetEvent wait = new System.Threading.ManualResetEvent(false))
+            {
+                wait.WaitOne(ms);
+            }
+        }
+
 
         /// <summary>
         /// A function that displays a list as an enumerated menu on the Cli. Items can be chosen and will be processed by passed functions.
@@ -1524,7 +1532,7 @@ namespace Grades
                 {
                     Console.Write("{0}> {1}", Prompt, readInput);
                     ConsoleKeyInfo input = Console.ReadKey();
-                    new System.Threading.ManualResetEvent(false).WaitOne(20);
+                    Wait(20);
                     int choiceNum = -1;
                     switch (input)
                     {
@@ -1619,7 +1627,7 @@ namespace Grades
                 // This is language dependent.
                 Console.Write("{0}? [{1}]> ", Lang.GetString(title), Lang.GetString("YesOrNo"));
                 string Input = Console.ReadKey().KeyChar.ToString();
-                new System.Threading.ManualResetEvent(false).WaitOne(20);
+                Wait(20);
                 Console.Write("\n");
                 // Comparing the user input incase-sensitive to the current language's character for "Yes" (For example "Y").
                 if (string.Equals(Input, Lang.GetString("Yes"), StringComparison.OrdinalIgnoreCase))
