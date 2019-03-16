@@ -21,20 +21,20 @@ namespace Grades
                 System.Threading.Thread.CurrentThread.CurrentUICulture = Properties.Settings.Default.Language;
             }
 
-            // Catching CTRL+C event
+            // Catching CTRL+C event to reset the console title on closing etc.
             Console.CancelKeyPress += new ConsoleCancelEventHandler(IsCliExitPendingHandler);
 
-            // Setting the console and menu title
+            // Setting the console and menu title for the runtime of the application.
             NewConsoleTitle = Lang.GetString("Title");
             Console.Title = NewConsoleTitle;
 
             // List of options for the main menu.
             List<string> Entries = new List<string> { Lang.GetString("Subjects"), Lang.GetString("Overview"), Lang.GetString("Table"), Lang.GetString("Settings") };
 
-            // Displaying the main menu title which is the same as the console title.
+            // Displaying the main menu title.
             void DisplayTitle(List<string> entries)
             {
-                Console.WriteLine("--- {0} ---", NewConsoleTitle);
+                Console.WriteLine("--- {0} ---", Lang.GetString("Title"));
             }
 
             // Handling the options.
@@ -76,34 +76,34 @@ namespace Grades
             ExitCli();
         }
 
-        // Deprecated. Kept here for future reference.
+        // Deprecated. Visual Studio is now providing the ResourceManager. Kept here for future reference.
         // public static ResourceManager Lang = new ResourceManager("language", typeof(Cli).Assembly);
 
         /// <summary>
-        /// The ResourceManager for all language-dependent strings in the interface.
+        /// The resource manager provides (almost) all strings for the application so they can adapt to the device language.
         /// </summary>
         public static ResourceManager Lang = language.ResourceManager;
 
         /// <summary>
-        /// The currently open sourcefile.
+        /// The file in which the currently open table resides in.
         /// </summary>
         public static string SourceFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "/" + Properties.Settings.Default.SourceFile);
 
         /// <summary>
-        /// The currently open Table.
+        /// The currently open Table as Table object.
         /// </summary>
         public static Table t = LoadTable();
 
         /// <summary>
-        /// Loads a table. 
-        /// Will create a new one if there is none found at the location of the current sourcefile.
+        /// Loads the Table found in the current SourceFile.
+        /// Will create a new one if there is an issue with reaching the SourceFile.
         /// </summary>
         public static Table LoadTable()
         {
-            // Checks if the current sourcefile exists.
+            // Checks if the SourceFile exists.
             if (System.IO.File.Exists(SourceFile))
             {
-                // Try to load it.
+                // Tries to load the Table from it.
                 try
                 {
                     return Table.Read(SourceFile);
@@ -121,24 +121,27 @@ namespace Grades
                 {
                     try
                     {
-                        // Delete the sourcefile since it might be corrupted.
+                        // Delete the SourceFile to clear it if it is corrupted.
                         new Table().Clear(SourceFile);
                     }
                     catch (Exception)
                     {
+                        // We do not have permissions to delete the SourceFile. Give up and display an error.
                         Console.WriteLine("[{0}] {1} : {2}", Lang.GetString("Error"), System.IO.Path.GetFileName(SourceFile), Lang.GetString("TableDeniedAccess"));
                         Console.WriteLine(Lang.GetString("PressAnything"));
                         Console.ReadKey();
+                        // Return an empty Table to ensure an uninterrupted workflow of the application.
+                        // This might result in the failure of being able to save the Table.
+                        // Consider closing the app at this point, or making a new SourceFile.
                         return GetEmptyTable();
-
                     }
-                    // Return an empty table.
+                    // Return a new empty Table since loading the existing one failed.
                     return GetEmptyTable();
                 }
             }
             else
             {
-                // Return an empty table.
+                // SourceFile doesnt exist, return new empty Table.
                 return GetEmptyTable();
             }
         }
@@ -151,7 +154,7 @@ namespace Grades
             // Create a new table.
             Table t = new Table
             {
-                // Default values for new tables, pulled from the settings file.
+                // Set default values for the Table. These are provided by the settings of the app.
                 Name = "terminal_" + DateTime.Now.ToString("yyyy.MM.dd-HH:mm:ss"),
                 MinGrade = Properties.Settings.Default.DefaultMinGrade,
                 MaxGrade = Properties.Settings.Default.DefaultMaxGrade,
@@ -166,6 +169,7 @@ namespace Grades
         public static void ManageTable()
         {
             // Make sure the current table is saved.
+            // Might remove this in the future, since Tables are always saved after any changes.
             t.Save();
 
             // List of options.
@@ -183,12 +187,14 @@ namespace Grades
                 switch (entries[index])
                 {
                     case var i when i.Equals(Lang.GetString("TableRead")):
-                        // Call the table to choose a table to load.
+                        // Call the menu to choose a Table to load.
                         ChooseTable();
                         break;
 
                     case var i when i.Equals(Lang.GetString("TableWrite")):
-                        // Save the table.
+                        // Saving the table.
+                        // This option is basically just placebo.
+                        // It does save, but Tables are saved always anyways.
                         t.Save(true);
                         Wait(20);
                         break;
@@ -197,19 +203,19 @@ namespace Grades
                         // Set the current table as new default table on startup.
                         Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(SourceFile);
                         Properties.Settings.Default.Save();
-                        // Display log message.
+                        // Signaling success of to the user.
                         Console.WriteLine("[{0}] {1}", Lang.GetString("Log"), Lang.GetString("TableSetDefaultSuccess"));
                         Wait(500);
                         break;
 
                     case var i when i.Equals(Lang.GetString("TableEdit")):
-                        // Call the menu for editing a table.
+                        // Calling the menu for editing a table.
                         ModifyTable();
                         t.Save();
                         break;
 
                     case var i when i.Equals(Lang.GetString("TableDelete")):
-                        // Define the Yes option for the following confirmation menu.
+                        // Delete the Table if the user confirms the prompt.
                         Action Yes = () =>
                         {
                             t.Clear(SourceFile);
@@ -263,7 +269,7 @@ namespace Grades
                 return tables;
             }
 
-            // Display the title and the 0-option (creating a new table).
+            // Display the title and the 0th option (creating a new table).
             void DisplayTitle(List<string> tables)
             {
                 Console.WriteLine("--- {0} : {1} ---", Lang.GetString("TableChoose"), tables.Count);
@@ -290,7 +296,7 @@ namespace Grades
                     System.IO.Path.GetFileName(tables[index]).PadRight(MaxLength, ' ') + " | " + name);
             }
 
-            // handling Zero Method.
+            // Handling the 0th entry.
             bool ZeroEntry(List<string> tables)
             {
                 // Call the menu for creating a new table.
@@ -315,6 +321,7 @@ namespace Grades
 
             List<string> UpdateObjects(List<string> tables)
             {
+                // Update the list of Tables by checking for new files.
                 return GetTableFiles();
             }
 
@@ -345,7 +352,7 @@ namespace Grades
                     // Check if there is no file with that name already.
                     if (!(System.IO.File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + string.Format("/" + i + "." + "grades.xml")))))
                     {
-                        // Create it.
+                        // Create the new file.
                         x.Write(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + string.Format("/" + i + "." + "grades.xml")));
                         break;
                     }
@@ -353,7 +360,7 @@ namespace Grades
             }
             else
             {
-                // Create a file without a number.
+                // Instead of creating a file with th number 1, create a file without number. (Like with Windows copies)
                 x.Write(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "grades.xml"));
             }
 
@@ -365,13 +372,15 @@ namespace Grades
         public static void RenameTable()
         {
             // Get the new name for the table through user input.
+            // Pass the current name in the title.
             t.Name = GetTable(string.Format("--- {0} : {1} ---", Lang.GetString("TableRename"), t.Name));
             // Save the table to it's file.
             t.Save();
         }
 
         /// <summary>
-        /// Basic underlying menu scheme for creating or renaming a table.
+        /// Unified method to create or edit the name of a Table.
+        /// The menu returns the new name.
         /// </summary>
         /// <param name="title">Title of the menu. Usually create or rename.</param>  
         public static string GetTable(string title)
@@ -387,7 +396,7 @@ namespace Grades
                 Console.Write("{0}> ", Lang.GetString("TableName"));
                 input = Console.ReadLine();
 
-                // Trim the input.
+                // Trim whitespace from the input.
                 input.Trim();
                 if (!string.IsNullOrWhiteSpace(input))
                 {
@@ -410,12 +419,16 @@ namespace Grades
             return input;
         }
 
+        /// <summary>
+        /// A menu to set the grade limits of the currently loaded table.
+        /// </summary>
+        /// <param name="UseMinGrade">Indicates if the minimum grade or the maximum grade is to be changed.</param>
         public static void SetTableGradeLimits(bool UseMinGrade)
         {
             string input = "";
             double value = -1;
-            bool IsInputValid = false;
             double old = -1;
+            bool IsInputValid = false;
             while (!IsInputValid)
             {
                 ClearMenu();
@@ -459,6 +472,9 @@ namespace Grades
             t.Save();
         }
 
+        /// <summary>
+        /// A menu to edit the currently loaded Table.
+        /// </summary>
         public static void ModifyTable()
         {
             // Make sure the current table is saved.
@@ -636,6 +652,11 @@ namespace Grades
             t.Save();
         }
 
+        /// <summary>
+        /// unified menu to get the name for a new or for the edit of a subject.
+        /// </summary>
+        /// <param name="title">The tilte of the menu. Usually, create or edit.</param>
+        /// <returns></returns>
         public static string GetSubject(string title)
         {
             string input = "";
@@ -652,6 +673,7 @@ namespace Grades
                 input.Trim();
                 if (!string.IsNullOrWhiteSpace(input))
                 {
+                    // Counteracting sneaky users.
                     if (!input.Equals(string.Format("({0})", Lang.GetString("SubjectCreate")), StringComparison.InvariantCultureIgnoreCase))
                     {
                         IsInputValid = true;
@@ -1091,6 +1113,11 @@ namespace Grades
             ClearMenu();
         }
 
+        /// <summary>
+        /// Handler subscribed to the closing of the console.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private static void IsCliExitPendingHandler(object sender, ConsoleCancelEventArgs args)
         {
             // Call the exit function.
@@ -1171,6 +1198,9 @@ namespace Grades
 
         }
 
+        /// <summary>
+        /// A menu for changing the app settings.
+        /// </summary>
         public static void ModifySettings()
         {
             // List of options.
@@ -1366,6 +1396,9 @@ namespace Grades
 
         }
 
+        /// <summary>
+        /// A menu for changing the default settings for new Tables.
+        /// </summary>
         public static void ModifyTableDefaults()
         {
             // List of options.
@@ -1456,6 +1489,10 @@ namespace Grades
             return result;
         }
 
+        /// <summary>
+        /// Unified function for waiting in miliseconds.
+        /// </summary>
+        /// <param name="ms">Amount of miliseconds to be waited for.</param>
         public static void Wait(int ms)
         {
             using (System.Threading.ManualResetEvent wait = new System.Threading.ManualResetEvent(false))
@@ -1466,8 +1503,8 @@ namespace Grades
 
 
         /// <summary>
-        /// A function that displays a list as an enumerated menu on the Cli. Items can be chosen and will be processed by passed functions.
-        /// <para>Rest in peace, Cloe.</para>
+        /// CLOE (Command-line List Options Enumerator).
+        /// <para>Turns a list into a menu of options. Each list item is asigned a number. The chosen one will be handled by passed functions.</para>
         /// </summary>
         /// <param name="Entries">A list of objects that will be displayed as choices.</param>
         /// <param name="DisplayTitle">The function that displays the title. It should include displaying the 0th entry if you want to use it.</param>
@@ -1627,6 +1664,12 @@ namespace Grades
             }
         }
 
+        /// <summary>
+        /// A simple template to create Yes or No menus.
+        /// </summary>
+        /// <param name="title">The title of the menu.</param>
+        /// <param name="Yes">The function to be called upon Yes</param>
+        /// <param name="No">The function to be called upon No</param>
         public static void YesNoMenu(string title, Action Yes, Action No)
         {
             bool IsInputValid = false;
