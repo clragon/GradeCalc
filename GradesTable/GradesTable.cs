@@ -145,7 +145,8 @@ namespace Grades
             /// <summary>
             /// The instance of the table this subject is assigned to.
             /// </summary>
-            [DataMember(Name = "OwnerTable")]
+            // [DataMember(Name = "OwnerTable")]
+            // owner property is runtime only to make xml more readable
             public Table OwnerTable { get; internal set; }
 
             internal Subject() { }
@@ -293,7 +294,8 @@ namespace Grades
                 /// <summary>
                 /// The instance of the subject this grade is assigned to.
                 /// </summary>
-                [DataMember(Name = "OwnerSubject")]
+                // [DataMember(Name = "OwnerSubject")]
+                // owner property is runtime only to make xml more readable
                 public Subject OwnerSubject { get; internal set; }
 
                 internal Grade() { }
@@ -335,7 +337,7 @@ namespace Grades
                 DataContractSerializer serializer = new DataContractSerializer(typeof(Table), null,
                     0x7FFF /*maxItemsInObjectGraph*/,
                     false /*ignoreExtensionDataObject*/,
-                    true /*preserveObjectReferences : important option! */,
+                    false /*preserveObjectReferences : important option! */,
                     null /*dataContractSurrogate*/);
                 serializer.WriteObject(writer, this);
             }
@@ -350,7 +352,17 @@ namespace Grades
             DataContractSerializer serializer = new DataContractSerializer(typeof(Table));
             using (System.Xml.XmlReader reader = System.Xml.XmlReader.Create(File))
             {
-                return (Table)serializer.ReadObject(reader);
+                // Set the owner properties for runtime.
+                Table T = (Table) serializer.ReadObject(reader);
+                foreach (Subject s in T.Subjects)
+                {
+                    s.OwnerTable = T;
+                    foreach (Subject.Grade g in s.Grades)
+                    {
+                        g.OwnerSubject = s;
+                    }
+                }
+                return T;
             }
         }
 
