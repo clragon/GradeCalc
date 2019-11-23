@@ -158,7 +158,7 @@ namespace Grades
                 Name = "terminal_" + DateTime.Now.ToString("yyyy.MM.dd-HH:mm:ss"),
                 MinGrade = Properties.Settings.Default.DefaultMinGrade,
                 MaxGrade = Properties.Settings.Default.DefaultMaxGrade,
-                UseWeightSystem = Properties.Settings.Default.DefaultUseWeightSystem
+                UseWeight = Properties.Settings.Default.DefaultUseWeight
             };
             return t;
         }
@@ -254,8 +254,8 @@ namespace Grades
                 List<string> tables = new List<string>();
                 try
                 {
-                    // Fetching all files in the app directory that have the "grades.xml" ending.
-                    tables = System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*grades.xml").ToList();
+                    // Fetching all files in the app directory that match the pattern.
+                    tables = System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "grades*.json").ToList();
                 }
                 catch (Exception)
                 {
@@ -340,20 +340,20 @@ namespace Grades
             // Get the name for it through user input.
             x.Name = GetTable(string.Format("--- {0} ---", Lang.GetString("TableCreate")));
             // Create a file for the table.
-            // Files will be automatically named grades.xml with an increasing number in front of them.
-            if (System.IO.File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "grades.xml")))
+            // Files will be automatically named grades.json with an increasing number in front of them.
+            if (System.IO.File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "grades.json")))
             {
                 // Names start at 2.
                 int i = 1;
                 while (true)
                 {
-                    // Increase the number in front of the file's name.
+                    // Increase the number at the end of the file's name.
                     i++;
-                    // Check if there is no file with that name already.
-                    if (!(System.IO.File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + string.Format("/" + i + "." + "grades.xml")))))
+                    // Check if that file name is available.
+                    if (!(System.IO.File.Exists(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + string.Format("/grades_{0}.json", i)))))
                     {
                         // Create the new file.
-                        x.Write(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + string.Format("/" + i + "." + "grades.xml")));
+                        x.Write(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + string.Format("/grades_{0}.json", i)));
                         break;
                     }
                 }
@@ -361,7 +361,7 @@ namespace Grades
             else
             {
                 // Instead of creating a file with th number 1, create a file without number. (Like with Windows copies)
-                x.Write(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "grades.xml"));
+                x.Write(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "grades.json"));
             }
 
         }
@@ -489,7 +489,7 @@ namespace Grades
                 { Lang.GetString("TableName"), "Name" },
                 { Lang.GetString("GradeMin"), "MinGrade" },
                 { Lang.GetString("GradeMax"), "MaxGrade" },
-                { Lang.GetString("TableUseWeight"), "UseWeightSystem" }
+                { Lang.GetString("TableUseWeight"), "UseWeight" }
             };
 
             // Title.
@@ -531,7 +531,7 @@ namespace Grades
                         break;
 
                     case var i when i.Equals(Lang.GetString("TableUseWeight")):
-                        t.UseWeightSystem = !t.UseWeightSystem;
+                        t.UseWeight = !t.UseWeight;
                         t.Save();
                         break;
 
@@ -702,7 +702,7 @@ namespace Grades
 
             void DisplayTitle(List<string> entries)
             {
-                if (grade.OwnerSubject.OwnerTable.UseWeightSystem)
+                if (grade.OwnerSubject.OwnerTable.UseWeight)
                 {
                     Console.WriteLine("--- {0} : {1} | {2} ---", Lang.GetString("Grade"), grade.Value, grade.Weight);
                 }
@@ -758,7 +758,7 @@ namespace Grades
             void DisplayEntry(List<Table.Subject.Grade> grades, Table.Subject.Grade grade, int index, int num)
             {
                 int MaxLength = grades.Select(x => x.Value.ToString().Length).Max();
-                if (subject.OwnerTable.UseWeightSystem)
+                if (subject.OwnerTable.UseWeight)
                 {
                     Console.WriteLine("[{0}] {1} | {2}", Convert.ToString(num).PadLeft(Convert.ToString(grades.Count).Length, ' '), Convert.ToString(grade.Value).PadRight(MaxLength, ' '), grade.Weight);
                 }
@@ -811,7 +811,7 @@ namespace Grades
         {
             // Gets the values needed to edit a grade from the menu template as tuple.
             Tuple<double, double> n;
-            if (grade.OwnerSubject.OwnerTable.UseWeightSystem)
+            if (grade.OwnerSubject.OwnerTable.UseWeight)
             {
                 n = GetGrade(grade.OwnerSubject, string.Format("--- {0} : {1} | {2} ---", Lang.GetString("GradeEdit"), grade.Value, grade.Weight));
             }
@@ -887,7 +887,7 @@ namespace Grades
                 }
             }
             // Check if the table has the weight system enabled.
-            if (subject.OwnerTable.UseWeightSystem)
+            if (subject.OwnerTable.UseWeight)
             {
                 // Get a weight for the grade from user input.
                 bool IsSecondInputValid = false;
@@ -1343,8 +1343,8 @@ namespace Grades
             List<string> TableFiles = new List<string>();
             try
             {
-                // Fetching all files in the app directory that have the "grades.xml" ending.
-                TableFiles = System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*grades.xml").ToList();
+                // Fetching all files in the app directory that have the "grades.json" ending.
+                TableFiles = System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "grades*.json").ToList();
             }
             catch (Exception)
             {
@@ -1409,7 +1409,7 @@ namespace Grades
             {
                 { Lang.GetString("GradeMin"), "DefaultMinGrade" },
                 { Lang.GetString("GradeMax"), "DefaultMaxGrade" },
-                { Lang.GetString("TableUseWeight"), "DefaultUseWeightSystem" },
+                { Lang.GetString("TableUseWeight"), "DefaultUseWeight" },
 
             };
 
@@ -1446,7 +1446,7 @@ namespace Grades
                         break;
 
                     case var i when i.Equals(Lang.GetString("DefaultUseWeight")):
-                        Properties.Settings.Default.DefaultUseWeightSystem = !Properties.Settings.Default.DefaultUseWeightSystem;
+                        Properties.Settings.Default.DefaultUseWeight = !Properties.Settings.Default.DefaultUseWeight;
                         Properties.Settings.Default.Save();
                         break;
 

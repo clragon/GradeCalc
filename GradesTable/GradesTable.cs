@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace Grades
 {
@@ -15,26 +16,26 @@ namespace Grades
         /// <summary>
         /// The name of the table.
         /// </summary>
-        [DataMember(Name = "Name")]
+        [DataMember(Name = "name")]
         public string Name { get; set; }
         /// <summary>
         /// The minimum grade value for this table and system.
         /// This value does not alter the behaviour of the table class.
         /// </summary>
-        [DataMember(Name = "MinGrade")]
+        [DataMember(Name = "minGrade")]
         public double MinGrade { get; set; }
         /// <summary>
         /// The maximum grade value for this table and system.
         /// This value does not alter the behaviour of the table class.
         /// </summary>
-        [DataMember(Name = "MaxGrade")]
+        [DataMember(Name = "maxGrade")]
         public double MaxGrade { get; set; }
         /// <summary>
         /// If the weight system should be used.
         /// This value does not alter the behaviour of the table class.
         /// </summary>
-        [DataMember(Name = "EnableWeightSystem")]
-        public bool UseWeightSystem { get; set; } = true;
+        [DataMember(Name = "useWeight")]
+        public bool UseWeight { get; set; } = true;
 
 
         /// <summary>
@@ -139,7 +140,7 @@ namespace Grades
             /// <summary>
             /// The name of the subject.
             /// </summary>
-            [DataMember(Name = "Name")]
+            [DataMember(Name = "name")]
             public string Name { get; internal set; }
 
             /// <summary>
@@ -181,7 +182,7 @@ namespace Grades
                     foreach (Grade g in Grades)
                     {
                         // If the weight system is enabled, get the weight of the grade.
-                        if (OwnerTable.UseWeightSystem)
+                        if (OwnerTable.UseWeight)
                         {
                             weights += g.Weight;
                             // Actual value of a grade equals its value times it's weight.
@@ -208,9 +209,9 @@ namespace Grades
             /// </summary>
             public double CalcCompensation()
             {
-                double points = 0;
+                double points;
                 // Compensation points are calculated by subtracting 4 of the grade value.
-                // Positive points have to outweight negative ones twice.
+                // Positive points have to outweight negative ones by a factor of two.
                 if (CalcAverage() != 0)
                 {
                     points = (CalcAverage() - 4);
@@ -276,20 +277,59 @@ namespace Grades
             /// <summary>
             /// The grades class. It stores values.
             /// </summary>
-            [DataContract(Name = "Grade")]
+            [DataContract(Name = "grade")]
             public class Grade
             {
+
+                /// <summary>
+                /// The name of the grade.
+                /// </summary>
+                [DataMember(Name = "name")]
+                public string Name { get; set; }
+
                 /// <summary>
                 /// The value of the grade.
                 /// </summary>
-                [DataMember(Name = "Value")]
+                [DataMember(Name = "value")]
                 public double Value { get; internal set; }
 
                 /// <summary>
                 /// The weight of the grade.
                 /// </summary>
-                [DataMember(Name = "Weight")]
+                [DataMember(Name = "weight")]
                 public double Weight { get; internal set; }
+
+                /// <summary>
+                /// The creation date of the grade.
+                /// </summary>
+                [DataMember(Name = "creation")]
+                public LocalDate LocalCreation { get; internal set; }
+
+                [DataContract(Name = "creation")]
+                public class LocalDate
+                {
+                    [DataMember(Name = "year")]
+                    public int Year { get; internal set; }
+                    [DataMember(Name = "month")]
+                    public int Month { get; internal set; }
+                    [DataMember(Name = "day")]
+                    public int Day { get; internal set; }
+
+                    internal LocalDate() { }
+
+                    public DateTime GetDate()
+                    {
+                        return new DateTime(Year, Month, Day);
+                    }
+
+                    public void SetDate(DateTime dateTime)
+                    {
+                        Year = dateTime.Year;
+                        Month = dateTime.Month;
+                        Day = dateTime.Day;
+                    }
+
+                }
 
                 /// <summary>
                 /// The instance of the subject this grade is assigned to.
@@ -327,43 +367,31 @@ namespace Grades
         }
 
         /// <summary>
-        /// Save the table to an xml file.
+        /// Save the table to a json file.
         /// </summary>
         /// <param name="File">The target file path as string.</param>
         public void Write(string File)
         {
-            using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(File, new System.Xml.XmlWriterSettings { Indent = true }))
-            {
-                DataContractSerializer serializer = new DataContractSerializer(typeof(Table), null,
-                    0x7FFF /*maxItemsInObjectGraph*/,
-                    false /*ignoreExtensionDataObject*/,
-                    false /*preserveObjectReferences : important option! */,
-                    null /*dataContractSurrogate*/);
-                serializer.WriteObject(writer, this);
-            }
+            System.IO.File.WriteAllText(File, JsonConvert.SerializeObject(this, Formatting.Indented));            
         }
 
         /// <summary>
-        /// Read a table from an xml file.
+        /// Read a table from a json file.
         /// </summary>
         /// <param name="File">The target file path as string.</param>
         public static Table Read(string File)
         {
-            DataContractSerializer serializer = new DataContractSerializer(typeof(Table));
-            using (System.Xml.XmlReader reader = System.Xml.XmlReader.Create(File))
+            Table T = JsonConvert.DeserializeObject<Table>(System.IO.File.ReadAllText(File));
+            // Set the owner properties for runtime.
+            foreach (Subject s in T.Subjects)
             {
-                // Set the owner properties for runtime.
-                Table T = (Table) serializer.ReadObject(reader);
-                foreach (Subject s in T.Subjects)
+                s.OwnerTable = T;
+                foreach (Subject.Grade g in s.Grades)
                 {
-                    s.OwnerTable = T;
-                    foreach (Subject.Grade g in s.Grades)
-                    {
-                        g.OwnerSubject = s;
-                    }
+                    g.OwnerSubject = s;
                 }
-                return T;
             }
+            return T;
         }
 
         /// <summary>
