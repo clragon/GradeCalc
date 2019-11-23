@@ -286,6 +286,8 @@ namespace Grades
                 try
                 {
                     name = Table.Read(tables[index]).Name;
+                    Properties.Settings.Default.SourceFile = System.IO.Path.GetFileName(tables[index]);
+                    Properties.Settings.Default.Save();
                 }
                 catch (Exception)
                 {
@@ -425,14 +427,14 @@ namespace Grades
         /// <param name="UseMinGrade">Indicates if the minimum grade or the maximum grade is to be changed.</param>
         public static void SetTableGradeLimits(bool UseMinGrade)
         {
-            string input = "";
+            string input;
             double value = -1;
-            double old = -1;
             bool IsInputValid = false;
             while (!IsInputValid)
             {
                 ClearMenu();
                 string limit;
+                double old;
                 if (UseMinGrade)
                 {
                     limit = "GradeMin";
@@ -832,7 +834,7 @@ namespace Grades
         /// <param name="subject">The subject in which grades are to be edited in.</param>
         public static Tuple<double, double> GetGrade(Table.Subject subject, string title)
         {
-            string input = "";
+            string input;
             double value = -1;
             double weight = -1;
             bool IsFirstInputValid = false;
@@ -1204,7 +1206,7 @@ namespace Grades
         public static void ModifySettings()
         {
             // List of options.
-            List<string> Entries = new List<string> { Lang.GetString("TableDefault"), Lang.GetString("LanguageChoose"), Lang.GetString("SettingsClearMenus"), Lang.GetString("SettingsEnableGradeLimits"), Lang.GetString("SettingsShowCompensation"), Lang.GetString("OverviewSortByHighest") };
+            List<string> Entries = new List<string> { Lang.GetString("LanguageChoose"), Lang.GetString("SettingsClearMenus"), Lang.GetString("SettingsEnableGradeLimits"), Lang.GetString("SettingsShowCompensation"), Lang.GetString("OverviewSortByHighest") };
 
             // Dictionatry mapping options to object properties.
             Dictionary<string, string> ValueMap = new Dictionary<string, string>
