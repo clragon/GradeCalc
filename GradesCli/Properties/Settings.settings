@@ -5,16 +5,13 @@
     <Setting Name="ClearOnSwitch" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="SourceFile" Type="System.String" Scope="User">
-      <Value Profile="(Default)">grades.xml</Value>
-    </Setting>
     <Setting Name="DefaultMinGrade" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="DefaultMaxGrade" Type="System.Double" Scope="User">
       <Value Profile="(Default)">6</Value>
     </Setting>
-    <Setting Name="DefaultUseWeightSystem" Type="System.Boolean" Scope="User">
+    <Setting Name="DefaultUseWeight" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="EnableGradeLimits" Type="System.Boolean" Scope="User">
@@ -31,6 +28,9 @@
     </Setting>
     <Setting Name="SortOverview" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="SourceFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">grades.json</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -12,7 +12,7 @@ namespace Grades.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -20,30 +20,6 @@ namespace Grades.Properties {
         public static Settings Default {
             get {
                 return defaultInstance;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ClearOnSwitch {
-            get {
-                return ((bool)(this["ClearOnSwitch"]));
-            }
-            set {
-                this["ClearOnSwitch"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("grades.xml")]
-        public string SourceFile {
-            get {
-                return ((string)(this["SourceFile"]));
-            }
-            set {
-                this["SourceFile"] = value;
             }
         }
         
@@ -74,12 +50,12 @@ namespace Grades.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool DefaultUseWeightSystem {
+        public bool DefaultUseWeight {
             get {
-                return ((bool)(this["DefaultUseWeightSystem"]));
+                return ((bool)(this["DefaultUseWeight"]));
             }
             set {
-                this["DefaultUseWeightSystem"] = value;
+                this["DefaultUseWeight"] = value;
             }
         }
         
@@ -140,6 +116,18 @@ namespace Grades.Properties {
             }
             set {
                 this["SortOverview"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("grades.json")]
+        public string SourceFile {
+            get {
+                return ((string)(this["SourceFile"]));
+            }
+            set {
+                this["SourceFile"] = value;
             }
         }
     }
